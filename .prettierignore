@@ -1,0 +1,26 @@
+.next/
+node_modules/
+pnpm-lock.yaml
+src/db/migrations/
+.superpowers/
+# Marketing prose and assets are not a formatting surface; marketing/landing/
+# (code + content JSON) deliberately stays formatted, so the doc dirs are
+# listed instead of marketing/ wholesale.
+marketing/ru/
+marketing/en/
+marketing/strategy/
+marketing/seo/
+marketing/assets/
+marketing/archive-candidates.md
+docs/superpowers/
+
+# tests/fixtures/planted-defects/ground-truth.json pins the LINE NUMBER of every
+# planted defect. A reflow here would silently invalidate the ground truth of the
+# review skill's detection eval, and nothing would go red.
+tests/fixtures/planted-defects/
+
+# Modules live outside the core surface (docs/rules/modules.md): files under
+# modules/<name>/files/ are verbatim copies destined for a target project, not
+# this repo's own formatting surface.
+modules/
+.playwright-mcp/

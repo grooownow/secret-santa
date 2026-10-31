@@ -1,0 +1,263 @@
+---
+name: feature
+preamble-tier: 2
+description: Builds one feature end-to-end as a spec-first slice — writes or loads the spec, plans touch-points, implements per the architecture rules, writes mandatory tests, runs the verify skill's gate sequence, self-reviews against spec and rules, actualizes docs, and commits. Use when the user asks to build a feature in an onboarded Gridfin project ("/feature <name>", "add X", "build the next roadmap item"). NOT for onboarding a fresh template (that is gridfin), NOT for installing a prebuilt capability module (that is add-module), and NOT for judging code that is already written (that is review).
+---
+
+<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly. Regenerate: pnpm skills:gen -->
+
+# Feature
+
+Take one feature from name to merged, tested, documented slice. Input is a
+feature name, a description, or a path to an existing spec. The flow is
+linear (Step 1 → 8); create a todo per step before starting.
+
+## Ground rules
+
+<!-- Generated from the shared preamble (scripts/lib/codegen.ts). Edit it there, not here. -->
+
+- **Language:** chat with the user in the project's chat language
+  (`docs/manifest.md` → _Chat language_; falls back to the language of the
+  user's messages while unset). Every artifact that lives in the repo — code,
+  docs, commit messages — is English.
+- **Evidence, not adjectives.** Never report a command as green without quoting
+  the line that proves it. "It should pass" is not a result, and the word
+  _should_ in a status line is a red flag about your own honesty.
+- **The hard invariants** (`CLAUDE.md`), which a `PreToolUse` hook
+  (`scripts/hooks/pretooluse.ts`) enforces at the moment of the write — do not
+  design around them, and do not treat a hook denial as a puzzle to route
+  around:
+
+  1. No internal `<a href>`/`window.location` navigation — always `<Link>`.
+  2. No network/db call in `src/middleware.ts` — the JWT check stays local.
+     Applies only once the `persistence` module is installed (`src/middleware.ts`
+     does not exist in a Landing-preset project).
+  3. No feature ships without a test proven able to fail.
+  4. Every server action/route validates input with `zod` before use.
+  5. Every commit follows Conventional Commits (one exception: `/gridfin`
+     onboarding commits — see `docs/rules/git.md`).
+  6. UI colors come from the design tokens in `src/app/globals.css` — no
+     hardcoded hex/rgb/hsl or arbitrary-value color classes in components
+     (Next metadata images are exempt; see `docs/rules/frontend.md`).
+
+- **Read the rule that governs the step you are on, at the moment you reach it** —
+  not from memory, and not all of them up front:
+
+  - `docs/rules/architecture.md` — new routes, feature slices, data access, import direction, schema changes.
+  - `docs/rules/definition-of-done.md` — every change, without exception — this is the standing bar, and the one rules file that is never out of scope.
+  - `docs/rules/docs.md` — any change to `docs/`, `CLAUDE.md`/`AGENTS.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
+  - `docs/rules/frontend.md` — any page, component, mutation, or loading state — responsiveness is an invariant here, not a nice-to-have.
+  - `docs/rules/git.md` — every commit, branch, and merge in this repo.
+  - `docs/rules/modules.md` — any `modules/<name>/` directory and any skill that installs one.
+  - `docs/rules/security.md` — every server action, route handler, env var, and auth-adjacent change — this is baseline, not opt-in.
+  - `docs/rules/skills.md` — any change under `.claude/skills/**`, `.claude/skill-steps/**`, or the compiler that builds them (`scripts/lib/codegen.ts`, `scripts/gen-skills.ts`). The skills are the product — this is the contract they are written against.
+  - `docs/rules/sources.md` — any line of code or prose that asserts how a third-party framework, library, or API behaves.
+  - `docs/rules/testing.md` — every code change — no feature is done without tests.
+
+- **Branching:** non-trivial work happens on a feature branch off `main`,
+  merged only after a green `verify` run (`docs/rules/git.md`).
+- **Commit cadence:** a conventional commit after every green step, named for
+  the step it closes.
+- **Format before every commit.** Run `pnpm format` first — lefthook's
+  pre-commit `prettier --check` rejects an unformatted file, and a commit
+  rejected in the middle of a flow is how a step ends up half-applied.
+- **A commit is a resume point, so only green steps get one.** Never commit
+  over a red gate: a session that drops after a green commit resumes from a
+  known state, and one that committed a red step leaves the next session
+  trusting work that does not pass.
+- **Every fix-and-retry loop is bounded: two honest attempts at the same
+  failure, then stop.** Report the exact command output, the state you are in,
+  and what you would try next; let the user decide. A third attempt on the same
+  red gate is not persistence — it is where you start changing code you have
+  stopped understanding, and where a real failure gets buried under repair
+  attempts.
+- **A loop that waits on a person is not bounded by that budget** — it ends
+  when they answer. It owes something else instead: say, before you ask, where
+  the flow resumes if the session drops before the answer arrives.
+- **STOP condition:** spec ambiguity that changes what you'd build → ask the
+  user **one question** and wait; never guess on a fork in behavior. Never
+  skip a gate, and never call one green without its output.
+
+## Resume protocol (run before Step 1, every time)
+
+A dropped session is the normal case, not the exception, and the cost of
+guessing where you left off is redoing work or — worse — skipping a step
+because the code looks finished. Reconstruct state from the repo, never from
+memory of the conversation:
+
+1. `git log --oneline -20` — the commit cadence below means each green step
+   left a commit. The last one names the last completed step.
+2. `git status` — uncommitted work means a step was interrupted mid-flight.
+   Finish or discard it before starting anything new; never build on top of a
+   half-step.
+3. Is there a `docs/specs/<slug>.plan.md`? Read it. Its last line tells you
+   whether planning ever finished (see Step 2's sentinel). A plan whose last
+   line is not `NO UNRESOLVED DECISIONS` means Step 2 is where you resume —
+   not Step 3, however much implemented code you find lying around.
+4. Re-verify the **Done when** of the last completed step before trusting it.
+   A commit is evidence that a step ended, not that it ended correctly.
+
+Nothing found → this is a fresh feature; start at Step 1.
+
+## Step 1 — Spec (approval gate)
+
+1.0. `git switch -c feat/<slug>` — create the feature branch off `main`
+before the first commit (branch naming convention: `feat/<slug>`,
+matching the feature's slug).
+
+1. Resolve the spec: given a path, read it; otherwise look for
+   `docs/specs/<feature-slug>.md`.
+2. **Spec exists:** confirm status is `approved`. If `draft`, show the user
+   a one-paragraph digest and get approval first (update status on yes).
+3. **No spec:** write one from `docs/templates/spec.md` into
+   `docs/specs/<feature-slug>.md` (create `docs/specs/` if missing). Every
+   section filled; **Data model** and **Test scenarios** concrete (read
+   `docs/rules/testing.md`'s decision table before writing scenarios).
+   Show the digest, iterate until the user approves, set status `approved`.
+4. Set status to `in progress` when implementation starts.
+
+**Done when:** approved spec exists. Commit: `docs: spec for <slug>`.
+
+## Step 2 — Plan the slice touch-points
+
+Read `docs/rules/architecture.md`, then write the plan to
+`docs/specs/<slug>.plan.md`. It stays short — a map, not a document:
+
+- `src/features/<slug>/` — `index.ts` (public API), `*-action.ts`, UI
+  components, colocated tests.
+- Route files under `src/app/` (thin: parse → call feature → render), plus
+  `loading.tsx` if the route has an async data dependency.
+- Schema change? Name the tables (→ migration path in Step 3).
+- New env var? Name it (→ the three-part rule in `docs/rules/security.md`).
+- **Open decisions** — every fork in behavior you cannot settle from the spec.
+
+The plan exists for two reasons, and neither is ceremony. It is the resume
+point if the session drops between Step 2 and Step 8 (`git log` tells you the
+last green step; the plan tells you what you were going to do next). And it is
+where an open decision has to be _written down_ rather than quietly resolved by
+whichever guess you were already leaning toward.
+
+### The completion sentinel
+
+The plan file's last line is exactly:
+
+```
+NO UNRESOLVED DECISIONS
+```
+
+Write it only when the Open decisions list is empty — every fork either
+answered by the spec or asked of the user and answered by them. If a decision
+is still open, the last line names it instead, and you do not proceed to Step 3.
+
+Then **read the file back** (`tail -1 docs/specs/<slug>.plan.md`) before moving
+on. That is not paranoia about the filesystem — it is the one cheap check that
+catches the failure this step exists to prevent: reaching the end of planning
+with an unresolved fork and carrying on anyway, because by then the fork feels
+settled. If the last line is not the sentinel, the plan is not done.
+
+**Done when:** `docs/specs/<slug>.plan.md` exists, matches the spec's Scope, and
+its final line is `NO UNRESOLVED DECISIONS`. Commit: `docs: plan for <slug>`.
+
+## Step 3 — Implement as a slice
+
+Follow the exemplars, not improvisation:
+
+- Before writing a line that depends on a third-party API you have not
+  verified this session, read `docs/rules/sources.md` and look it up.
+- Server actions copy the shape of
+  `src/features/profile/update-name-action.ts`: `requireUser()` →
+  `zod` `safeParse` → typed `{ ok }` result → write scoped to the user.
+- Mutating UI copies `src/features/profile/profile-form.tsx`
+  (`useOptimistic` + `useActionState`). Read `docs/rules/frontend.md`
+  before any UI work — tokens only, `<Link>` only, loading states.
+- Cross-slice imports only via a feature's `index.ts`; keep routes thin
+  (`pnpm lint` enforces the boundaries).
+- Schema change: edit `src/db/schema.ts` → `pnpm db:generate` → **read the
+  generated SQL** → `pnpm db:migrate`; never edit an applied migration.
+  Extend `src/db/factories.ts` and `scripts/seed.ts` for each new entity
+  (`docs/rules/testing.md`, Factories section).
+- Before an applied migration, a change to `src/middleware.ts`, or anything
+  touching the auth boundary, run the **`doubt`** skill on the decision —
+  one bounded adversarial cycle while it is still cheap to change course.
+
+**Done when:** the slice compiles and `pnpm lint` is green. Commit each
+coherent green step (e.g. `feat(<slug>): schema and migration`).
+
+## Step 4 — Tests (mandatory, no exceptions)
+
+No feature ships without tests — this is a hard invariant, not a step to
+negotiate away.
+
+1. Read `docs/rules/testing.md`; place each spec Test scenario at the level
+   its decision table dictates (unit / component / integration / e2e).
+2. **Prove each new test can fail:** break the subject or the assertion,
+   watch it fail for the right reason, restore, watch it pass. Report that
+   you did this — an unproven test doesn't count. No command can check this
+   one, which is exactly why it gets written down:
+   `pnpm gates:note "<test> proven able to fail" --status pass --evidence "<what went red, and why>"`.
+3. Obey the anti-flaky rules and false-green bans (no sleeps, no
+   assertion-free tests, no mocked-db integration tests).
+
+**Done when:** `pnpm test` green with the new tests in, can-fail proven.
+Commit: `test(<slug>): <scenarios covered>`.
+
+## Step 5 — Gates
+
+Run the **`verify`** skill: `pnpm gates` for the sequence itself, plus the
+browser smoke of the surfaces this feature changed. Fix and rerun within the
+retry budget above — `pnpm gates --only <gate>` reruns just the one that was
+red, so a fix costs one gate rather than the whole sequence.
+
+**Done when:** verify reports every gate PASS with evidence.
+
+## Step 6 — Self-review
+
+Walk `git diff main...HEAD` against three things: the spec, the standing
+`docs/rules/definition-of-done.md` checklist, and the "Gates (self-check
+before done)" section of every rules file this slice touched. Fix what you
+find, rerun the affected gate.
+
+If the diff is large (> ~300 lines) or touches auth, schema, or security
+boundaries, run the **`review`** skill instead — its ten lenses are
+stricter than a self-check — and resolve all Critical/Major findings.
+
+**Done when:** self-review (or `review`) is clean; fixes committed.
+
+## Step 7 — Doc actualization
+
+Per `docs/rules/docs.md`'s actualization rule:
+
+- Spec status → `shipped`.
+- `docs/roadmap.md` — move the feature out of Now.
+- `docs/manifest.md` — update if domain entities or key URLs changed.
+- A real decision made along the way (library pick, deliberate rule
+  deviation) → draft `docs/decisions/<NNNN>-<slug>.md` from
+  `docs/templates/decision.md`; the user approves it.
+
+**Done when:** docs match reality. Commit: `docs(<slug>): actualize`.
+
+## Step 8 — Finish
+
+Merge the feature branch back to `main` per `docs/rules/git.md` (only after
+Step 5's green verify; never push a red `main`). Then hand over in chat:
+what shipped, the evidence line from verify, and what's next in
+`docs/roadmap.md`.
+
+## Common rationalizations
+
+| Rationalization                                                     | Reality                                                                                                                                              |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "This change is too small to need a test"                           | Invariant 3 has no size threshold. A change too small to test is a change too small to be a feature — fold it into one that is.                      |
+| "I'll write the spec after the code, it'll be more accurate"        | Then it documents what you built, not what was wanted. The spec is the approval gate precisely because it comes first.                               |
+| "The test passes, so it's testing the behavior"                     | Only if you watched it fail for the right reason. An unproven test is decoration; Step 4 requires the proof and requires you to report it.           |
+| "Gates are green, skip the browser smoke"                           | `tsc` proves types, not that the page renders. The smoke step exists because green gates have shipped blank pages before.                            |
+| "The gate is flaky, I'll just rerun it"                             | Two honest fix attempts, then STOP and report. A gate you rerun until it passes is a gate you have disabled.                                         |
+| "I'll merge now and actualize the docs after"                       | The docs commit is Step 7 for a reason: after the merge, nobody comes back.                                                                          |
+| "The user is waiting, I'll self-review instead of running `review`" | A > ~300-line diff or a touch to auth, schema, or a security boundary is exactly when a self-check misses things. That is what the threshold is for. |
+
+## Red flags
+
+- A commit that adds a feature and its test in one commit, with no evidence the test was ever red
+- A spec written and approved in the same message that implements it
+- "Should pass" or "should render" anywhere in a completion report
+- The feature branch merged while a gate is red or unrun

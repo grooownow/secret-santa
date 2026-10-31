@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+# Dev-repo-only: cut a release and propagate it to the buyer-facing template.
+#
+# One command does the whole dance, because every step that gets left to memory
+# is a step that eventually gets skipped — and the specific thing that rots here
+# is the template falling behind the dev repo silently, which no buyer can see.
+# So this refuses to run unless the release is actually ready, then does all of
+# it: gates, version bump, tag, push dev, export + tag + push template.
+#
+# It is NOT shipped to buyers (see EXCLUDES in export-template.sh) — it pushes to
+# repos they cannot write to, and mentioning it in their tree would only confuse.
+#
+# Usage:
+#   scripts/release <version>        e.g. scripts/release 0.3.0
+#   scripts/release <version> --dry-run   do everything except the two pushes
+set -euo pipefail
+
+DEV_REMOTE="https://github.com/grooownow/gridfin.git"
+TEMPLATE_REMOTE="https://github.com/grooownow/gridfin-template.git"
+
+VERSION="${1:-}"
+DRY_RUN=false
+[[ "${2:-}" == "--dry-run" ]] && DRY_RUN=true
+
+fail() { echo "❌ $1" >&2; exit 1; }
+
+[[ -n "$VERSION" ]] || fail "usage: scripts/release <version> [--dry-run]"
+[[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "version must be x.y.z, got '$VERSION'"
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# --- preconditions: a release you can't reproduce is not a release ----------
+[[ -z "$(git status --porcelain)" ]] || fail "working tree is dirty — commit or stash first"
+[[ "$(git branch --show-current)" == "main" ]] || fail "releases are cut from main"
+git rev-parse "v$VERSION" >/dev/null 2>&1 && fail "tag v$VERSION already exists"
+
+# The changelog section is the contract with buyers: it carries the apply plan
+# their agent runs. No section, no release — this is the check that stops a
+# version shipping with nothing to tell people how to adopt it.
+grep -q "^## \[$VERSION\]" CHANGELOG.md \
+  || fail "CHANGELOG.md has no '## [$VERSION]' section. Move [Unreleased] to [$VERSION] with an apply plan first."
+grep -q "^### Apply plan" <(awk "/^## \[$VERSION\]/{f=1;next} /^## \[/{f=0} f" CHANGELOG.md) \
+  || fail "the [$VERSION] changelog section has no '### Apply plan' — buyers need one to update."
+
+echo "▶ Gates (lint, test, build)…"
+pnpm lint
+pnpm test
+pnpm build
+echo "✅ Gates green."
+
+# --- bump, commit, tag ------------------------------------------------------
+# .gridfin-version is the TEMPLATE's version and the one the buyer's update check
+# reads. package.json's version is bumped too, but only because this repo is also
+# an app — in a buyer's tree that field is THEIR product's version, and we never
+# touch it. Keeping the two separate is what stops a buyer shipping 1.0.0 of their
+# own product and silencing their update notices forever.
+# Braces are not optional here: macOS ships bash 3.2, which swallows the
+# following multi-byte character into the variable name ("VERSION…" → unbound).
+echo "▶ Stamping ${VERSION}…"
+echo "$VERSION" > .gridfin-version
+node -e "const fs=require('fs');const p=require('./package.json');p.version='$VERSION';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
+pnpm prettier --write package.json >/dev/null 2>&1
+
+git add .gridfin-version package.json
+git commit -q -m "chore(release): $VERSION"
+git tag -a "v$VERSION" -m "$VERSION — see CHANGELOG.md"
+echo "✅ Committed and tagged v$VERSION."
+
+# --- push helper: the keychain resolves to an account without write access, so
+#     authenticate explicitly with the active gh token via a header (no token in
+#     the URL, so it cannot leak into error output).
+#
+#     Takes the working dir, then the git-push argv VERBATIM — options, remote,
+#     refspec, in that order. An earlier version rebuilt the argv itself and put
+#     the URL last, which made git read the refspec as the remote name; it
+#     "succeeded" locally and pushed nothing. Passing argv through means the call
+#     site reads exactly like the git command it runs.
+#
+#     Resolving the token is its own trap. `gh auth token` is NOT reliable here:
+#     the shell may define a `gh` wrapper that injects the right account's token
+#     per directory (this machine does), and a bash script never sees a zsh
+#     function — it gets the real binary, which answers with whichever account
+#     the keyring calls active. That account may not have access, and GitHub
+#     answers "Repository not found" for a private repo you cannot read, so the
+#     failure looks like a missing repo rather than the wrong identity. Read the
+#     token explicitly, in the same order a human would.
+resolve_token() {
+  if [[ -n "${GH_TOKEN:-}" ]]; then
+    printf '%s' "$GH_TOKEN"
+    return
+  fi
+  local file="$HOME/.config/gh-grooownow.token"
+  if [[ -r "$file" ]]; then
+    tr -d '\n' < "$file"
+    return
+  fi
+  gh auth token
+}
+
+push() {
+  local dir="$1"
+  shift
+  local token auth
+  token="$(resolve_token)"
+  auth="$(printf 'x-access-token:%s' "$token" | base64)"
+  git -C "$dir" -c http.extraHeader="Authorization: Basic $auth" push "$@"
+  unset token auth
+}
+
+if $DRY_RUN; then
+  echo "🌵 --dry-run: skipping both pushes. Undo locally with:"
+  echo "   git tag -d v$VERSION && git reset --hard HEAD~1"
+  exit 0
+fi
+
+echo "▶ Pushing dev repo (main + tag)…"
+push "$REPO_ROOT" --follow-tags "$DEV_REMOTE" main
+
+# --- export the template and push it with the SAME tag ----------------------
+# The tag is what a buyer's update check reads (scripts/hooks/check-update):
+# `git ls-remote --tags` against this repo tells them a newer version exists.
+echo "▶ Exporting template…"
+EXPORT_DIR="$(mktemp -d)/gridfin-template"
+scripts/export-template.sh --out "$EXPORT_DIR"
+
+echo "▶ Pushing template (force, main + tag)…"
+(
+  cd "$EXPORT_DIR"
+  git init -q -b main
+  git add -A
+  git -c user.email=release@gridfin -c user.name=gridfin-release \
+    commit -q -m "Gridfin template $VERSION — see CHANGELOG.md"
+  git tag -a "v$VERSION" -m "$VERSION"
+)
+push "$EXPORT_DIR" -f "$TEMPLATE_REMOTE" main
+push "$EXPORT_DIR" -f "$TEMPLATE_REMOTE" "v$VERSION"
+
+# --- verify, because a push that pushed nothing is the failure that hides ----
+# The first run of this script "succeeded" while pushing nothing at all (a
+# malformed argv made git read the refspec as a remote name). A release you
+# cannot see from outside is not a release, so ask the remotes what they have.
+echo "▶ Verifying both remotes…"
+verify_tag() {
+  local url="$1" name="$2" token auth
+  token="$(resolve_token)"
+  auth="$(printf 'x-access-token:%s' "$token" | base64)"
+  git -c http.extraHeader="Authorization: Basic $auth" \
+    ls-remote --tags "$url" "refs/tags/v$VERSION" | grep -q . \
+    || fail "$name does not have tag v$VERSION — the push did not land"
+  unset token auth
+}
+verify_tag "$DEV_REMOTE" "dev repo"
+verify_tag "$TEMPLATE_REMOTE" "template"
+
+echo "✅ Released $VERSION — dev repo and template both at v$VERSION, verified."

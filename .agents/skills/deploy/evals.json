@@ -1,0 +1,46 @@
+{
+  "skill_name": "deploy",
+  "trigger": {
+    "positive": [
+      {
+        "prompt": "Ship this to production on Vercel with a managed database",
+        "top_k": 1
+      },
+      {
+        "prompt": "Take the app live and point my custom domain at it",
+        "top_k": 2
+      },
+      {
+        "prompt": "Set up the production environment variables and run the migrations there",
+        "top_k": 2
+      }
+    ],
+    "negative": [
+      {
+        "prompt": "Are the gates green before I merge this branch?",
+        "owner": "verify"
+      },
+      {
+        "prompt": "Add a settings page where a user can change their email",
+        "owner": "feature"
+      },
+      {
+        "prompt": "I have no product yet, help me pick an idea and set the project up",
+        "owner": "gridfin"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Put this app in production.",
+      "expected_output": "The deploy playbook walked checkpoint by checkpoint, each confirmed before the next begins.",
+      "expectations": [
+        "docs/playbooks/deploy.md is read and treated as the source of truth",
+        "The user confirms each checkpoint before the flow moves on",
+        "Secrets are never written into the repository"
+      ],
+      "trust_level": "provisional"
+    }
+  ]
+}

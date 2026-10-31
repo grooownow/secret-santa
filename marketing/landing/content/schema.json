@@ -1,0 +1,245 @@
+{
+  "$comment": "Contract for landing content files (marketing/strategy/2026-07-31-landing-i18n-brief.md). Every locale file must define exactly `keys` as {text, from?, status?} leaves. Human-source locales (source: null) carry text only; translated locales carry from = 12-hex sha256 prefix of the source string (stale detection) and status: mt | mt-reviewed | human. Budgets are in Unicode code points; perLocale overrides exist because German runs ~25% longer and Japanese titles are counted in full-width characters (see marketing/seo/2026-07-31-keyword-research.md §6). Key set mirrors the RU v2 mockup (gridfin.pen «RU v2 — Skeleton», 14 sections). Product artifacts (terminal lines, file trees, PRD headers, gate output) are hardcoded in the build template and are NOT content keys — they are the same in every locale by the honesty rule.",
+  "locales": {
+    "en": {
+      "source": null,
+      "role": "human"
+    },
+    "ru": {
+      "source": null,
+      "role": "human"
+    },
+    "de": {
+      "source": "en",
+      "role": "mt"
+    },
+    "es": {
+      "source": "en",
+      "role": "mt"
+    },
+    "pt-br": {
+      "source": "en",
+      "role": "mt"
+    },
+    "fr": {
+      "source": "en",
+      "role": "mt"
+    },
+    "ja": {
+      "source": "en",
+      "role": "mt"
+    }
+  },
+  "budgets": {
+    "seo.title": {
+      "max": 60,
+      "perLocale": {
+        "ja": {
+          "max": 45
+        }
+      }
+    },
+    "seo.description": {
+      "min": 120,
+      "max": 165,
+      "perLocale": {
+        "de": {
+          "max": 155
+        },
+        "ja": {
+          "min": 60,
+          "max": 125
+        }
+      }
+    },
+    "hero.badge": {
+      "max": 60
+    },
+    "hero.h1": {
+      "max": 90
+    },
+    "hero.cta": {
+      "max": 40
+    },
+    "hero.ctaNote": {
+      "max": 90
+    },
+    "price.cta": {
+      "max": 45
+    },
+    "final.cta": {
+      "max": 40
+    }
+  },
+  "keys": [
+    "seo.title",
+    "seo.description",
+    "nav.how",
+    "nav.box",
+    "nav.price",
+    "nav.faq",
+    "hero.badge",
+    "hero.h1",
+    "hero.sub",
+    "hero.audience",
+    "hero.cta",
+    "hero.ctaNote",
+    "hero.terminalTitle",
+    "bridge",
+    "problem.h2",
+    "problem.pain1.title",
+    "problem.pain1.body",
+    "problem.pain1.solution",
+    "problem.pain2.title",
+    "problem.pain2.body",
+    "problem.pain2.solution",
+    "problem.pain3.title",
+    "problem.pain3.body",
+    "problem.pain3.solution",
+    "problem.pain4.title",
+    "problem.pain4.body",
+    "problem.pain4.solution",
+    "problem.ticker1",
+    "problem.ticker2",
+    "problem.ticker3",
+    "problem.ticker4",
+    "problem.ticker5",
+    "how.kicker",
+    "how.h2",
+    "how.intro",
+    "how.step1.title",
+    "how.step1.body",
+    "how.step2.title",
+    "how.step2.body",
+    "how.step3.title",
+    "how.step3.body",
+    "how.step4.title",
+    "how.step4.body",
+    "how.step5.title",
+    "how.step5.body",
+    "how.step6.title",
+    "how.step6.body",
+    "how.artifactSpec",
+    "how.artifactSkeleton",
+    "how.artifactGates",
+    "why.h2",
+    "why.card1.title",
+    "why.card1.body",
+    "why.card2.title",
+    "why.card2.body",
+    "why.card3.title",
+    "why.card3.body",
+    "why.card4.title",
+    "why.card4.body",
+    "skeletonExplainer.kicker",
+    "skeletonExplainer.h2",
+    "skeletonExplainer.body",
+    "skeletonExplainer.attr1.title",
+    "skeletonExplainer.attr1.body",
+    "skeletonExplainer.attr2.title",
+    "skeletonExplainer.attr2.body",
+    "skeletonExplainer.attr3.title",
+    "skeletonExplainer.attr3.body",
+    "skeletonExplainer.attr4.title",
+    "skeletonExplainer.attr4.body",
+    "skeletonExplainer.link",
+    "box.h2",
+    "box.intro",
+    "box.skeleton.title",
+    "box.skeleton.body",
+    "box.skeleton.outro",
+    "box.comp1.title",
+    "box.comp1.body",
+    "box.comp2.title",
+    "box.comp2.body",
+    "box.comp3.title",
+    "box.comp3.body",
+    "box.comp4.title",
+    "box.comp4.body",
+    "box.comp5.title",
+    "box.comp5.body",
+    "box.ideas.title",
+    "box.ideas.body",
+    "inside.h2",
+    "inside.intro",
+    "inside.ann1",
+    "inside.ann2",
+    "inside.ann3",
+    "inside.ann4",
+    "trust.kicker",
+    "trust.h2",
+    "trust.card1.title",
+    "trust.card1.body",
+    "trust.card2.title",
+    "trust.card2.body",
+    "trust.card3.title",
+    "trust.card3.body",
+    "ticker.t1",
+    "ticker.t2",
+    "ticker.t3",
+    "ticker.t4",
+    "cred.line1",
+    "cred.line2",
+    "fit.forH2",
+    "fit.for1",
+    "fit.for2",
+    "fit.for3",
+    "fit.notH2",
+    "fit.not1",
+    "fit.not2",
+    "fit.not3",
+    "price.kicker",
+    "price.h2",
+    "price.body",
+    "price.cta",
+    "price.note",
+    "faq.h2",
+    "faq.chip1",
+    "faq.chip2",
+    "faq.chip3",
+    "faq.chip4",
+    "faq.chip5",
+    "faq.q1.q",
+    "faq.q1.a",
+    "faq.q2.q",
+    "faq.q2.a",
+    "faq.q3.q",
+    "faq.q3.a",
+    "faq.q4.q",
+    "faq.q4.a",
+    "faq.q5.q",
+    "faq.q5.a",
+    "faq.q6.q",
+    "faq.q6.a",
+    "faq.q7.q",
+    "faq.q7.a",
+    "faq.q8.q",
+    "faq.q8.a",
+    "faq.q9.q",
+    "faq.q9.a",
+    "faq.q10.q",
+    "faq.q10.a",
+    "final.h2",
+    "final.sub",
+    "final.cta",
+    "form.title",
+    "form.github",
+    "form.email",
+    "form.role",
+    "form.usage",
+    "form.usage1",
+    "form.usage2",
+    "form.usage3",
+    "form.usage4",
+    "form.custom",
+    "form.submit",
+    "form.usagePlaceholder",
+    "form.consent",
+    "form.consentLink",
+    "form.success",
+    "footer.questions",
+    "footer.author",
+    "footer.skeletonLink",
+    "footer.guideLink"
+  ]
+}

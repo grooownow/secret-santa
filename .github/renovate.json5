@@ -1,0 +1,93 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+
+  // The `pnpm audit` step in CI is a detector, not a fixer: it goes red when an
+  // advisory is published against a transitive dep and stays red until someone
+  // re-resolves the lockfile by hand. That is what this config automates — and
+  // since CI dropped its nightly cron (2026-08-17) to stay inside the Actions
+  // minute quota, Renovate is also what NOTICES a new advisory on a day nobody
+  // pushes. See docs/rules/security.md.
+  dependencyDashboard: true,
+  // Without an explicit timezone Renovate reads every schedule below as UTC,
+  // which is not what "before 6am" is meant to say for whoever reads the PR
+  // over coffee.
+  timezone: "Europe/Madrid",
+  schedule: ["before 6am on monday"],
+  // Landing has one maintainer. More than a handful of open PRs is noise that
+  // gets ignored, which is the same as having no bot.
+  prConcurrentLimit: 5,
+  prHourlyLimit: 2,
+
+  // Must stay at or above pnpm's own resolve-time quarantine, which pnpm 11
+  // applies by default: a PR for a release younger than that window produces a
+  // lockfile pnpm will not install cleanly — it auto-appends the version to
+  // `minimumReleaseAgeExclude` in pnpm-workspace.yaml instead, which is how
+  // how entries arrive in that list, and is a config change nobody
+  // asked the bot to make. pnpm does not document the default as a number and
+  // it was measured, not read: a 22.7h-old publish is quarantined, a 37.6h-old
+  // one is not, so the true window sits somewhere in between. 3 days clears
+  // the top of that bracket with room to spare, and doubles as soak time
+  // against a compromised release.
+  minimumReleaseAge: "3 days",
+
+  // The load-bearing rule. `pnpm update` inside the ranges package.json already
+  // declares is what would have prevented every high advisory this repo has hit
+  // through a transitive dep — no version bump, no manifest change, just a
+  // re-resolved pnpm-lock.yaml.
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["before 6am on monday"],
+  },
+
+  // GitHub's own alerts only cover what Dependabot indexes; OSV catches
+  // advisories `pnpm audit` would fail CI on before the next push does — which
+  // is the whole detector now that there is no nightly cron.
+  osvVulnerabilityAlerts: true,
+  vulnerabilityAlerts: {
+    labels: ["security"],
+    // Out of band from the Monday schedule — a high advisory should not wait
+    // for the next window. It still respects minimumReleaseAge above, so the
+    // resulting lockfile is one pnpm will actually install.
+    schedule: ["at any time"],
+  },
+
+  packageRules: [
+    {
+      // Nothing in pnpm-workspace.yaml is Renovate's to move. Every entry
+      // under `overrides:` is a security pin carrying a comment that says what
+      // removes it — debt to be deleted when the parent ships the fix, never a
+      // dependency to be upgraded. Left enabled, the bot proposed precisely the
+      // bumps this file argues against in writing: `brace-expansion@1 ^1.1.16`
+      // to `^5.0.0`, when the auditConfig comment right above it explains that
+      // minimatch@3 calls brace-expansion as a function and 5.x's CommonJS
+      // entry is an object; and `uuid@<11.1.1 ^11.1.1` to `^14.0.0`, a silent
+      // major of a transitive dep, which the overrides header forbids in its
+      // first sentence. `minimumReleaseAgeExclude` entries are pnpm's own
+      // bookkeeping and equally not upgrade targets.
+      matchFileNames: ["pnpm-workspace.yaml"],
+      enabled: false,
+    },
+    {
+      // Dev tooling moves constantly and breaks loudly in CI rather than
+      // quietly in production. One PR a week instead of fifteen.
+      matchDepTypes: ["devDependencies"],
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "dev dependencies (non-major)",
+    },
+    {
+      // next/react/react-dom ship as a set; upgrading one without the others
+      // is how you get a peer-dependency wall. Majors stay separate PRs on
+      // purpose — each one needs its own read of the upgrade guide.
+      matchPackageNames: [
+        "next",
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom",
+      ],
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "next + react",
+    },
+  ],
+}

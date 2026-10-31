@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm exec tsx scripts/hooks/pretooluse.ts",
+            "statusMessage": "Checking CLAUDE.md invariants..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm exec tsx scripts/hooks/session-update-check.ts"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "skill_name": "verify",
+  "trigger": {
+    "positive": [
+      {
+        "prompt": "Are the gates green before I merge this branch?",
+        "top_k": 1
+      },
+      {
+        "prompt": "Run lint, the unit tests, playwright and the production build",
+        "top_k": 2
+      },
+      {
+        "prompt": "Show me evidence that everything passes, quote the output",
+        "top_k": 2
+      }
+    ],
+    "negative": [
+      {
+        "prompt": "Look at my diff and tell me what is wrong with it",
+        "owner": "review"
+      },
+      {
+        "prompt": "Ship this to production on Vercel with a managed database",
+        "owner": "deploy"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Check whether this branch is ready to merge.",
+      "expected_output": "Each gate reported PASS or FAIL with a verbatim quoted line from the real command output, stopping at the first FAIL.",
+      "expectations": [
+        "The gate commands are actually executed, not described",
+        "Every PASS cites a quoted line from real command output",
+        "The run stops at the first failing gate and marks later gates SKIPPED",
+        "No code is modified — verify diagnoses, it does not fix"
+      ],
+      "trust_level": "provisional"
+    }
+  ]
+}

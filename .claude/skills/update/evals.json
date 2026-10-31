@@ -1,0 +1,49 @@
+{
+  "skill_name": "update",
+  "trigger": {
+    "positive": [
+      {
+        "prompt": "Update my project to the latest Gridfin",
+        "top_k": 1
+      },
+      {
+        "prompt": "Pull in the new template version and apply what changed",
+        "top_k": 2
+      },
+      {
+        "prompt": "How do I upgrade to 0.3.0 — walk me through the changelog changes",
+        "top_k": 2
+      }
+    ],
+    "negative": [
+      {
+        "prompt": "Take my finished app live on Vercel with a managed Postgres database",
+        "owner": "deploy"
+      },
+      {
+        "prompt": "Build the next roadmap item from its spec and add the tests",
+        "owner": "feature"
+      },
+      {
+        "prompt": "Add the database and auth layer to this landing project",
+        "owner": "add-module"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A session notice says Gridfin 0.3.0 is available and I'm on 0.2.0. Update my project.",
+      "expected_output": "The installed version is read from package.json, the working tree is confirmed clean and work moves to a branch, the latest template is cloned into a throwaway temp dir, and each release newer than 0.2.0 is applied in ascending order from its apply plan — copying files from the fresh clone, adapting around the buyer's own code, committing per version, and running the project's gates between versions. Never a git merge/rebase against the template.",
+      "expectations": [
+        "The installed version is read from package.json, not assumed",
+        "The working tree is verified clean (or the user is told to commit/stash) and the work happens on a branch, not main",
+        "The newest template is fetched with a shallow clone into a temp dir, and the apply plans are read from that fresh clone's CHANGELOG rather than reconstructed from memory",
+        "No git merge, rebase, or pull is run against the template — the project is treated as a copy, not a fork",
+        "Each newer version is applied in ascending order with a separate commit per version and package.json bumped to match",
+        "pnpm lint and pnpm test are run and quoted between versions, and any step that cannot be applied cleanly is surfaced to the user as a decision rather than papered over"
+      ],
+      "trust_level": "provisional"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "skill_name": "learn",
+  "trigger": {
+    "positive": [
+      {
+        "prompt": "Remember this for future sessions: PGlite hates concurrent test files. Write it into the learnings store.",
+        "top_k": 1
+      },
+      {
+        "prompt": "What did earlier sessions already learn about this codebase? Show me what is recorded.",
+        "top_k": 2
+      },
+      {
+        "prompt": "Prune the learnings file — some entries point at files we deleted and others contradict each other.",
+        "top_k": 2
+      }
+    ],
+    "negative": [
+      {
+        "prompt": "Attack my diff and find the bugs and security holes in it before I open a PR",
+        "owner": "review"
+      },
+      {
+        "prompt": "Run the full gate sequence — lint, tests, build — and tell me if they are green",
+        "owner": "verify"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We just discovered the integration tests must run single-threaded because PGlite breaks under parallelism. Record that, then check the store for anything stale.",
+      "expected_output": "One appended record with a subject-shaped key, a refs array naming the file the insight depends on, and a date written by the tool — followed by a detector run whose candidates are shown to the user before anything is deleted.",
+      "expectations": [
+        "The insight is recorded through the learnings tool rather than by hand-editing docs/learnings.jsonl",
+        "The record's key names the subject, not the verdict, and refs names at least one existing repo file the insight depends on",
+        "The date is not typed from memory — the tool supplies it",
+        "The staleness and conflict detectors are run and their candidates are shown verbatim",
+        "No record is deleted without the user approving that specific record"
+      ],
+      "trust_level": "provisional"
+    }
+  ]
+}

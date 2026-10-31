@@ -1,0 +1,68 @@
+allowBuilds:
+  # Downloads a native sentry-cli binary used for source-map upload — this
+  # slot deliberately doesn't do source-map upload (see next.config.ts), so
+  # the binary is never invoked; denying its postinstall keeps that decision
+  # consistent and shrinks the install footprint.
+  "@sentry/cli": false
+  # Transitive dep of posthog-js; postinstall only prints a sponsor message.
+  core-js: false
+  esbuild: true
+  lefthook: true
+  sharp: true
+  unrs-resolver: true
+# Advisories we have looked at and are deliberately not failing CI on. The bar
+# is the same as an override's: name it, say why, say what removes it.
+auditConfig:
+  ignoreGhsas:
+    # brace-expansion DoS via unbounded expansion. Its advisory declares ONE
+    # affected range, `<= 5.0.7`, spanning every major, and lists 5.0.8 as the
+    # only patch — so no 1.x version can ever satisfy it, including the 1.1.17
+    # backport. The single path that still resolves to 1.x is
+    # @lhci/cli > chrome-launcher > rimraf > glob > minimatch@3, and minimatch@3
+    # does `expand = require("brace-expansion")` then calls it: 5.0.8's CommonJS
+    # entry exports `{ EXPANSION_MAX, EXPANSION_MAX_LENGTH, expand }`, an object,
+    # not a callable (checked, not assumed). Forcing 5.x there breaks the
+    # Lighthouse job instead of securing it. Dev-only path, no user input.
+    # Remove when @lhci/cli's chain moves off minimatch@3.
+    - GHSA-mh99-v99m-4gvg
+minimumReleaseAgeExclude:
+  - uuid@11.1.1
+  - fast-uri@3.1.5
+  - hono@4.12.34
+  - brace-expansion@1.1.18 || 5.0.9
+overrides:
+  # Every entry here is the same case: an advisory with a published fix that a
+  # parent package pins away from us. Each one names its advisory and stays
+  # inside the vulnerable package's own major, so nothing here is an upgrade in
+  # disguise — delete the line once the parent ships the fix itself.
+  #
+  # GHSA-ph9p-34f9-6g65: tmp path traversal via @lhci/cli (dev-only).
+  # Remove when @lhci/cli or its transitive deps (inquirer, external-editor) update.
+  tmp@<0.2.6: ^0.2.6
+  # GHSA-3jxr-9vmj-r5cp: exponential-time expansion of consecutive non-expanding
+  # {} groups, reached through eslint's and @lhci/cli's minimatch (dev-only).
+  # Both lines are load-bearing: the two majors are in the tree at once, and a
+  # single range covering both would drag minimatch@3's consumers onto 5.x,
+  # whose CommonJS entry is not callable. `^1.1.16` (not 1.1.17) keeps the
+  # resolution inside pnpm's 1-day minimumReleaseAge quarantine instead of
+  # excluding a hours-old publish from it; the caret takes 1.1.17 on its own
+  # once that clears. See auditConfig above for the second brace-expansion
+  # advisory, which no 1.x release can satisfy.
+  brace-expansion@1: ^1.1.16
+  brace-expansion@5: ^5.0.8
+  # GHSA-v2hh-gcrm-f6hx: host confusion via a literal backslash authority
+  # delimiter, via shadcn's ajv (dev-only CLI).
+  fast-uri@<3.1.4: ^3.1.4
+  # GHSA-f88m-g3jw-g9cj: libvips CVEs inherited by sharp <0.35.0. Runtime, not
+  # dev-only: sharp is next's optional image-optimization dependency and next
+  # still pins 0.34.
+  sharp@<0.35.0: ^0.35.3
+  # GHSA-6g55-p6wh-862q and GHSA-r28c-9q8g-f849: arbitrary .map file disclosure
+  # via an attacker-controlled sourceMappingURL. Our own postcss is already
+  # patched; next pins 8.4.31 exactly and vite's range resolves lower.
+  postcss@<8.5.18: ^8.5.24
+  brace-expansion@<1.1.18: ^1.1.18
+  brace-expansion@>=4.0.0 <5.0.9: ^5.0.9
+  fast-uri@>=3.0.0 <3.1.5: ^3.1.5
+  hono@<4.12.34: ^4.12.34
+  uuid@<11.1.1: ^11.1.1

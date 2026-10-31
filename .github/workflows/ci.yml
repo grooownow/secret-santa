@@ -1,0 +1,199 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+  # There is deliberately no nightly cron here. It ran the whole six-job matrix
+  # every night and cost ~410 Actions minutes a month out of a 2,000-minute
+  # quota, while the only thing it ever caught was `pnpm audit` going red on a
+  # newly published advisory. Run `pnpm audit --audit-level high` by hand, or
+  # trigger this workflow via workflow_dispatch, when you want that check.
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # pnpm/action-setup MUST run before actions/setup-node: the next step's
+      # cache: pnpm option shells out to `pnpm store path`, which fails if pnpm
+      # isn't already on PATH.
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      # SKILL.md is compiled from SKILL.md.tmpl. This is the drift gate: it
+      # fails if anyone hand-edited a generated file, which would otherwise
+      # survive until the next regeneration silently reverted it.
+      - run: pnpm skills:check
+      # Tier 1 of the skill eval harness: the skills ARE the product, and
+      # nothing else in CI reads them. See docs/rules/docs.md.
+      - run: pnpm skills:validate
+      # Tier 2: do the skill descriptions still route? Deterministic, no tokens.
+      - run: pnpm skills:evals
+      - run: pnpm test
+      # Module structure gate — makes docs/rules/modules.md's "validated in
+      # CI" claim true: every modules/<name>/module.md has required
+      # frontmatter and an Apply plan section.
+      - run: pnpm modules:validate
+      # Red on high/critical vulnerabilities. Escape hatch for false
+      # positives or advisories without a fix: an `overrides:` entry in
+      # pnpm-workspace.yaml, with a comment explaining why — see
+      # docs/rules/security.md.
+      - run: pnpm audit --audit-level high
+      # Secret scanning (also runs per-commit via lefthook). CI re-scans the
+      # whole tree so a secret smuggled past a --no-verify commit still burns
+      # red here — see docs/rules/security.md.
+      - run: pnpm secrets:scan
+
+  # Tier 3 — the detection eval (`pnpm skills:evals:detection`, which runs the
+  # `review` skill against tests/fixtures/planted-defects and asserts a
+  # detection-rate floor) is deliberately NOT a job here.
+  #
+  # It drives the `claude` CLI, which this project authenticates with a Claude
+  # subscription, not an API key. GitHub Actions has no subscription to borrow,
+  # so the job could only be wired up with an `ANTHROPIC_API_KEY` secret that
+  # does not exist and is not planned — and the runner is built to fail loudly
+  # rather than skip in CI. That combination buys a nightly red X and nothing
+  # else, and a gate that is always red teaches people to ignore gates.
+  #
+  # So it is a local command, run deliberately before a release or after a
+  # change to the `review` skill. The honesty rule survives the move: run it
+  # and read the number, or say out loud that you did not.
+
+  golden-path:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Same ordering requirement as `quality`: pnpm/action-setup must precede
+      # setup-node so that the next step's cache: pnpm option can shell out to
+      # `pnpm store path` successfully. As a result, pnpm is preinstalled here
+      # and bootstrap's corepack fallback for buyers without pnpm is NOT covered
+      # by this job — the fallback is only tested locally or by buyers running
+      # scripts/bootstrap on a fresh machine with only Node installed.
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with: { node-version: 22, cache: pnpm }
+      - name: Bootstrap from clean checkout (buyer's first-run path)
+        run: ./scripts/bootstrap --ci
+      - run: pnpm build
+
+  # Compiles and gates App — Landing + the persistence module — end to end:
+  # apply, install (non-frozen: applying changed package.json), migrate,
+  # unit+integration tests, then the module's own e2e (tests/e2e/auth.spec.ts,
+  # materialized under modules/persistence/files/tests/e2e/). This is the
+  # committed form of the round-trip proved out-of-tree in Task 5.
+  materialized-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm module:apply persistence
+      # Not cosmetic ordering: `pnpm module:apply` is a package script, and pnpm
+      # verifies the lockfile against package.json before running one. Applying
+      # persistence added 9 deps, so the NEXT apply aborts with
+      # ERR_PNPM_OUTDATED_LOCKFILE (frozen-lockfile is on by default in CI)
+      # before it does anything. Re-resolve here, between the two applies.
+      - run: pnpm install --no-frozen-lockfile
+      # observability (Sentry) is the other App-preset module; apply it too so
+      # App's instrumentation code compiles and instrumentation.test.ts runs.
+      - run: pnpm module:apply observability
+      # Same again for observability's own deps. The committed repo lockfile
+      # stays the Landing lockfile — both of these are CI-ephemeral.
+      - run: pnpm install --no-frozen-lockfile
+      # Re-lint the materialized App. The persistence code (db/auth/middleware)
+      # now lives in modules/ (excluded from the core lint surface), so once
+      # it is materialized back into src/ this is the only job that runs
+      # oxlint/eslint/prettier/tsc over it — restoring the import-direction,
+      # no-console and window.location guards on the auth slice.
+      - run: pnpm lint
+      - run: pnpm db:migrate
+      - run: pnpm test
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  remote-db:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: gridfin
+          POSTGRES_PASSWORD: gridfin
+          POSTGRES_DB: gridfin
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U gridfin" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      GRIDFIN_DB: remote
+      DATABASE_URL: postgres://gridfin:gridfin@localhost:5432/gridfin
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      # db:migrate/db:reset only exist after persistence is applied — Landing
+      # alone has no db. Non-frozen install: see materialized-app above.
+      - run: pnpm module:apply persistence
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm db:migrate
+      - run: pnpm test
+
+  # Landing smoke: the only e2e spec Landing itself owns
+  # (tests/e2e/smoke.spec.ts) — exercises `/` with no db. The auth e2e spec
+  # moved into modules/persistence and is gated by materialized-app above.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    # GRIDFIN_DB defaults to pglite (unset), so db:reset gives `pnpm start`
+    # a database to serve against without needing the remote-db Postgres
+    # service. lighthouserc.js runs each URL 3 times and asserts on the
+    # median run, trading CI minutes for scores that don't flake.
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      # db:reset only exists after persistence is applied — see remote-db.
+      - run: pnpm module:apply persistence
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm build
+      - run: pnpm db:reset
+      - run: pnpm exec lhci autorun
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 7

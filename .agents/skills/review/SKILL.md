@@ -1,0 +1,207 @@
+---
+name: review
+preamble-tier: 2
+description: Adversarial review of the current diff (or a given commit range) — attacks the diff to find bugs, security holes, and rule violations, with one lens per docs/rules file plus spec-conformance, test-honesty, and security lenses. Reports verified findings by severity with file:line and offers to fix Critical/Major ones. Use when the user asks to review changes, to check whether a diff is safe, or to vet commits before opening a PR ("/review", "review this diff"); or when the feature skill hands off a large or risky diff. NOT for running the gate sequence itself (that is verify) and NOT for cross-examining a decision that has not been made yet (that is doubt).
+---
+
+<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly. Regenerate: pnpm skills:gen -->
+
+# Review
+
+Attack the diff like a reviewer who wants to find the bug, then report only
+what survives verification. This is the adversarial pass the rules files
+delegate to for everything marked `(convention — checked at review)`.
+
+## Ground rules
+
+<!-- Generated from the shared preamble (scripts/lib/codegen.ts). Edit it there, not here. -->
+
+- **Language:** chat with the user in the project's chat language
+  (`docs/manifest.md` → _Chat language_; falls back to the language of the
+  user's messages while unset). Every artifact that lives in the repo — code,
+  docs, commit messages — is English.
+- **Evidence, not adjectives.** Never report a command as green without quoting
+  the line that proves it. "It should pass" is not a result, and the word
+  _should_ in a status line is a red flag about your own honesty.
+- **The hard invariants** (`AGENTS.md`), which a `PreToolUse` hook
+  (`scripts/hooks/pretooluse.ts`) enforces at the moment of the write — do not
+  design around them, and do not treat a hook denial as a puzzle to route
+  around:
+
+  1. No internal `<a href>`/`window.location` navigation — always `<Link>`.
+  2. No network/db call in `src/middleware.ts` — the JWT check stays local.
+     Applies only once the `persistence` module is installed (`src/middleware.ts`
+     does not exist in a Landing-preset project).
+  3. No feature ships without a test proven able to fail.
+  4. Every server action/route validates input with `zod` before use.
+  5. Every commit follows Conventional Commits (one exception: `/gridfin`
+     onboarding commits — see `docs/rules/git.md`).
+  6. UI colors come from the design tokens in `src/app/globals.css` — no
+     hardcoded hex/rgb/hsl or arbitrary-value color classes in components
+     (Next metadata images are exempt; see `docs/rules/frontend.md`).
+
+- **Read the rule that governs the step you are on, at the moment you reach it** —
+  not from memory, and not all of them up front:
+
+  - `docs/rules/architecture.md` — new routes, feature slices, data access, import direction, schema changes.
+  - `docs/rules/definition-of-done.md` — every change, without exception — this is the standing bar, and the one rules file that is never out of scope.
+  - `docs/rules/docs.md` — any change to `docs/`, `AGENTS.md`/`AGENTS.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
+  - `docs/rules/frontend.md` — any page, component, mutation, or loading state — responsiveness is an invariant here, not a nice-to-have.
+  - `docs/rules/git.md` — every commit, branch, and merge in this repo.
+  - `docs/rules/modules.md` — any `modules/<name>/` directory and any skill that installs one.
+  - `docs/rules/security.md` — every server action, route handler, env var, and auth-adjacent change — this is baseline, not opt-in.
+  - `docs/rules/skills.md` — any change under `.Codex/skills/**`, `.Codex/skill-steps/**`, or the compiler that builds them (`scripts/lib/codegen.ts`, `scripts/gen-skills.ts`). The skills are the product — this is the contract they are written against.
+  - `docs/rules/sources.md` — any line of code or prose that asserts how a third-party framework, library, or API behaves.
+  - `docs/rules/testing.md` — every code change — no feature is done without tests.
+
+- **Verify before reporting.** Re-read the actual code for every candidate
+  finding; a claim you didn't confirm against the file is a false positive —
+  drop it. Fewer, verified findings beat a long speculative list.
+- **The diff is the scope, the codebase is the context.** Only changed code
+  earns findings, but read enough surrounding code to judge it fairly.
+- **Findings, then consent.** Report first; touch code only after the user
+  (or the calling skill's user) says yes to a fix. That answer is this skill's
+  one human checkpoint: a session that drops before it resumes at Step 5 with
+  the findings re-derived, never with a half-applied fix.
+- **Every fix-and-retry loop is bounded: two honest attempts at the same
+  failure, then stop.** Report the exact command output, the state you are in,
+  and what you would try next; let the user decide. A third attempt on the same
+  red gate is not persistence — it is where you start changing code you have
+  stopped understanding, and where a real failure gets buried under repair
+  attempts.
+- **A loop that waits on a person is not bounded by that budget** — it ends
+  when they answer. It owes something else instead: say, before you ask, where
+  the flow resumes if the session drops before the answer arrives.
+- **This is the post-hoc gate.** If the diff's risky decisions were never
+  cross-examined in flight, that is a finding, not an excuse to do it here —
+  name it and point the caller at the `doubt` skill for next time.
+
+## Step 1 — Establish the diff
+
+- Range given (commits, `main...HEAD`, files) → use it.
+- On a feature branch → `git diff main...HEAD` **plus** uncommitted work
+  (`git diff` and `git status` — untracked new files count).
+- On `main` itself → review the uncommitted working tree; if it's clean,
+  ask the user which range to review (one question).
+
+Then load the context: if the change has a spec in `docs/specs/`, read it —
+it defines "correct" for the conformance lens below.
+
+## Step 2 — Run the lenses (one deliberate pass each)
+
+For each rules lens: read the rule file first, then sweep the diff against
+it — including the file's own "Gates (self-check before done)" checklist.
+
+1. **Spec conformance** — every spec requirement and test scenario is
+   covered by the diff; nothing out-of-scope snuck in; edge cases from the
+   spec's Edge cases section are handled. No spec → check against the
+   user's stated intent and say the review ran spec-less.
+2. **`docs/rules/architecture.md`** — slice shape, import direction, thin
+   routes, db access path, migration discipline.
+3. **`docs/rules/frontend.md`** — the five responsiveness rules, tokens
+   (no raw colors), loading states, a11y basics.
+4. **`docs/rules/testing.md`** — right level per the decision table,
+   anti-flaky rules, factories reused.
+5. **`docs/rules/security.md`** — see the dedicated security lens below.
+6. **`docs/rules/git.md`** — commit format/cadence, nothing staged that
+   the "What NOT to commit" list bans.
+7. **`docs/rules/docs.md`** — behavior/structure changed → manifest/roadmap/
+   spec status updated; a real decision made → ADR present.
+8. **Test honesty** — the lens testing.md explicitly delegates here: for
+   each new behavior, would these tests FAIL if the behavior were broken or
+   absent? Hunt assertion-free tests, over-mocked integration tests, tests
+   that restate the implementation, and missing evidence that a new test
+   was proven able to fail.
+9. **Security** — every new action/route validates raw input with `zod`
+   before use; protected surfaces call `requireUser()`; redirects from user
+   input go through `safeCallbackUrl()`; no secret literal anywhere in the
+   diff; new env vars did all three (schema + `.env.example` + env test).
+10. **`docs/rules/sources.md`** — every third-party API the diff newly
+    depends on is either backed by a lookup in this session's transcript or
+    cited in an ADR; nothing rests on the model's memory of an older version.
+
+## Step 3 — The confidence gate (before any finding is written down)
+
+Score every candidate finding 1-10 on one question only: **how sure are you
+that this is real?** The score is not a severity and not a priority — a
+cosmetic typo you can see with your own eyes is a 10.
+
+The gate: **if you cannot quote the verbatim line from the file that motivates
+the finding, the score is capped at 5, and anything below 6 is dropped from the
+report.** Not softened, not filed under "possible issues" — dropped.
+
+Do not work around this by inventing a confident-sounding 7 for a finding you
+have not verified. That defeats the entire gate, and it is the specific failure
+this step exists to catch: the finding that reads plausibly, cites a real file,
+and describes a bug that is not there. A reviewer who reports four real bugs is
+worth more than one who reports four real bugs and six imagined ones, because
+the second reviewer has to be checked.
+
+The quote is the evidence. `file:line` alone is a pointer, not a proof — you
+can produce a plausible line number for a bug that does not exist, and you will
+if you are guessing.
+
+## Step 4 — Report findings by severity
+
+Post to chat, grouped, each with `file:line`, **the quoted line**, the violated
+rule or spec section, and a concrete fix:
+
+- **Critical** — broken/incorrect behavior, a security hole, data loss, or
+  a false-green test (a test that passes with the feature broken).
+- **Major** — a rules violation with real consequences: wrong test level or
+  missing mandated test, cross-feature deep import, missing loading state,
+  spec requirement not implemented, docs actualization skipped, a Definition
+  of Done item skipped (docs not actualized, runtime never observed).
+- **Minor** — naming, comment drift, style nits worth a line each.
+
+Nothing found → say exactly that, and name the lenses that ran (a clean
+report from ten lenses means something; "looks good" means nothing).
+
+## Step 5 — Offer to fix
+
+Offer to fix Critical and Major findings now — one question, listing what
+would change. On consent: fix, rerun the gate that covers each fix
+(`pnpm lint` / `pnpm test` — or hand back to the `feature` skill's flow if
+this review was called from there), and confirm each finding closed with
+command output. A fix that leaves its gate red after the two attempts above
+goes back to the user as a finding that is now also a blocked fix — do not
+keep rewriting it. Minors: list them; fix only if asked.
+
+## Step 6 — Record (optional)
+
+Only if the user wants a persistent record, write the findings to
+`docs/code-review/<YYYY-MM-DD>-<slug>.md` (create the directory if
+missing): scope reviewed, findings by severity, resolution status per
+finding. Default is chat-only — no file litter.
+
+Commit it as a `docs:` commit per `docs/rules/git.md`:
+
+- **Format before every commit.** Run `pnpm format` first — lefthook's
+  pre-commit `prettier --check` rejects an unformatted file, and a commit
+  rejected in the middle of a flow is how a step ends up half-applied.
+- **A commit is a resume point, so only green steps get one.** Never commit
+  over a red gate: a session that drops after a green commit resumes from a
+  known state, and one that committed a red step leaves the next session
+  trusting work that does not pass.
+
+## Common rationalizations
+
+| Rationalization                                             | Reality                                                                                                                                                      |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| "This looks wrong, I'll flag it just in case"               | An unverified finding is a false positive. Re-read the file; if you cannot quote the line, drop it — that is the confidence gate, not a suggestion.          |
+| "I'm fairly sure, so that's a 7"                            | You are scoring your certainty, not your hope. No quoted line means the score is capped at 5, and a 5 does not get reported. Inventing a 7 defeats the gate. |
+| "I'll report it as a 'possible issue' to be safe"           | "Possible issue" is a suppressed finding wearing a hat. It costs the reader the same verification time as a real one. Drop it or prove it.                   |
+| "Nothing found, so: looks good to me"                       | Name the lenses that ran. A clean report from ten named lenses means something; "looks good" means nothing.                                                  |
+| "The test passes, so it covers the behavior"                | That is the test-honesty lens, not a reason to skip it. Ask whether the test would fail if the behavior were absent.                                         |
+| "I found the bug, let me just fix it"                       | Findings, then consent. Fixing before the user has seen the finding destroys the record of what was wrong.                                                   |
+| "The diff is small, one pass over all ten lenses is enough" | Each lens is one deliberate pass, and each starts by reading its rules file. Reading ten files once and sweeping once is one lens, not ten.                  |
+
+## Red flags
+
+- A finding without `file:line`
+- A finding with a `file:line` but no quoted line — the pointer without the proof
+- A finding scored 6+ that you never opened the file to confirm
+- A "possible issues" or "worth a look" section at the bottom of the report
+- A finding whose rule citation is a rules _file_ but not a _section_
+- Code changed before the user answered the Step 4 question
+- Minor findings fixed unasked

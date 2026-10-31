@@ -1,0 +1,48 @@
+{
+  "skill_name": "review",
+  "trigger": {
+    "positive": [
+      {
+        "prompt": "Look at my diff and tell me what is wrong with it",
+        "top_k": 1
+      },
+      {
+        "prompt": "Is this change safe? Attack it, find the bugs",
+        "top_k": 2
+      },
+      {
+        "prompt": "Check the last three commits against our rules before I open a PR",
+        "top_k": 2
+      }
+    ],
+    "negative": [
+      {
+        "prompt": "Are the gates green before I merge this branch?",
+        "owner": "verify"
+      },
+      {
+        "prompt": "Add a settings page where a user can change their email",
+        "owner": "feature"
+      },
+      {
+        "prompt": "I am about to commit this schema migration — challenge the decision before it lands",
+        "owner": "doubt"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the working tree changes.",
+      "expected_output": "Findings grouped Critical / Major / Minor, each with file:line and the violated rule, every one re-read against the file before reporting.",
+      "expectations": [
+        "The diff is established before any finding is reported",
+        "Each rules file is read before its lens runs",
+        "Findings cite file:line and the rule or spec section violated",
+        "No code is changed without asking the user first"
+      ],
+      "trust_level": "verified",
+      "$evidence": "Earned by the Tier-3 detection eval (pnpm skills:evals:detection), which plants the five defects in tests/fixtures/planted-defects/ as a real working-tree diff and grades whether review reports each one. First run 2026-07-14 on ad2f48d: 5/5 (floor 4/5), confirmed by a second run, 5/5. This buys RECALL only — the eval cannot fail a review that also invents findings, so precision stays unmeasured until a clean control fixture exists."
+    }
+  ]
+}

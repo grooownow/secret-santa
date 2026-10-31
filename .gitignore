@@ -1,0 +1,33 @@
+node_modules/
+.next/
+.env
+.env.local
+.pglite/
+coverage/
+*.tsbuildinfo
+.DS_Store
+test-results/
+playwright-report/
+.lighthouseci/
+next-env.d.ts
+
+# Tier-3 behavioral eval results (opt-in, local only)
+.skill-evals/
+
+# Competitor / market research — local only, never committed
+docs/research/
+
+# Design-loop scratch: mockup variants and comparison boards are a
+# conversation, not an artifact. The winner ships as components; these do not.
+.design/
+
+# Gate-run ledger: what a local run actually did. A record of a machine
+# run on one box, not a project artifact — CI is the shared source of truth.
+.gridfin/
+marketing/landing/dist/
+
+# Playwright MCP browser-session snapshots — tool litter, never source
+.playwright-mcp/
+
+.superpowers/
+.DS_Store

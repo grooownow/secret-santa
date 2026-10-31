@@ -1,0 +1,19 @@
+pre-commit:
+  parallel: true
+  commands:
+    oxlint:
+      glob: "*.{ts,tsx}"
+      exclude:
+        - next-env.d.ts
+        # Modules live outside the core lint surface (.oxlintrc.json ignores
+        # modules/**); without this, a modules-only commit hands oxlint a list
+        # it fully ignores and it exits 1 ("No files found to lint").
+        - "modules/**/*"
+      run: pnpm oxlint {staged_files}
+    prettier:
+      glob: "*.{ts,tsx,css,md,json,yml}"
+      run: pnpm prettier --check {staged_files}
+    secretlint:
+      # Every staged file goes through the secret scanner — an API key or
+      # token never reaches a commit. CI runs the full-tree scan as backstop.
+      run: pnpm secretlint {staged_files}

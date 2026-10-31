@@ -1,0 +1,625 @@
+{
+  "_meta": {
+    "locale": "en",
+    "source": null
+  },
+  "seo": {
+    "title": {
+      "text": "Gridfin — Claude Code Starter with Tests & Quality Gates"
+    },
+    "description": {
+      "text": "Gridfin turns an empty repository into an Application Skeleton for Claude Code: specs, engineering rules, hooks, tests and quality gates instead of vibe-code chaos."
+    }
+  },
+  "nav": {
+    "how": {
+      "text": "How it works"
+    },
+    "box": {
+      "text": "What you get"
+    },
+    "price": {
+      "text": "Pricing"
+    },
+    "faq": {
+      "text": "FAQ"
+    }
+  },
+  "hero": {
+    "badge": {
+      "text": "Early access — free for beta testers"
+    },
+    "h1": {
+      "text": "Claude Code starter for quality websites and apps."
+    },
+    "sub": {
+      "text": "Gridfin is an agent-native starter kit that turns an empty repository into an Application Skeleton: a ready-made architectural foundation for building with Claude Code. Specs, engineering rules, hooks, tests and quality gates are built in — instead of chaotic vibe coding."
+    },
+    "audience": {
+      "text": "If you have an idea and Claude Code but not years of engineering experience, Gridfin walks you through the process that engineering teams usually spend years assembling."
+    },
+    "cta": {
+      "text": "Get early access"
+    },
+    "ctaNote": {
+      "text": "Free during the beta · starter prices after the beta"
+    },
+    "terminalTitle": {
+      "text": "gridfin — in an hour"
+    }
+  },
+  "bridge": {
+    "text": "AI made development faster. But engineering experience still can't be generated. That is the gap Gridfin closes."
+  },
+  "problem": {
+    "h2": {
+      "text": "Without engineering experience, mistakes are invisible — until they get expensive"
+    },
+    "pain1": {
+      "title": {
+        "text": "You don't know which mistakes you're already making"
+      },
+      "body": {
+        "text": "Stack, architecture, testing, security — dozens of decisions get made silently, without a second look."
+      },
+      "solution": {
+        "text": "Gridfin makes the engineering decisions up front: the invariant part is pre-decided and reused in every project."
+      }
+    },
+    "pain2": {
+      "title": {
+        "text": "You fix one thing, another breaks"
+      },
+      "body": {
+        "text": "Building was fast, debugging is endless; every new feature touches the previous ones."
+      },
+      "solution": {
+        "text": "Every feature goes through the same cycle: spec → code → tests → review. Old tests keep a new feature from silently breaking the previous ones."
+      }
+    },
+    "pain3": {
+      "title": {
+        "text": "Every new feature costs more than the last one"
+      },
+      "body": {
+        "text": "Constraints you didn't know about start surfacing; the agent rewrites half the codebase over a small change."
+      },
+      "solution": {
+        "text": "The Application Skeleton locks the architecture from day one: the twentieth feature lands through the same process as the first."
+      }
+    },
+    "pain4": {
+      "title": {
+        "text": "Claude Code writes code faster than you can review it"
+      },
+      "body": {
+        "text": "What exactly it generated yesterday — nobody has read it."
+      },
+      "solution": {
+        "text": "Hooks and quality gates make review part of the process: a rule violation is stopped before the code is written, red status is visible before the merge."
+      }
+    },
+    "ticker1": {
+      "text": "Gridfin fixes the process"
+    },
+    "ticker2": {
+      "text": "Spec first"
+    },
+    "ticker3": {
+      "text": "Then code"
+    },
+    "ticker4": {
+      "text": "Then tests"
+    },
+    "ticker5": {
+      "text": "One set of rules"
+    }
+  },
+  "how": {
+    "kicker": {
+      "text": "One command: /gridfin"
+    },
+    "h2": {
+      "text": "What happens after you run Gridfin"
+    },
+    "intro": {
+      "text": "One command — `/gridfin` — starts a guide agent. The pipeline shows the process and real artifacts at every step."
+    },
+    "step1": {
+      "title": {
+        "text": "Idea"
+      },
+      "body": {
+        "text": "The agent interviews you, helps sharpen the idea — and says honestly if it doesn't fit this stack."
+      }
+    },
+    "step2": {
+      "title": {
+        "text": "Specification"
+      },
+      "body": {
+        "text": "A PRD: the problem, the user, 3–5 key features and an explicit \"not in v1\" list. Specs come before any code."
+      }
+    },
+    "step3": {
+      "title": {
+        "text": "Your Application Skeleton is ready"
+      },
+      "body": {
+        "text": "The main result of the first steps: architecture, stack, tests and CI are already assembled — and tailored to you: project name, branding tokens, the data schema of your domain model."
+      }
+    },
+    "step4": {
+      "title": {
+        "text": "Features through skills"
+      },
+      "body": {
+        "text": "`/feature` drives every feature through the spec → code → tests → review cycle."
+      }
+    },
+    "step5": {
+      "title": {
+        "text": "Quality gates"
+      },
+      "body": {
+        "text": "Lint, tests, e2e and the build in one run — red is visible before the merge."
+      }
+    },
+    "step6": {
+      "title": {
+        "text": "Production-ready application"
+      },
+      "body": {
+        "text": "Deploy to Vercel by a step-by-step playbook. Every step is committed — a dropped session loses nothing."
+      }
+    },
+    "artifactSpec": {
+      "text": "Specification"
+    },
+    "artifactSkeleton": {
+      "text": "Application Skeleton"
+    },
+    "artifactGates": {
+      "text": "Quality gates"
+    }
+  },
+  "why": {
+    "h2": {
+      "text": "Why it works"
+    },
+    "card1": {
+      "title": {
+        "text": "Engineering decisions are made once"
+      },
+      "body": {
+        "text": "Don't make the same decisions again — they are already made, proven and reused."
+      }
+    },
+    "card2": {
+      "title": {
+        "text": "Specification first"
+      },
+      "body": {
+        "text": "AI writes better code when it knows what it's building first."
+      }
+    },
+    "card3": {
+      "title": {
+        "text": "AI works by engineering rules"
+      },
+      "body": {
+        "text": "Rules are enforced automatically — by hooks and gates, not wishes in a README."
+      }
+    },
+    "card4": {
+      "title": {
+        "text": "Every change passes quality gates"
+      },
+      "body": {
+        "text": "Quality is a mandatory part of the process, not the last item before release."
+      }
+    }
+  },
+  "skeletonExplainer": {
+    "kicker": {
+      "text": "Core concept"
+    },
+    "h2": {
+      "text": "What is an Application Skeleton"
+    },
+    "body": {
+      "text": "An Application Skeleton is not a demo app and not a folder of templates — it is a pre-assembled architectural foundation for a product. Gridfin fixes the stack, the structure, the rules, the testing strategy and the quality gates before Claude Code starts writing features."
+    },
+    "attr1": {
+      "title": {
+        "text": "Architecture"
+      },
+      "body": {
+        "text": "The stack, the layers, import boundaries and change rules are already chosen, so the agent doesn't rebuild the project from scratch on every feature."
+      }
+    },
+    "attr2": {
+      "title": {
+        "text": "Specifications"
+      },
+      "body": {
+        "text": "Work starts with a PRD and feature specs: first it is clear what you are building, then the code appears."
+      }
+    },
+    "attr3": {
+      "title": {
+        "text": "Checks"
+      },
+      "body": {
+        "text": "Tests, lint, e2e and the build run as one quality gate, so a mistake becomes visible before the merge."
+      }
+    },
+    "attr4": {
+      "title": {
+        "text": "Process"
+      },
+      "body": {
+        "text": "Skills and playbooks drive development through a repeatable cycle: idea → spec → code → tests → review → deploy."
+      }
+    },
+    "link": {
+      "text": "[What is an Application Skeleton — the full breakdown →](https://ludvik4.dev/gridfin/en/docs/application-skeleton/)"
+    }
+  },
+  "box": {
+    "h2": {
+      "text": "What you get"
+    },
+    "intro": {
+      "text": "Not a list of promises — a set of components in your own git repository."
+    },
+    "skeleton": {
+      "title": {
+        "text": "Application Skeleton"
+      },
+      "body": {
+        "text": "A ready-made architectural foundation for your application — Next.js + TypeScript + Postgres. What's already inside:"
+      },
+      "outro": {
+        "text": "Plus updates forever. It's a git repository that belongs to you. Not a subscription, not a service, not a rented site builder."
+      }
+    },
+    "comp1": {
+      "title": {
+        "text": "Playbooks"
+      },
+      "body": {
+        "text": "Step-by-step scenarios for deploys, analytics, pricing, compliance and other engineering tasks where session memory can't be trusted."
+      }
+    },
+    "comp2": {
+      "title": {
+        "text": "Skills"
+      },
+      "body": {
+        "text": "Agent workflows for onboarding, features, design, review, verification, deploys, updates and recording learnings."
+      }
+    },
+    "comp3": {
+      "title": {
+        "text": "Engineering rules"
+      },
+      "body": {
+        "text": "Rules for architecture, frontend, testing, security, documentation and the git process the agent works by."
+      }
+    },
+    "comp4": {
+      "title": {
+        "text": "Quality gates"
+      },
+      "body": {
+        "text": "One run of lint, tests, e2e and build shows red before the merge, not after the release."
+      }
+    },
+    "comp5": {
+      "title": {
+        "text": "Documentation"
+      },
+      "body": {
+        "text": "PRD, specs, ADRs, playbooks and rules keep the context between sessions, so the agent doesn't start the project over every day."
+      }
+    },
+    "ideas": {
+      "title": {
+        "text": "More ideas than weekends?"
+      },
+      "body": {
+        "text": "One kit — any number of projects: SaaS, landing pages, pet projects. Every launch is an hour with the agent, not a week of setup."
+      }
+    }
+  },
+  "inside": {
+    "h2": {
+      "text": "Inside Gridfin"
+    },
+    "intro": {
+      "text": "What you are literally buying: a repository, rules, specs, tests and a workflow."
+    },
+    "ann1": {
+      "text": "Your product grows here."
+    },
+    "ann2": {
+      "text": "Ready-made engineering processes."
+    },
+    "ann3": {
+      "text": "The rules the agent follows."
+    },
+    "ann4": {
+      "text": "They check every change."
+    }
+  },
+  "trust": {
+    "kicker": {
+      "text": "Yours means yours"
+    },
+    "h2": {
+      "text": "The box stays with you — no matter what"
+    },
+    "card1": {
+      "title": {
+        "text": "The repository belongs to you"
+      },
+      "body": {
+        "text": "This is not SaaS: the code, the rules and the process stay with you and keep working even if Gridfin the product disappears."
+      }
+    },
+    "card2": {
+      "title": {
+        "text": "Updates, forever"
+      },
+      "body": {
+        "text": "The template is versioned; the `/update` command pulls new releases into your project without overwriting your code."
+      }
+    },
+    "card3": {
+      "title": {
+        "text": "Gridfin is honest about what it can't do"
+      },
+      "body": {
+        "text": "An idea outside its profile gets declined at step one, not after a week of work. No \"fits everything\" promises."
+      }
+    }
+  },
+  "ticker": {
+    "t1": {
+      "text": "Your repository"
+    },
+    "t2": {
+      "text": "Your data"
+    },
+    "t3": {
+      "text": "Your updates"
+    },
+    "t4": {
+      "text": "No subscription"
+    }
+  },
+  "cred": {
+    "line1": {
+      "text": "Gridfin is built with the same process that ships inside the product."
+    },
+    "line2": {
+      "text": "This landing page was built with Gridfin too."
+    }
+  },
+  "fit": {
+    "forH2": {
+      "text": "Best fit if…"
+    },
+    "for1": {
+      "text": "You have an idea and Claude Code but no full-stack experience — and you want to launch your project over a weekend, not after a week of setup."
+    },
+    "for2": {
+      "text": "You're a solo developer, QA, DevOps or designer — and you believe specs and tests are not bureaucracy but speed in the long run."
+    },
+    "for3": {
+      "text": "You want your own real repository, not a no-code platform."
+    },
+    "notH2": {
+      "text": "You might be better served elsewhere if…"
+    },
+    "not1": {
+      "text": "You have never opened a terminal — today Lovable or Bolt will serve you better."
+    },
+    "not2": {
+      "text": "You expect a ready-made dashboard with 50 features \"to customize\" — Gridfin is a process, not a product demo."
+    },
+    "not3": {
+      "text": "You need a different stack — Gridfin is deliberately not a pick-your-own-stack kit."
+    }
+  },
+  "price": {
+    "kicker": {
+      "text": "Early access terms"
+    },
+    "h2": {
+      "text": "Beta: you test — I fix"
+    },
+    "body": {
+      "text": "Run `/gridfin` on a real idea and tell me where you stumbled — the box is yours forever, with all future updates, free."
+    },
+    "cta": {
+      "text": "I'm in — give me access"
+    },
+    "note": {
+      "text": "After the beta — starter prices that will only go up: Gridfin Landing — $— · Gridfin App — $—"
+    }
+  },
+  "faq": {
+    "h2": {
+      "text": "FAQ"
+    },
+    "chip1": {
+      "text": "Product"
+    },
+    "chip2": {
+      "text": "Stack"
+    },
+    "chip3": {
+      "text": "Beginners"
+    },
+    "chip4": {
+      "text": "Requirements"
+    },
+    "chip5": {
+      "text": "Buying"
+    },
+    "q1": {
+      "q": {
+        "text": "Why not just Claude Code?"
+      },
+      "a": {
+        "text": "Plain Claude Code writes code but doesn't give you a stable engineering process. Without Gridfin, every session re-decides how to build the project; with Gridfin the agent works by specs, rules, hooks, tests and quality gates that can't be silently bypassed. The full story: [why AI development needs engineering rules](https://ludvik4.dev/gridfin/en/guides/why-ai-needs-engineering-rules/)."
+      }
+    },
+    "q2": {
+      "q": {
+        "text": "How is this different from boilerplate — ShipFast and the others?"
+      },
+      "a": {
+        "text": "Boilerplates sell pre-assembled code that you customize. Gridfin is an agent-native starter kit: a thin skeleton plus a process that specs, builds and tests your product specifically. You don't strip down someone else's dashboard — you grow your own."
+      }
+    },
+    "q3": {
+      "q": {
+        "text": "What is an Application Skeleton?"
+      },
+      "a": {
+        "text": "An Application Skeleton is the architectural foundation on which Claude Code builds your specific product. It's not just a project template: the engineering decisions about the stack, the structure, the tests and CI are already made, and further development runs through specs, skills and quality gates. The full breakdown: [what is an Application Skeleton](https://ludvik4.dev/gridfin/en/docs/application-skeleton/)."
+      }
+    },
+    "q4": {
+      "q": {
+        "text": "How is this different from MakerKit and Supastarter?"
+      },
+      "a": {
+        "text": "MakerKit and Supastarter are feature-rich SaaS boilerplates with agent instructions and testing support. Gridfin solves a different problem: it starts with your product idea and runs a spec-driven delivery process whose hooks block known violations, whose tests must be proven able to fail, and whose gate ledger records whether the whole change is ready. Choose them for prebuilt SaaS features; choose Gridfin for an enforced build process around a focused product."
+      }
+    },
+    "q5": {
+      "q": {
+        "text": "Why is the stack fixed?"
+      },
+      "a": {
+        "text": "Because the whole process — rules, hooks, tests, gates, playbooks — is proven on exactly this stack: Next.js + TypeScript, Tailwind + shadcn/ui, Postgres. Freedom to pick a stack is another forty decisions you'd have to make without the experience."
+      }
+    },
+    "q6": {
+      "q": {
+        "text": "Can I use my own stack?"
+      },
+      "a": {
+        "text": "No — and that's deliberate. Gridfin is not a pick-your-own-stack kit: remove the fixed stack and everything built on it disappears — the proven rules, tests and gates. If you need a different stack, the honest answer is: Gridfin is not your tool."
+      }
+    },
+    "q7": {
+      "q": {
+        "text": "What do I need to run Gridfin?"
+      },
+      "a": {
+        "text": "You need Claude Code, Git, a terminal and the supported Node.js/pnpm toolchain. Gridfin runs locally as a git repository and does not require a hosted Gridfin account or a proprietary runtime."
+      }
+    },
+    "q8": {
+      "q": {
+        "text": "What if the project stops being developed?"
+      },
+      "a": {
+        "text": "Nothing terrible: the repository is yours, the code and the process work locally and don't depend on Gridfin existing as a product. Updates would stop coming — everything else stays."
+      }
+    },
+    "q9": {
+      "q": {
+        "text": "Is it right for a beginner?"
+      },
+      "a": {
+        "text": "If you're ready to work with a terminal, git and Claude Code by step-by-step instructions — yes: the box carries the architecture, the testing strategy and the quality control for you. If you're seeing a terminal for the first time — start with Lovable or Bolt."
+      }
+    },
+    "q10": {
+      "q": {
+        "text": "How does Gridfin keep AI from breaking the project?"
+      },
+      "a": {
+        "text": "Gridfin makes a mistake visible before the merge: every change passes lint, tests, e2e and build, and the rules are enforced by hooks and quality gates. The agent can write code fast, but it can't ship a change without the checks."
+      }
+    }
+  },
+  "final": {
+    "h2": {
+      "text": "Got an idea? Build your next project with Gridfin."
+    },
+    "sub": {
+      "text": "Get early access and start from a ready Application Skeleton, not an empty repository."
+    },
+    "cta": {
+      "text": "Get early access"
+    }
+  },
+  "form": {
+    "title": {
+      "text": "Early access request"
+    },
+    "github": {
+      "text": "GitHub username"
+    },
+    "email": {
+      "text": "Email for follow-up"
+    },
+    "role": {
+      "text": "Your professional role and experience (optional)"
+    },
+    "usage": {
+      "text": "What do you plan to use it for"
+    },
+    "usage1": {
+      "text": "Building a website"
+    },
+    "usage2": {
+      "text": "Building an application"
+    },
+    "usage3": {
+      "text": "Seeing how the tool works"
+    },
+    "usage4": {
+      "text": "Something else"
+    },
+    "custom": {
+      "text": "Describe what you want to build"
+    },
+    "submit": {
+      "text": "Send request"
+    },
+    "usagePlaceholder": {
+      "text": "Select an option"
+    },
+    "consent": {
+      "text": "I accept the [terms] and consent to the processing of the data above"
+    },
+    "consentLink": {
+      "text": "terms of service"
+    },
+    "success": {
+      "text": "Request sent. I'll reply by email within a few days."
+    }
+  },
+  "footer": {
+    "questions": {
+      "text": "Questions →"
+    },
+    "author": {
+      "text": "Built by — [ludvik4.dev](https://ludvik4.dev)"
+    },
+    "skeletonLink": {
+      "text": "What is an Application Skeleton"
+    },
+    "guideLink": {
+      "text": "Why AI development needs engineering rules"
+    }
+  }
+}

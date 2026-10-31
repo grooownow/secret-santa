@@ -1,0 +1,45 @@
+{
+  "skill_name": "add-module",
+  "trigger": {
+    "positive": [
+      {
+        "prompt": "Add a database and user accounts to my landing-page project",
+        "top_k": 1
+      },
+      {
+        "prompt": "Install the persistence module into this project",
+        "top_k": 1
+      },
+      {
+        "prompt": "I want error tracking / Sentry crash reporting in this app",
+        "top_k": 2
+      }
+    ],
+    "negative": [
+      {
+        "prompt": "Build the next roadmap feature from its spec and add the tests",
+        "owner": "feature"
+      },
+      {
+        "prompt": "Take my finished app live on Vercel with a managed Postgres database",
+        "owner": "deploy"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add persistence to my Landing project — I need a database and login.",
+      "expected_output": "Available modules are listed and the manifest's `## Installed modules` is read; persistence is not yet installed, so its `modules/persistence/module.md` apply-plan is followed — `pnpm module:apply persistence` then `pnpm install`, the module's env/schema/wiring steps, reconciling any project-diverged module-owned file (env.ts, page.tsx, playwright.config.ts) instead of clobbering it. The module's Verify gates plus pnpm lint and pnpm test run green, persistence is appended to `## Installed modules`, `## Preset` flips Landing → App, and the work is committed with a conventional subject.",
+      "expectations": [
+        "Available modules and the manifest's Installed modules are surveyed before acting, and persistence is confirmed not already installed",
+        "The persistence module's own module.md apply-plan is read and followed, starting with pnpm module:apply persistence and pnpm install",
+        "A module-owned file the project has diverged is reconciled (pre-apply version read via git, module intent re-applied, project additions kept) rather than blindly overwritten",
+        "The module's Verify gates plus pnpm lint and pnpm test are run and quoted green before recording the install",
+        "The manifest's Installed modules list gets persistence appended and the Preset is flipped from Landing to App",
+        "The change is committed with a Conventional Commit subject"
+      ],
+      "trust_level": "provisional"
+    }
+  ]
+}

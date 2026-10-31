@@ -1,0 +1,82 @@
+---
+name: deploy
+preamble-tier: 2
+description: Walks the user through shipping the project to production on Vercel with a managed Postgres database when the project needs one, checkpoint by checkpoint, using docs/playbooks/deploy.md as the source of truth. Use when the project is ready to go live for the first time, or when re-running the deploy flow (new environment, migrated database, custom domain). NOT for a local gate run before merging (that is verify) and NOT for setting a fresh project up in the first place (that is gridfin).
+---
+
+# Deploy
+
+This skill owns no deploy knowledge itself — it drives `docs/playbooks/deploy.md`
+and stops for confirmation at every checkpoint. If that file and this skill ever
+disagree, the playbook wins; update it, don't fork logic in here.
+
+## Ground rules
+
+{{PREAMBLE}}
+- **Never deploy red.** Before starting, run the `verify` skill's gate
+  sequence (`pnpm lint && pnpm test && pnpm test:e2e && pnpm build`, plus its
+  browser smoke check). Any FAIL stops here — report it and hand back to
+  `verify`'s own next-action guidance; do not proceed to the playbook.
+- **One step at a time.** Read `docs/playbooks/deploy.md` step by step, not
+  all at once into a plan — the user is doing real clicking in another tab
+  and needs the current step in front of them.
+- **Confirm "done when" before moving on.** Every playbook step has an
+  implicit or explicit completion signal (a value copied, a page live, a
+  command's exit code). Ask or check for it before advancing — don't assume
+  the user finished a dashboard action just because they said "ok".
+- **Agent-does vs user-does.** The playbook marks who acts at each step.
+  Dashboard clicks and secret values are the user's; commands you can run
+  yourself (migrations, `vercel` CLI, smoke checks), you run and show output.
+- **Every playbook checkpoint is a human checkpoint.** Name the step you are
+  on in each message, so a dropped session resumes by asking which checkpoint
+  was last confirmed — never by re-running dashboard actions blind.
+{{STEP_LOOP_BUDGET}}
+
+## Flow
+
+1. **Gate check.** Run (or ask the user to confirm a recent) `verify` pass.
+   Red → stop and report. Green → proceed.
+2. **Load the playbook.** Read `docs/playbooks/deploy.md` fresh each run —
+   it may have changed since you last saw it; never recite it from memory.
+3. **Walk it checkpoint by checkpoint**, in the order the playbook lists:
+   GitHub push → managed Postgres (when the manifest's `## Preset` needs a
+   database) → Vercel import → environment variables → migrations against
+   prod (same `## Preset` condition) → smoke check → optional custom domain.
+   For each:
+   - State what happens at this step and who does it (agent command vs.
+     user dashboard action).
+   - If it's a user action, give the exact navigation the playbook
+     specifies and say precisely what value to copy back (e.g. a connection
+     string) — never invent a UI path not in the playbook.
+   - If it's an agent action, run the real command and show its output.
+   - Confirm the step's "done when" signal before moving to the next step.
+4. **Final done-when.** Only declare the deploy complete once all three of
+   the playbook's top-level done-when criteria hold: the live URL serves
+   `/`, sign-in works end-to-end, and a Lighthouse spot-check passes. Quote
+   evidence for each (a status code, a successful sign-in, a score), the
+   same way `verify` does — no success claim without output.
+
+## STOP conditions
+
+- Gate sequence red → stop before touching the playbook.
+- A playbook step's done-when signal can't be confirmed (e.g. user reports
+  an error copying the connection string) → stop, diagnose with the user,
+  don't skip ahead assuming it will resolve itself.
+- Playbook references a path/command that no longer exists in this repo →
+  stop, flag the drift, fix the playbook before continuing (per
+  `docs/rules/docs.md`'s actualization rule).
+
+## Common rationalizations
+
+| Rationalization                                              | Reality                                                                                                                                        |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| "I'll run the checkpoints back to back, they're all routine" | Each checkpoint is confirmed by the user before the next begins. A production deploy is the one flow where an unattended mistake is expensive. |
+| "The env var is easier to paste into the repo for now"       | A secret in the repo is a secret published. `docs/rules/security.md` has no "for now".                                                         |
+| "Migrations ran locally, they'll run in production"          | Different database, different data, different failure. Run them against production explicitly and read the output.                             |
+| "The playbook is slightly out of date, I'll improvise"       | Then fix the playbook first — it is the source of truth, and the next deploy reads it too.                                                     |
+
+## Red flags
+
+- A checkpoint marked done without the user saying so
+- A secret literal anywhere in a diff
+- The production database migrated without its output being read

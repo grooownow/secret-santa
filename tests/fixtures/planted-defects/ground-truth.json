@@ -1,0 +1,46 @@
+{
+  "$comment": "Ground truth for the review skill's Tier-3 detection eval (scripts/skill-detection-eval.ts). Each fixture carries exactly ONE defect drawn from a rule this repo actually enforces. `fixture` is the file as committed here; `file` is where the runner plants it inside a disposable worktree, which is the path the review skill is expected to cite. `line` is the offending line IN THE FIXTURE, and copying is verbatim, so it is also the line in the planted file — which is why this directory is excluded from prettier: a reflow would silently invalidate every number below.",
+  "skill": "review",
+  "defects": [
+    {
+      "id": "D1",
+      "fixture": "subscribe-action.ts",
+      "file": "src/features/billing/subscribe-action.ts",
+      "line": 28,
+      "rule": "CLAUDE.md invariant #4 / docs/rules/security.md - Validate every boundary",
+      "description": "Server action writes client-supplied `plan` and `seats` to the database with no zod schema and no safeParse. Authorization and scoping are correct, so only the missing validation is wrong."
+    },
+    {
+      "id": "D2",
+      "fixture": "upgrade-cta.tsx",
+      "file": "src/features/billing/upgrade-cta.tsx",
+      "line": 19,
+      "rule": "CLAUDE.md invariant #1 / docs/rules/frontend.md",
+      "description": "Internal navigation via a raw `<a href=\"/dashboard/billing\">` instead of `<Link>` from next/link — a full document load that discards client-side routing."
+    },
+    {
+      "id": "D3",
+      "fixture": "middleware.ts",
+      "file": "src/middleware.ts",
+      "line": 20,
+      "rule": "CLAUDE.md invariant #2 / docs/rules/architecture.md",
+      "description": "A `fetch()` to an entitlements endpoint inside src/middleware.ts adds a per-request network round trip to every matched route. Middleware must stay a local JWT check."
+    },
+    {
+      "id": "D4",
+      "fixture": "safe-callback-url.test.ts",
+      "file": "src/features/auth/safe-callback-url.test.ts",
+      "line": 11,
+      "rule": "docs/rules/testing.md - False-green bans (no assertion-free tests)",
+      "description": "The test calls `safeCallbackUrl()` and asserts nothing. It passes with the function returning an open-redirect target, and would still pass if the function were stubbed out."
+    },
+    {
+      "id": "D5",
+      "fixture": "plan-badge.tsx",
+      "file": "src/features/billing/plan-badge.tsx",
+      "line": 8,
+      "rule": "docs/rules/architecture.md - Import direction (boundaries/dependencies)",
+      "description": "Cross-feature deep import: `billing` imports `@/features/profile/profile-form` instead of going through profile's public `index.ts`."
+    }
+  ]
+}

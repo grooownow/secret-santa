@@ -1,0 +1,44 @@
+{
+  "skill_name": "doubt",
+  "trigger": {
+    "positive": [
+      {
+        "prompt": "I'm about to drop a column in a migration — poke holes in this before I run it",
+        "top_k": 1
+      },
+      {
+        "prompt": "Stress-test my assumption that this cache is safe under concurrent reads",
+        "top_k": 2
+      },
+      {
+        "prompt": "Before I commit this auth boundary change, cross-examine my reasoning",
+        "top_k": 2
+      }
+    ],
+    "negative": [
+      {
+        "prompt": "Look at my diff and tell me what is wrong with it",
+        "owner": "review"
+      },
+      {
+        "prompt": "Are the gates green before I merge this branch?",
+        "owner": "verify"
+      }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm about to add a unique index on users.email. Convince me it's safe.",
+      "expected_output": "A CLAIM, an extracted artifact and contract, a fresh subagent given an adversarial prompt without the claim, findings classified, a bounded stop.",
+      "expectations": [
+        "A claim is stated compactly before any review happens",
+        "A fresh subagent is spawned and receives the artifact and contract but NOT the claim",
+        "The subagent's prompt instructs it to find what is wrong, not to validate",
+        "Each finding is classified against the artifact rather than accepted wholesale",
+        "The loop stops within three cycles"
+      ],
+      "trust_level": "provisional"
+    }
+  ]
+}
