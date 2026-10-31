@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm";
-import type { Route } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
@@ -13,9 +12,12 @@ export type Account = Omit<typeof users.$inferSelect, "passwordHash">;
  * Guard for pages and actions of the participant area. Builds on
  * `requireUser()` (session check, dev bypass) and additionally loads the user
  * row, so a session that outlived its row (deleted account, reset database)
- * is sent back to `/signin` instead of failing deeper in the app.
+ * is sent back to `/signin` instead of failing deeper in the app. An account
+ * that has not given consent (first Google sign-in) is sent to `/welcome`.
  */
-export async function requireAccount(): Promise<Account> {
+export async function requireAccount(
+  options: { allowWithoutConsent?: boolean } = {},
+): Promise<Account> {
   const user = await requireUser();
   const [row] = await getDb()
     .select()
@@ -25,6 +27,11 @@ export async function requireAccount(): Promise<Account> {
   if (!row) {
     redirect("/signin");
   }
+  // Without consent the cabinet stays closed. /welcome itself passes
+  // `allowWithoutConsent`, which is what keeps it from redirecting to itself.
+  if (!row.consentAt && !options.allowWithoutConsent) {
+    redirect("/welcome");
+  }
   const { passwordHash: _passwordHash, ...account } = row;
   return account;
 }
@@ -33,8 +40,7 @@ export async function requireAccount(): Promise<Account> {
 export async function requireVerifiedAccount(): Promise<Account> {
   const account = await requireAccount();
   if (!account.emailVerified) {
-    // The /verify page is built with the account flow; typedRoutes needs the cast until then.
-    redirect("/verify" as Route);
+    redirect("/check-email");
   }
   return account;
 }

@@ -116,5 +116,125 @@
       "code": "Número o código",
       "note": "Nota"
     }
+  },
+  "account": {
+    "common": {
+      "google": "Entrar con Google",
+      "or": "o"
+    },
+    "consent": {
+      "language": "Idioma de la interfaz",
+      "consent": "Doy mi consentimiento para el tratamiento de mis datos y acepto las reglas del juego.",
+      "age": "Confirmo que tengo al menos 14 años.",
+      "rules": "Leer las reglas y el aviso de datos"
+    },
+    "register": {
+      "title": "Hazte Santa",
+      "text": "Una cuenta para ti y tus hijos. Participar es gratis.",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "name@example.com",
+      "password": "Contraseña",
+      "passwordHint": "Mínimo 8 caracteres.",
+      "submit": "Registrarse",
+      "pending": "Registrando…",
+      "haveAccount": "¿Ya tienes cuenta?",
+      "signIn": "Entrar",
+      "errors": {
+        "email": "Revisa la dirección de correo.",
+        "password": "La contraseña debe tener al menos 8 caracteres.",
+        "consent": "Hace falta el consentimiento para el tratamiento de datos y las reglas del juego.",
+        "age": "Confirma que tienes al menos 14 años. A los menores los registra una persona adulta en su propia cuenta.",
+        "closed": "Las inscripciones están cerradas, no se crean cuentas nuevas.",
+        "rate": "Demasiados intentos. Espera un minuto e inténtalo de nuevo.",
+        "invalid": "No ha funcionado. Revisa los campos e inténtalo de nuevo."
+      }
+    },
+    "signIn": {
+      "title": "Entrar",
+      "text": "Entra para continuar.",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "name@example.com",
+      "password": "Contraseña",
+      "errorTitle": "No se pudo entrar",
+      "errorText": "Revisa el correo y la contraseña. Si la has olvidado, recupérala con un correo.",
+      "invalidInput": "Introduce el correo y la contraseña.",
+      "forgot": "¿Has olvidado la contraseña?",
+      "submit": "Entrar",
+      "pending": "Entrando…",
+      "noAccount": "¿Aún no participas?",
+      "join": "Ser Santa",
+      "notice": {
+        "denied": "Las inscripciones están cerradas: no se crean cuentas nuevas. Si ya tienes cuenta, entra con el mismo correo.",
+        "failed": "No se pudo entrar con Google. Inténtalo de nuevo."
+      }
+    },
+    "checkEmail": {
+      "title": "¡Tienes un correo!",
+      "text": "Hemos enviado un enlace de confirmación a {email}. Abre el correo para participar en el juego.",
+      "textNoEmail": "Hemos enviado un enlace de confirmación a tu correo. Abre el correo para participar en el juego.",
+      "noMailTitle": "¿No ha llegado?",
+      "noMailText": "Mira en la carpeta de spam. Sin confirmar el correo no se puede participar.",
+      "email": "Correo electrónico",
+      "resend": "Enviar de nuevo",
+      "pending": "Enviando…",
+      "invalid": "Revisa la dirección de correo.",
+      "wait": "Podrás volver a enviarlo dentro de {seconds} s.",
+      "sentAgain": "Enviado de nuevo.",
+      "toSignIn": "Volver a entrar"
+    },
+    "verified": {
+      "title": "Correo confirmado",
+      "text": "Ya está todo listo. Entra y rellena tu ficha para que tu Santa sepa qué regalarte.",
+      "signIn": "Entrar"
+    },
+    "verifyExpired": {
+      "title": "El enlace ya no funciona",
+      "text": "Ha caducado o el correo ya está confirmado. Puedes pedir un correo nuevo.",
+      "submit": "Obtener un enlace nuevo",
+      "verified": "¿Correo confirmado?",
+      "signIn": "Entrar"
+    },
+    "forgot": {
+      "title": "¿Has olvidado la contraseña?",
+      "text": "Indica el correo de tu cuenta. Te enviaremos un enlace para crear una nueva.",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "name@example.com",
+      "submit": "Enviar enlace",
+      "pending": "Enviando…",
+      "back": "Volver a entrar",
+      "invalid": "Revisa la dirección de correo.",
+      "rate": "Demasiados intentos. Espera un minuto e inténtalo de nuevo.",
+      "sentTitle": "Revisa tu correo",
+      "sentText": "Si existe una cuenta con ese correo, hemos enviado un enlace para cambiar la contraseña. Mira también en spam.",
+      "backToSignIn": "Volver a entrar"
+    },
+    "reset": {
+      "title": "Contraseña nueva",
+      "text": "Elige una contraseña nueva para tu cuenta.",
+      "password": "Contraseña nueva",
+      "passwordHint": "Mínimo 8 caracteres.",
+      "confirm": "Repite la contraseña",
+      "submit": "Guardar y entrar",
+      "pending": "Guardando…",
+      "errors": {
+        "password": "La contraseña debe tener al menos 8 caracteres.",
+        "mismatch": "Las contraseñas no coinciden.",
+        "expired": "El enlace ya no funciona. Pide uno nuevo."
+      },
+      "expiredTitle": "El enlace ya no funciona",
+      "expiredText": "El enlace para cambiar la contraseña vale una hora y solo una vez. Puedes pedir uno nuevo.",
+      "expiredCta": "Pedir un enlace nuevo"
+    },
+    "welcome": {
+      "title": "¡Te damos la bienvenida!",
+      "text": "Solo falta elegir idioma y dar el consentimiento. Se hace una sola vez.",
+      "submit": "Continuar",
+      "pending": "Guardando…",
+      "errors": {
+        "consent": "Hace falta el consentimiento para el tratamiento de datos y las reglas del juego.",
+        "age": "Confirma que tienes al menos 14 años.",
+        "invalid": "No ha funcionado. Revisa los campos e inténtalo de nuevo."
+      }
+    }
   }
 }

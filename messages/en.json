@@ -116,5 +116,125 @@
       "code": "Number or code",
       "note": "Note"
     }
+  },
+  "account": {
+    "common": {
+      "google": "Sign in with Google",
+      "or": "or"
+    },
+    "consent": {
+      "language": "Interface language",
+      "consent": "I consent to the processing of my data and accept the rules of the game.",
+      "age": "I confirm that I am at least 14 years old.",
+      "rules": "Read the rules and data notice"
+    },
+    "register": {
+      "title": "Become a Santa",
+      "text": "One account for you and your children. Taking part is free.",
+      "email": "Email",
+      "emailPlaceholder": "name@example.com",
+      "password": "Password",
+      "passwordHint": "At least 8 characters.",
+      "submit": "Sign up",
+      "pending": "Signing up…",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "errors": {
+        "email": "Check the email address.",
+        "password": "The password must be at least 8 characters.",
+        "consent": "Consent to data processing and the rules of the game is required.",
+        "age": "Please confirm that you are at least 14. An adult registers younger children in their own account.",
+        "closed": "Sign-ups are closed, new accounts are not created.",
+        "rate": "Too many attempts. Wait a minute and try again.",
+        "invalid": "Something went wrong. Check the fields and try again."
+      }
+    },
+    "signIn": {
+      "title": "Sign in",
+      "text": "Sign in to continue.",
+      "email": "Email",
+      "emailPlaceholder": "name@example.com",
+      "password": "Password",
+      "errorTitle": "Could not sign in",
+      "errorText": "Invalid email or password. If you forgot the password, reset it by email.",
+      "invalidInput": "Enter your email and password.",
+      "forgot": "Forgot password?",
+      "submit": "Sign in",
+      "pending": "Signing in…",
+      "noAccount": "Not taking part yet?",
+      "join": "Become a Santa",
+      "notice": {
+        "denied": "Sign-ups are closed: new accounts are not created. If you already have an account, sign in with the same email.",
+        "failed": "Could not sign in with Google. Please try again."
+      }
+    },
+    "checkEmail": {
+      "title": "You have mail!",
+      "text": "We sent a confirmation link to {email}. Open the email to take part in the game.",
+      "textNoEmail": "We sent a confirmation link to your email. Open the email to take part in the game.",
+      "noMailTitle": "No email?",
+      "noMailText": "Check your spam folder. You cannot take part until the email is confirmed.",
+      "email": "Email",
+      "resend": "Send again",
+      "pending": "Sending…",
+      "invalid": "Check the email address.",
+      "wait": "You can send it again in {seconds} s.",
+      "sentAgain": "Sent again.",
+      "toSignIn": "Back to sign in"
+    },
+    "verified": {
+      "title": "Email confirmed",
+      "text": "You are all set. Sign in and fill in your profile so your Santa knows what to give you.",
+      "signIn": "Sign in"
+    },
+    "verifyExpired": {
+      "title": "This link no longer works",
+      "text": "It has expired or the email is already confirmed. You can ask for a new email.",
+      "submit": "Get a new link",
+      "verified": "Email confirmed?",
+      "signIn": "Sign in"
+    },
+    "forgot": {
+      "title": "Forgot your password?",
+      "text": "Enter the email of your account. We will send a link for a new password.",
+      "email": "Email",
+      "emailPlaceholder": "name@example.com",
+      "submit": "Send link",
+      "pending": "Sending…",
+      "back": "Back to sign in",
+      "invalid": "Check the email address.",
+      "rate": "Too many attempts. Wait a minute and try again.",
+      "sentTitle": "Check your email",
+      "sentText": "If an account with this email exists, we sent a link to change the password. Check your spam folder too.",
+      "backToSignIn": "Back to sign in"
+    },
+    "reset": {
+      "title": "New password",
+      "text": "Choose a new password for your account.",
+      "password": "New password",
+      "passwordHint": "At least 8 characters.",
+      "confirm": "Repeat the password",
+      "submit": "Save and sign in",
+      "pending": "Saving…",
+      "errors": {
+        "password": "The password must be at least 8 characters.",
+        "mismatch": "The passwords do not match.",
+        "expired": "The link no longer works. Request a new one."
+      },
+      "expiredTitle": "This link no longer works",
+      "expiredText": "A password link is valid for one hour and works once. You can request a new one.",
+      "expiredCta": "Request a new link"
+    },
+    "welcome": {
+      "title": "Welcome!",
+      "text": "Pick a language and give your consent. You only do this once.",
+      "submit": "Continue",
+      "pending": "Saving…",
+      "errors": {
+        "consent": "Consent to data processing and the rules of the game is required.",
+        "age": "Please confirm that you are at least 14.",
+        "invalid": "Something went wrong. Check the fields and try again."
+      }
+    }
   }
 }

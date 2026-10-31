@@ -7,7 +7,13 @@ import { z } from "zod";
 import { getDb } from "@/db/client";
 import { accounts, users } from "@/db/schema";
 import { verifyPassword } from "@/lib/password";
+import { rateLimit } from "@/lib/rate-limit";
 import { authConfig } from "./auth.config";
+import {
+  googleSignInAllowed,
+  onGoogleUserCreated,
+  syncLocaleCookie,
+} from "./auth-events";
 
 // `getDb()` returns a union (`PgliteDatabase | PostgresJsDatabase`, picked at
 // runtime by `GRIDFIN_DB`) rather than a single concrete Drizzle db type.
@@ -29,17 +35,46 @@ const credentialsSchema = z.object({
   password: z.string().min(1),
 });
 
+// A real bcrypt hash of a throwaway string. When the email is unknown or the
+// account has no password (Google-only), `verifyPassword` still runs against
+// it, so the response time does not reveal whether the email is registered.
+export const DUMMY_PASSWORD_HASH =
+  "$2b$10$m6UgXLGHVKv01jMnCqiLP.ZVIRkABs.qoS2akA4s4yarioBB8sXfC";
+
+const EMAIL_ATTEMPTS_PER_MINUTE = 10;
+const IP_ATTEMPTS_PER_MINUTE = 30;
+
+function clientIp(request: Request | undefined): string {
+  const forwarded = request?.headers.get("x-forwarded-for");
+  return forwarded?.split(",")[0]?.trim() || "unknown";
+}
+
 /**
  * Credentials authorize logic, exported for unit testing. Returns the user
  * (id/email/name) on a correct email+password, or null otherwise. Lives in
  * auth.ts (Node-only) — it touches the db and bcrypt, which must never be
  * pulled into the edge-safe auth.config.ts / middleware.
+ *
+ * Throttling is here, not in the sign-in server action, so a direct POST to
+ * /api/auth/callback/credentials is limited too: per normalised email and
+ * per client IP.
  */
 export async function authorizeCredentials(
   raw: unknown,
+  request?: Request,
 ): Promise<{ id: string; email: string; name: string | null } | null> {
   const parsed = credentialsSchema.safeParse(raw);
   if (!parsed.success) return null;
+
+  const byEmail = rateLimit(`signin:email:${parsed.data.email}`, {
+    limit: EMAIL_ATTEMPTS_PER_MINUTE,
+    windowMs: 60_000,
+  });
+  const byIp = rateLimit(`signin:ip:${clientIp(request)}`, {
+    limit: IP_ATTEMPTS_PER_MINUTE,
+    windowMs: 60_000,
+  });
+  if (!byEmail.allowed || !byIp.allowed) return null;
 
   const rows = await getDb()
     .select()
@@ -48,10 +83,11 @@ export async function authorizeCredentials(
     .limit(1);
 
   const user = rows[0];
-  if (!user?.passwordHash) return null;
-  if (!(await verifyPassword(parsed.data.password, user.passwordHash))) {
-    return null;
-  }
+  const valid = await verifyPassword(
+    parsed.data.password,
+    user?.passwordHash ?? DUMMY_PASSWORD_HASH,
+  );
+  if (!user?.passwordHash || !valid) return null;
   return { id: user.id, email: user.email, name: user.name };
 }
 
@@ -71,9 +107,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
     ...authConfig.providers,
     Credentials({
       credentials: { email: {}, password: {} },
-      authorize: (raw) => authorizeCredentials(raw),
+      authorize: (raw, request) => authorizeCredentials(raw, request),
     }),
   ],
+  callbacks: {
+    ...authConfig.callbacks,
+    // Google only: an unknown email may not create an account after the
+    // registration deadline. Credentials already checked the password.
+    async signIn({ user, account, profile }) {
+      if (account?.provider !== "google") return true;
+      return googleSignInAllowed(
+        user.email,
+        typeof profile?.email_verified === "boolean"
+          ? profile.email_verified
+          : undefined,
+      );
+    },
+  },
+  events: {
+    async signIn({ user }) {
+      if (user.id) await syncLocaleCookie(user.id);
+    },
+    async createUser({ user }) {
+      // Credentials accounts are inserted by our own register action; only
+      // OAuth sign-ups come through the adapter.
+      if (user.id) await onGoogleUserCreated(user.id);
+    },
+  },
   adapter: DrizzleAdapter(getDb() as AnyPostgresDatabase, {
     usersTable: users,
     accountsTable: accounts,

@@ -1,68 +1,70 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Field,
+  FormAlert,
+  SubmitButton,
+  TextInput,
+  TextLink,
+} from "@/components/form-ui";
 import { signInFormAction, type SignInFormState } from "./sign-in-action";
 
 const initialState: SignInFormState = {};
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Signing in…" : "Sign in"}
-    </Button>
-  );
-}
-
 /**
- * Client credentials form. Uses `useActionState` so a failed sign-in renders
- * the server action's generic error under the form (announced via aria-live)
- * and keeps the submitted email. `redirectTo` is passed through as a hidden
- * field and re-validated server-side in the action.
- *
- * Not optimistic (cf. frontend.md rule 3): a sign-in can't be shown as
- * succeeded before the server confirms the credentials, so the mutation feels
- * responsive via the pending state below rather than an optimistic update.
+ * Client credentials form. A failed sign-in shows the generic error box
+ * (frame fCfVC) and keeps the typed email. `redirectTo` is a hidden field,
+ * re-validated server-side. Not optimistic (frontend.md rule 3): a sign-in
+ * cannot be shown as done before the server confirms it, so the button only
+ * shows a pending state.
  */
-export function SignInForm({ redirectTo }: { redirectTo?: string }) {
+export function SignInForm({
+  redirectTo,
+  notice,
+}: {
+  redirectTo?: string;
+  notice?: "denied" | "failed";
+}) {
+  const t = useTranslations("account.signIn");
   const [state, formAction] = useActionState(signInFormAction, initialState);
 
   return (
-    <form action={formAction} className="flex flex-col gap-3">
+    <form action={formAction} className="flex flex-col gap-4">
       {redirectTo ? (
         <input type="hidden" name="redirectTo" value={redirectTo} />
       ) : null}
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signin-email">Email</Label>
-        <Input
-          id="signin-email"
+      <Field label={t("email")}>
+        <TextInput
           name="email"
           type="email"
           autoComplete="email"
+          placeholder={t("emailPlaceholder")}
           defaultValue={state.email ?? ""}
           required
         />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signin-password">Password</Label>
-        <Input
-          id="signin-password"
+      </Field>
+      <Field label={t("password")}>
+        <TextInput
           name="password"
           type="password"
           autoComplete="current-password"
           required
         />
-      </div>
+      </Field>
       {state.error ? (
-        <p role="alert" aria-live="polite" className="text-destructive text-sm">
-          {state.error}
-        </p>
+        <FormAlert title={t("errorTitle")}>
+          {state.error === "invalid_input" ? t("invalidInput") : t("errorText")}
+        </FormAlert>
+      ) : notice ? (
+        <FormAlert title={t("errorTitle")}>{t(`notice.${notice}`)}</FormAlert>
       ) : null}
-      <SubmitButton />
+      <TextLink href="/forgot-password">{t("forgot")}</TextLink>
+      <SubmitButton pendingLabel={t("pending")}>{t("submit")}</SubmitButton>
+      <p className="text-santa-muted text-[13px]">
+        {t("noAccount")} <TextLink href="/register">{t("join")}</TextLink>
+      </p>
     </form>
   );
 }

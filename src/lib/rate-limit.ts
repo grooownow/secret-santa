@@ -43,6 +43,8 @@ export interface RateLimitOptions {
 export interface RateLimitResult {
   allowed: boolean;
   remaining: number;
+  /** Milliseconds until the current window ends (0 when allowed). */
+  retryAfterMs: number;
 }
 
 export function rateLimit(
@@ -61,15 +63,27 @@ export function rateLimit(
 
   if (!existing || now - existing.windowStart >= existing.windowMs) {
     store.set(key, { count: 1, windowStart: now, windowMs });
-    return { allowed: true, remaining: Math.max(limit - 1, 0) };
+    return {
+      allowed: true,
+      remaining: Math.max(limit - 1, 0),
+      retryAfterMs: 0,
+    };
   }
 
   if (existing.count >= limit) {
-    return { allowed: false, remaining: 0 };
+    return {
+      allowed: false,
+      remaining: 0,
+      retryAfterMs: Math.max(existing.windowStart + existing.windowMs - now, 0),
+    };
   }
 
   existing.count += 1;
-  return { allowed: true, remaining: Math.max(limit - existing.count, 0) };
+  return {
+    allowed: true,
+    remaining: Math.max(limit - existing.count, 0),
+    retryAfterMs: 0,
+  };
 }
 
 /** @internal test-only accessor for the module-level store size. */

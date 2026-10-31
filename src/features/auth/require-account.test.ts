@@ -33,8 +33,8 @@ const row = {
   locale: "ru",
   building: "A",
   apartment: "2b",
-  consentVersion: null,
-  consentAt: null,
+  consentVersion: "2026-10-31",
+  consentAt: new Date("2026-11-01T00:00:00Z"),
   image: null,
   createdAt: new Date("2026-11-01T00:00:00Z"),
 };
@@ -61,6 +61,25 @@ describe("account guards", () => {
       expect(account).not.toHaveProperty("passwordHash");
     });
 
+    it("sends an account without consent to /welcome", async () => {
+      requireUserMock.mockResolvedValue({ id: "u1", email: row.email });
+      selectMock.mockResolvedValue([{ ...row, consentAt: null }]);
+      const { requireAccount } = await import("./require-account");
+
+      await expect(requireAccount()).rejects.toThrow("NEXT_REDIRECT:/welcome");
+    });
+
+    it("lets /welcome load the account without consent (no redirect loop)", async () => {
+      requireUserMock.mockResolvedValue({ id: "u1", email: row.email });
+      selectMock.mockResolvedValue([{ ...row, consentAt: null }]);
+      const { requireAccount } = await import("./require-account");
+
+      await expect(
+        requireAccount({ allowWithoutConsent: true }),
+      ).resolves.toMatchObject({ id: "u1", consentAt: null });
+      expect(redirectMock).not.toHaveBeenCalled();
+    });
+
     it("redirects to /signin when the session user has no row", async () => {
       requireUserMock.mockResolvedValue({ id: "gone", email: null });
       selectMock.mockResolvedValue([]);
@@ -81,13 +100,13 @@ describe("account guards", () => {
       });
     });
 
-    it("redirects an unverified account to /verify", async () => {
+    it("redirects an unverified account to /check-email", async () => {
       requireUserMock.mockResolvedValue({ id: "u1", email: row.email });
       selectMock.mockResolvedValue([{ ...row, emailVerified: null }]);
       const { requireVerifiedAccount } = await import("./require-account");
 
       await expect(requireVerifiedAccount()).rejects.toThrow(
-        "NEXT_REDIRECT:/verify",
+        "NEXT_REDIRECT:/check-email",
       );
     });
   });

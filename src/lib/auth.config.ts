@@ -39,6 +39,10 @@ export function buildProviders(providerEnv: AuthProviderEnv): Provider[] {
       Google({
         clientId: providerEnv.AUTH_GOOGLE_ID,
         clientSecret: providerEnv.AUTH_GOOGLE_SECRET,
+        // Google confirms the mailbox, so a Google sign-in with the email of
+        // a password account opens that same account. `signIn` in auth.ts
+        // refuses unverified Google emails.
+        allowDangerousEmailAccountLinking: true,
       }),
     );
   }
@@ -69,7 +73,7 @@ export function buildAuthConfig(
     // redirect (used by both src/middleware.ts and route protection) falls
     // back to `${basePath}/signin` (i.e. `/api/auth/signin`), not our
     // feature page at src/app/signin/page.tsx.
-    pages: { signIn: "/signin" },
+    pages: { signIn: "/signin", error: "/signin" },
     callbacks: {
       // Path-based route protection, used by Middleware and route handlers.
       // Pure: only inspects the request path and whether a user is present.

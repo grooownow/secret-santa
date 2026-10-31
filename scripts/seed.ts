@@ -28,6 +28,9 @@ async function main() {
       // The dev admin is pre-verified so it passes requireOrganizer() when
       // ADMIN_EMAIL is set to SEED_ADMIN_EMAIL.
       emailVerified: new Date(),
+      // Already consented, so the cabinet opens without /welcome.
+      consentVersion: "2026-10-31",
+      consentAt: new Date(),
     }),
   ]);
 
