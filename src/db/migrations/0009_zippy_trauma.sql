@@ -1,0 +1,1 @@
+ALTER TABLE "assignments" ADD COLUMN "gift_version" integer DEFAULT 0 NOT NULL;

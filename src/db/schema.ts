@@ -113,6 +113,9 @@ export const assignments = pgTable("assignments", {
   giftPlace: giftPlace("gift_place"),
   giftCode: text("gift_code"),
   giftNote: text("gift_note"),
+  // Grows on every mark or edit; part of the email key, so each edit mails
+  // the receiver again (`gift:<receiverId>:<version>`).
+  giftVersion: integer("gift_version").notNull().default(0),
   giftLeftAt: timestamp("gift_left_at", { withTimezone: true }),
   notFoundAt: timestamp("not_found_at", { withTimezone: true }),
   backupOrganizedAt: timestamp("backup_organized_at", { withTimezone: true }),

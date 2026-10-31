@@ -396,5 +396,157 @@
       "confirmExcluded": "Not confirmed and out of the draw: {count}. Check the list before you start.",
       "confirmMail": "Participants get an email with only a link to their cabinet. The organiser will not see the pairs."
     }
+  },
+  "cabinet": {
+    "switcher": {
+      "title": "Who is Santa today?",
+      "text": "Each participant has their own profile, recipient and gift. Choose whose cabinet to open.",
+      "owner": "your profile",
+      "address": "Building {building} · flat {apartment}",
+      "open": "Open the cabinet of {name}",
+      "childAge": "{age, plural, one {# year old} other {# years old}}"
+    },
+    "home": {
+      "chipWaiting": "Gifts from {date}",
+      "chipGifts": "Gift time",
+      "chipReveal": "Santas revealed",
+      "titleWaiting": "Now you are someone's Santa",
+      "titleGifts": "Time to make magic",
+      "titleReveal": "Find out who your Santa is",
+      "switch": "Switch participant (now: {name})",
+      "daysTitle": "Until gifts — {days, plural, one {# day} other {# days}}",
+      "daysText": "You can leave the gift from {date}. Until then, read your recipient's profile and guess your own Santa.",
+      "notLeftTitle": "Your gift has not been left yet",
+      "notLeftText": "{name} is waiting for a surprise. Leave the gift in a locker or mailbox and mark it here.",
+      "leftTitle": "Your gift has been left",
+      "leftText": "If the place changed, correct it by the end of {date}: the recipient will get a new email.",
+      "whoIsSanta": "Find out who my Santa is",
+      "recipient": "Your recipient — {name}",
+      "address": "Building {building} · flat {apartment}",
+      "changed": "Your recipient changed after someone dropped out.",
+      "editGift": "Correct the gift place",
+      "leaveGift": "Gift left",
+      "seeRecipient": "View your recipient",
+      "noneTitle": "Nobody left to give to",
+      "noneText": "Your recipient dropped out and no new one can be assigned. Your own Santa's gift will still come to you.",
+      "myGift": {
+        "waiting": {
+          "title": "Your gift is still on its way",
+          "text": "Your Santa will leave the gift in a locker or mailbox. We will email you when it is there."
+        },
+        "left": {
+          "title": "Your gift is waiting for you",
+          "text": "Your Santa left the gift. The place, number and note are in «My gift»."
+        },
+        "notFound": {
+          "title": "We are looking for your gift",
+          "text": "The organizer knows the gift is not there and will help."
+        }
+      },
+      "myGiftLink": "My gift",
+      "wallTitle": "Saying thanks feels good",
+      "wallText": "Tell the wall of thanks how the gift went.",
+      "wallLink": "To the wall of thanks",
+      "guessTitle": "And who is your Santa?",
+      "guessText": "Try to guess by the end of {date}; you will see the answer at the reveal.",
+      "guessLink": "Guess your Santa",
+      "guessLinkUntil": "Guess your Santa until {date}",
+      "noProfileTitle": "No profile",
+      "noProfileText": "The draw is done and this account has no profile. If this is a mistake, write to the organizer."
+    }
+  },
+  "gift": {
+    "recipient": {
+      "chip": "Your recipient",
+      "changedChip": "Recipient changed",
+      "changedTitle": "You have a new recipient",
+      "changedBox": "You are now the Santa of {name}",
+      "changedText": "The previous participant dropped out. The address and wishes below are the new ones. We also sent you an email.",
+      "photoAlt": "Photo of {name}",
+      "address": "Building {building} · flat {apartment}",
+      "wishes": "What would delight",
+      "avoid": "Better not to give",
+      "empty": "Not specified",
+      "budgetTitle": "A gift of about 10–15 €",
+      "budgetText": "You decide the amount. Leave the gift in a locker or mailbox of the recipient's building from {start} to {end}.",
+      "leaveGift": "Leave the gift",
+      "editGift": "Correct the gift place",
+      "notYet": "The button starts working on {start}.",
+      "private": "Only you can see the address and photo. Please do not show them to others.",
+      "childAge": "{age, plural, one {# year old} other {# years old}}"
+    },
+    "form": {
+      "title": "Where is the surprise waiting?",
+      "titleDone": "The surprise is in place!",
+      "intro": "For {name}: leave the gift in a locker or mailbox and mark where to find it.",
+      "introDone": "We emailed the recipient. If the place changed, correct it and the email goes out again.",
+      "place": "Where was the gift left?",
+      "placePlaceholder": "Choose a place",
+      "locker": "Locker",
+      "mailbox": "Mailbox",
+      "code": "Number or code",
+      "codePlaceholder": "Locker or mailbox number, or a code",
+      "note": "Anonymous note, optional",
+      "noteHint": "Up to {max} characters. No need to sign your name.",
+      "notePlaceholder": "May this surprise be a kind one",
+      "boxTitle": "The recipient gets an email",
+      "boxText": "The place, number and note go to the recipient. Your name is not in the email.",
+      "errors": {
+        "invalid": "Check the fields: number up to 50 characters, note up to 200.",
+        "notFound": "Recipient not found.",
+        "closed": "The gift cannot be marked right now.",
+        "notMarked": "The gift is not marked yet.",
+        "failed": "Could not save. Please try again."
+      },
+      "saved": "Saved, the email was sent to the recipient.",
+      "pending": "Saving…",
+      "submit": "Gift left",
+      "saveChanges": "Save changes",
+      "hint": "You can correct the place until the end of the gift period."
+    },
+    "mine": {
+      "errors": {
+        "invalid": "Check the fields: number up to 50 characters, note up to 200.",
+        "notFound": "Recipient not found.",
+        "closed": "The gift cannot be marked right now.",
+        "notMarked": "The gift is not marked yet.",
+        "failed": "Could not save. Please try again."
+      },
+      "pageTitle": "My gift",
+      "waiting": {
+        "title": "No gift yet",
+        "text": "Your Santa will leave the gift from {start} to {end}. We will email you when it is there."
+      },
+      "left": {
+        "title": "Your gift is waiting",
+        "text": "Your Santa left the gift. Here is where to look."
+      },
+      "notFound": {
+        "title": "We told the organizer",
+        "text": "The organizer knows the gift is not there and will arrange a backup. You can also write directly."
+      },
+      "place": "Place",
+      "locker": "Locker",
+      "mailbox": "Mailbox",
+      "code": "Number or code",
+      "note": "Note",
+      "leftOn": "left on {date}",
+      "edited": "Your Santa corrected the details; these are the latest.",
+      "writeOrganizer": "Write to Kate on Telegram",
+      "notFoundButton": "I could not find the gift",
+      "notFoundHint": "Press if there is nothing at this place. The organizer will be notified.",
+      "wall": "To the wall of thanks"
+    },
+    "nothing": {
+      "title": "Your gift will still come",
+      "text": "Your recipient dropped out and the next one lives in your flat, so there is nobody left to give to.",
+      "boxTitle": "A surprise is being prepared for you",
+      "boxText": "You stay in the game and get a gift from your own Santa. The organizer will make sure it turns up.",
+      "myGift": "My gift"
+    },
+    "beforeDraw": {
+      "title": "Your recipient will appear after the draw on {date}",
+      "text": "When it is done you get an email and the recipient's card shows up here."
+    }
   }
 }

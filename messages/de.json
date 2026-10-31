@@ -396,5 +396,157 @@
       "confirmExcluded": "Unbestätigt und nicht in der Auslosung: {count}. Prüfen Sie die Liste vor dem Start.",
       "confirmMail": "Teilnehmende erhalten eine E-Mail nur mit dem Link zum Bereich. Die Organisation sieht die Paare nicht."
     }
+  },
+  "cabinet": {
+    "switcher": {
+      "title": "Wer ist heute Santa?",
+      "text": "Jede teilnehmende Person hat ein eigenes Profil, eine beschenkte Person und ein Geschenk. Wähle, welchen Bereich du öffnest.",
+      "owner": "dein Profil",
+      "address": "Haus {building} · Wohnung {apartment}",
+      "open": "Bereich von {name} öffnen",
+      "childAge": "{age, plural, one {# Jahr} other {# Jahre}}"
+    },
+    "home": {
+      "chipWaiting": "Geschenke ab {date}",
+      "chipGifts": "Zeit für Geschenke",
+      "chipReveal": "Santas enthüllt",
+      "titleWaiting": "Jetzt bist du jemandes Santa",
+      "titleGifts": "Zeit für ein bisschen Zauber",
+      "titleReveal": "Finde heraus, wer dein Santa ist",
+      "switch": "Person wechseln (jetzt: {name})",
+      "daysTitle": "Bis zu den Geschenken — {days, plural, one {# Tag} other {# Tage}}",
+      "daysText": "Das Geschenk kannst du ab {date} hinterlegen. Bis dahin kannst du das Profil lesen und deinen eigenen Santa erraten.",
+      "notLeftTitle": "Dein Geschenk ist noch nicht hinterlegt",
+      "notLeftText": "{name} wartet auf eine Überraschung. Lege das Geschenk in ein Schließfach oder einen Briefkasten und markiere es hier.",
+      "leftTitle": "Dein Geschenk ist hinterlegt",
+      "leftText": "Hat sich der Ort geändert, korrigiere ihn bis Ende {date}: Die beschenkte Person bekommt eine neue E-Mail.",
+      "whoIsSanta": "Herausfinden, wer mein Santa ist",
+      "recipient": "Deine beschenkte Person — {name}",
+      "address": "Haus {building} · Wohnung {apartment}",
+      "changed": "Die beschenkte Person hat sich nach einem Ausstieg geändert.",
+      "editGift": "Ort des Geschenks korrigieren",
+      "leaveGift": "Geschenk hinterlegt",
+      "seeRecipient": "Beschenkte Person ansehen",
+      "noneTitle": "Es gibt niemanden mehr zu beschenken",
+      "noneText": "Deine beschenkte Person ist ausgestiegen und eine neue kann nicht zugewiesen werden. Das Geschenk von deinem Santa bekommst du trotzdem.",
+      "myGift": {
+        "waiting": {
+          "title": "Dein Geschenk ist noch unterwegs",
+          "text": "Dein Santa legt das Geschenk in ein Schließfach oder einen Briefkasten. Wir schreiben dir, sobald es da ist."
+        },
+        "left": {
+          "title": "Dein Geschenk wartet auf dich",
+          "text": "Dein Santa hat das Geschenk hinterlegt. Ort, Nummer und Zettel findest du unter «Mein Geschenk»."
+        },
+        "notFound": {
+          "title": "Wir suchen dein Geschenk",
+          "text": "Die Organisation weiß, dass das Geschenk nicht da ist, und hilft dir."
+        }
+      },
+      "myGiftLink": "Mein Geschenk",
+      "wallTitle": "Danke sagen tut gut",
+      "wallText": "Erzähl an der Dankeswand, wie das Geschenk war.",
+      "wallLink": "Zur Dankeswand",
+      "guessTitle": "Und wer ist dein Santa?",
+      "guessText": "Rate bis Ende {date}; die Antwort erfährst du bei der Enthüllung.",
+      "guessLink": "Santa erraten",
+      "guessLinkUntil": "Santa erraten bis {date}",
+      "noProfileTitle": "Kein Profil",
+      "noProfileText": "Die Auslosung ist vorbei und dieses Konto hat kein Profil. Falls das ein Fehler ist, schreib der Organisation."
+    }
+  },
+  "gift": {
+    "recipient": {
+      "chip": "Deine beschenkte Person",
+      "changedChip": "Beschenkte Person geändert",
+      "changedTitle": "Du hast eine neue beschenkte Person",
+      "changedBox": "Du bist jetzt der Santa von {name}",
+      "changedText": "Die vorherige Person ist ausgestiegen. Adresse und Wünsche unten sind die neuen. Wir haben dir auch eine E-Mail geschickt.",
+      "photoAlt": "Foto von {name}",
+      "address": "Haus {building} · Wohnung {apartment}",
+      "wishes": "Was Freude macht",
+      "avoid": "Besser nicht schenken",
+      "empty": "Nicht angegeben",
+      "budgetTitle": "Ein Geschenk für etwa 10–15 €",
+      "budgetText": "Den Betrag entscheidest du. Hinterlege das Geschenk im Schließfach oder Briefkasten des Hauses vom {start} bis {end}.",
+      "leaveGift": "Geschenk hinterlegen",
+      "editGift": "Ort des Geschenks korrigieren",
+      "notYet": "Die Schaltfläche funktioniert ab {start}.",
+      "private": "Adresse und Foto sehen nur du. Bitte zeige sie niemandem.",
+      "childAge": "{age, plural, one {# Jahr} other {# Jahre}}"
+    },
+    "form": {
+      "title": "Wo wartet die Überraschung?",
+      "titleDone": "Die Überraschung liegt bereit!",
+      "intro": "Für {name}: Lege das Geschenk in ein Schließfach oder einen Briefkasten und markiere, wo es zu finden ist.",
+      "introDone": "Wir haben der beschenkten Person eine E-Mail geschickt. Hat sich der Ort geändert, korrigiere ihn: Die E-Mail geht erneut raus.",
+      "place": "Wo wurde das Geschenk hinterlegt?",
+      "placePlaceholder": "Ort wählen",
+      "locker": "Schließfach",
+      "mailbox": "Briefkasten",
+      "code": "Nummer oder Code",
+      "codePlaceholder": "Nummer von Schließfach oder Briefkasten, oder Code",
+      "note": "Anonymer Zettel, optional",
+      "noteHint": "Bis zu {max} Zeichen. Du musst nicht unterschreiben.",
+      "notePlaceholder": "Möge diese Überraschung schön sein",
+      "boxTitle": "Die beschenkte Person bekommt eine E-Mail",
+      "boxText": "Ort, Nummer und Zettel gehen an die beschenkte Person. Dein Name steht nicht in der E-Mail.",
+      "errors": {
+        "invalid": "Prüfe die Felder: Nummer bis 50 Zeichen, Zettel bis 200.",
+        "notFound": "Beschenkte Person nicht gefunden.",
+        "closed": "Das Geschenk kann gerade nicht markiert werden.",
+        "notMarked": "Das Geschenk ist noch nicht markiert.",
+        "failed": "Speichern hat nicht geklappt. Versuche es noch einmal."
+      },
+      "saved": "Gespeichert, die E-Mail ist an die beschenkte Person unterwegs.",
+      "pending": "Speichern…",
+      "submit": "Geschenk hinterlegt",
+      "saveChanges": "Änderungen speichern",
+      "hint": "Den Ort kannst du bis zum Ende der Geschenkzeit korrigieren."
+    },
+    "mine": {
+      "errors": {
+        "invalid": "Prüfe die Felder: Nummer bis 50 Zeichen, Zettel bis 200.",
+        "notFound": "Beschenkte Person nicht gefunden.",
+        "closed": "Das Geschenk kann gerade nicht markiert werden.",
+        "notMarked": "Das Geschenk ist noch nicht markiert.",
+        "failed": "Speichern hat nicht geklappt. Versuche es noch einmal."
+      },
+      "pageTitle": "Mein Geschenk",
+      "waiting": {
+        "title": "Noch kein Geschenk",
+        "text": "Dein Santa hinterlegt das Geschenk vom {start} bis {end}. Wir schreiben dir, sobald es da ist."
+      },
+      "left": {
+        "title": "Dein Geschenk wartet",
+        "text": "Dein Santa hat das Geschenk hinterlegt. Hier findest du es."
+      },
+      "notFound": {
+        "title": "Wir haben die Organisation informiert",
+        "text": "Die Organisation weiß, dass das Geschenk nicht da ist, und kümmert sich um Ersatz. Du kannst auch direkt schreiben."
+      },
+      "place": "Ort",
+      "locker": "Schließfach",
+      "mailbox": "Briefkasten",
+      "code": "Nummer oder Code",
+      "note": "Zettel",
+      "leftOn": "hinterlegt am {date}",
+      "edited": "Dein Santa hat die Angaben korrigiert; das sind die neuesten.",
+      "writeOrganizer": "Kate auf Telegram schreiben",
+      "notFoundButton": "Ich habe das Geschenk nicht gefunden",
+      "notFoundHint": "Drücke, wenn dort nichts liegt. Die Organisation wird benachrichtigt.",
+      "wall": "Zur Dankeswand"
+    },
+    "nothing": {
+      "title": "Dein Geschenk kommt trotzdem",
+      "text": "Deine beschenkte Person ist ausgestiegen und die nächste wohnt in deiner Wohnung, deshalb gibt es niemanden mehr zu beschenken.",
+      "boxTitle": "Für dich wird eine Überraschung vorbereitet",
+      "boxText": "Du bleibst im Spiel und bekommst ein Geschenk von deinem Santa. Die Organisation sorgt dafür, dass es ankommt.",
+      "myGift": "Mein Geschenk"
+    },
+    "beforeDraw": {
+      "title": "Die beschenkte Person erscheint nach der Auslosung am {date}",
+      "text": "Danach bekommst du eine E-Mail und hier erscheint die Karte."
+    }
   }
 }

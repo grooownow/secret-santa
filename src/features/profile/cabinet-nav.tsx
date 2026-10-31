@@ -23,6 +23,13 @@ function isActive(pathname: string, key: string, href: string): boolean {
   if (key === "home") {
     return pathname === href || pathname.startsWith("/home/participants");
   }
+  if (key === "gift") {
+    return (
+      pathname.startsWith("/home/gift") ||
+      pathname.startsWith("/home/recipient") ||
+      pathname.startsWith("/home/my-gift")
+    );
+  }
   return pathname.startsWith(href);
 }
 
