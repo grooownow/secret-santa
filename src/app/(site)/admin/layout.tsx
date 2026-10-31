@@ -31,7 +31,9 @@ export default async function AdminLayout({
         }
       />
       <main className="flex flex-1 flex-col gap-5 px-[26px] py-8">
-        <p className="text-santa-green text-xs font-semibold">{t("title")}</p>
+        <span className="bg-santa-mint text-santa-green self-start rounded-full px-3 py-[7px] text-[11px] font-semibold">
+          {t("title")}
+        </span>
         <AdminNav />
         {children}
       </main>

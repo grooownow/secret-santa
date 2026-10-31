@@ -24,10 +24,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav
-      aria-label={t("label")}
-      className="flex items-center gap-2 overflow-x-auto"
-    >
+    <nav aria-label={t("label")} className="flex items-center gap-1.5">
       {ITEMS.map(({ key, href }) => {
         const active =
           href === ADMIN_HOME ? pathname === href : pathname.startsWith(href);
@@ -37,7 +34,7 @@ export function AdminNav() {
             href={href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-full px-4 py-2 text-[13px] font-semibold whitespace-nowrap",
+              "flex flex-1 items-center justify-center rounded-full px-2.5 py-2 text-xs font-semibold",
               active
                 ? "bg-santa-green text-santa-white"
                 : "bg-santa-mint text-santa-green",

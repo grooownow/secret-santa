@@ -13,7 +13,7 @@ import {
 } from "@/features/translation";
 import { logger } from "@/lib/logger";
 import { deletePhotos } from "@/lib/photo-storage";
-import { canEdit } from "./edit-gate";
+import { assertGateOpen, canEdit, GateClosedError } from "./edit-gate";
 import { idSchema } from "./schemas";
 import type { ProfileState } from "./state";
 
@@ -58,14 +58,24 @@ export async function deleteParticipantAction(
         .where(inArray(wallPosts.participantId, doomedIds))
     : [];
 
-  const removed = await db
-    .delete(participants)
-    .where(
-      row.kind === "adult"
-        ? eq(participants.userId, account.id)
-        : eq(participants.id, row.id),
-    )
-    .returning();
+  let removed: (typeof participants.$inferSelect)[];
+  try {
+    removed = await db.transaction(async (tx) => {
+      await assertGateOpen(tx, "edit");
+      return tx
+        .delete(participants)
+        .where(
+          row.kind === "adult"
+            ? eq(participants.userId, account.id)
+            : eq(participants.id, row.id),
+        )
+        .returning();
+    });
+  } catch (error) {
+    if (error instanceof GateClosedError) return { error: "closed" };
+    logger.error({ err: error }, "could not delete the participant");
+    return { error: "failed" };
+  }
 
   await deleteTranslations([
     ...doomedIds.flatMap(participantKeys),

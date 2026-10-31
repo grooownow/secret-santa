@@ -1,11 +1,19 @@
 "use client";
 
+import { ArrowUpRight, CircleAlert } from "lucide-react";
+import type { Route } from "next";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { FormAlert } from "@/components/form-ui";
+import { LinkButton } from "@/components/form-ui";
 import { runDraw, type DrawResult } from "./run-draw-action";
 
 type Failure = Extract<DrawResult, { ok: false }>;
+
+const primaryClass =
+  "bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold disabled:opacity-60";
+const secondaryClass =
+  "border-santa-green text-santa-green bg-santa-white flex h-14 w-full items-center justify-between rounded-full border px-6 text-base font-semibold disabled:opacity-60";
 
 /** `K:24` -> `K, 24`. */
 function showFlat(flat: string): string {
@@ -14,11 +22,21 @@ function showFlat(flat: string): string {
 }
 
 /**
- * "Запустить жеребьёвку": opens a confirmation (frame dPnGE); a refusal is
- * shown in the organizer's interface language with its reason (frame BEoW3).
+ * "Запустить жеребьёвку": the confirmation (frame dPnGE) opens as a modal and
+ * a refusal is shown in the organizer's interface language with its reason
+ * (frame BEoW3).
  */
-export function RunDrawForm({ disabled }: { disabled?: boolean }) {
+export function RunDrawForm({
+  ready,
+  excluded,
+  checkHref,
+}: {
+  ready: number;
+  excluded: number;
+  checkHref: Route;
+}) {
   const t = useTranslations("admin.draw");
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [failure, setFailure] = useState<Failure | null>(null);
   const [pending, startTransition] = useTransition();
@@ -41,29 +59,71 @@ export function RunDrawForm({ disabled }: { disabled?: boolean }) {
       }
       setOpen(false);
       setFailure(result.ok ? null : result);
+      // Another tab already ran the draw: show the post-draw view.
+      if (!result.ok && result.reason === "already_drawn") router.refresh();
     });
   }
 
+  const chainFailure =
+    failure?.reason === "too_few" || failure?.reason === "household_too_large";
+
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-5">
       {failure ? (
-        <FormAlert title={t("errorTitle")}>
-          {failure.reason === "household_too_large" && failure.flat
-            ? t("reason.household_too_large", {
-                flat: showFlat(failure.flat),
-              })
-            : t(`reason.${failure.reason}`)}{" "}
-          {failure.reason === "already_drawn" ? null : t("notSaved")}
-        </FormAlert>
-      ) : null}
-      <button
-        type="button"
-        disabled={disabled || pending}
-        onClick={() => setOpen(true)}
-        className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-center rounded-full px-6 text-base font-semibold disabled:opacity-60"
-      >
-        {t("start")}
-      </button>
+        <>
+          <div className="bg-santa-mint text-santa-green flex size-[68px] items-center justify-center rounded-full">
+            <CircleAlert className="size-[30px]" aria-hidden />
+          </div>
+          <h1 className="text-santa-ink text-[26px] leading-tight font-bold">
+            {t("errorHeading")}
+          </h1>
+          <div
+            role="alert"
+            className="bg-santa-danger-bg flex flex-col gap-[7px] rounded-xl p-[18px]"
+          >
+            <p className="text-santa-ink text-[17px] font-bold">
+              {t("errorTitle")}
+            </p>
+            <p className="text-santa-muted text-[13px] leading-relaxed">
+              {failure.reason === "household_too_large" && failure.flat
+                ? t("reason.household_too_large", {
+                    flat: showFlat(failure.flat),
+                  })
+                : t(`reason.${failure.reason}`)}
+            </p>
+          </div>
+          {chainFailure ? (
+            <p className="text-santa-muted text-sm leading-relaxed">
+              {t("notSaved")}
+            </p>
+          ) : null}
+          <LinkButton href={checkHref}>{t("check")}</LinkButton>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => setOpen(true)}
+            className={secondaryClass}
+          >
+            <span>{t("retry")}</span>
+            <ArrowUpRight className="size-[18px]" aria-hidden />
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => setOpen(true)}
+            className={primaryClass}
+          >
+            <span>{t("start")}</span>
+            <ArrowUpRight className="size-[18px]" aria-hidden />
+          </button>
+          <p className="text-santa-muted text-xs leading-relaxed">
+            {t("hint")}
+          </p>
+        </>
+      )}
       <dialog
         ref={dialogRef}
         aria-labelledby="draw-confirm-title"
@@ -73,31 +133,46 @@ export function RunDrawForm({ disabled }: { disabled?: boolean }) {
         }}
         className="bg-santa-white backdrop:bg-santa-ink/40 m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl p-6"
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5">
           <h2
             id="draw-confirm-title"
-            className="text-santa-ink text-xl font-bold"
+            className="text-santa-ink text-[26px] leading-tight font-bold"
           >
             {t("confirmTitle")}
           </h2>
+          <div className="bg-santa-yellow text-santa-ink flex flex-col gap-[7px] rounded-xl p-[18px]">
+            <p className="text-[17px] font-bold">
+              {t("confirmReady", { count: ready })}
+            </p>
+            {excluded > 0 ? (
+              <p className="text-[13px] leading-relaxed">
+                {t("confirmExcluded", { count: excluded })}
+              </p>
+            ) : null}
+          </div>
           <p className="text-santa-muted text-sm leading-relaxed">
             {t("confirmText")}
+          </p>
+          <p className="text-santa-muted text-[13px] leading-relaxed">
+            {t("confirmMail")}
           </p>
           <button
             type="button"
             disabled={pending}
             onClick={confirm}
-            className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-center rounded-full px-6 text-base font-semibold disabled:opacity-60"
+            className={primaryClass}
           >
-            {pending ? t("running") : t("confirm")}
+            <span>{pending ? t("running") : t("confirm")}</span>
+            <ArrowUpRight className="size-[18px]" aria-hidden />
           </button>
           <button
             type="button"
             disabled={pending}
             onClick={() => setOpen(false)}
-            className="text-santa-green self-center text-[13px] font-semibold underline-offset-4 hover:underline"
+            className={secondaryClass}
           >
-            {t("cancel")}
+            <span>{t("cancel")}</span>
+            <ArrowUpRight className="size-[18px]" aria-hidden />
           </button>
         </div>
       </dialog>

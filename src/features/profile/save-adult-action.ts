@@ -11,7 +11,12 @@ import { isLocale } from "@/i18n/locale";
 import { logger } from "@/lib/logger";
 import { deletePhotos } from "@/lib/photo-storage";
 import { runAfterResponse } from "@/lib/run-after-response";
-import { canCreate, canEdit } from "./edit-gate";
+import {
+  assertGateOpen,
+  canCreate,
+  canEdit,
+  GateClosedError,
+} from "./edit-gate";
 import { readPhoto } from "./photo-field";
 import { saveTexts } from "./save-texts";
 import { adultSchema } from "./schemas";
@@ -66,6 +71,7 @@ export async function saveAdultAction(
   let id: string;
   try {
     id = await db.transaction(async (tx) => {
+      await assertGateOpen(tx, existing ? "edit" : "create");
       await tx
         .update(users)
         .set({ building: data.building, apartment: data.apartment })
@@ -73,7 +79,12 @@ export async function saveAdultAction(
       if (existing) {
         await tx
           .update(participants)
-          .set({ name: data.name, photoUrl })
+          .set({
+            name: data.name,
+            photoUrl,
+            wishes: data.wishes,
+            avoid: data.avoid,
+          })
           .where(eq(participants.id, existing.id));
         return existing.id;
       }
@@ -84,14 +95,17 @@ export async function saveAdultAction(
           kind: "adult",
           name: data.name,
           photoUrl,
+          wishes: data.wishes,
+          avoid: data.avoid,
         })
         .returning();
       if (!created) throw new Error("participant was not created");
       return created.id;
     });
   } catch (error) {
-    logger.error({ err: error }, "could not save the owner profile");
     if (photo.kind === "new") await deletePhotos([photo.url]).catch(() => {});
+    if (error instanceof GateClosedError) return { error: "closed", values };
+    logger.error({ err: error }, "could not save the owner profile");
     return { error: "failed", values };
   }
   await saveTexts(id, data);

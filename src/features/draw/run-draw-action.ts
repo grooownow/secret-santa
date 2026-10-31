@@ -49,6 +49,7 @@ export async function runDraw(): Promise<DrawResult> {
     const people = await tx
       .select({
         id: participants.id,
+        userId: participants.userId,
         building: users.building,
         apartment: users.apartment,
       })
@@ -62,7 +63,7 @@ export async function runDraw(): Promise<DrawResult> {
       flat:
         p.building && p.apartment
           ? flatKey(p.building, p.apartment)
-          : `none:${p.id}`,
+          : `none:${p.userId}`,
     }));
 
     const chain = buildChain(entries);

@@ -364,15 +364,18 @@
       "drawMail": "E-Mail zur Auslosung",
       "sentOf": "{sent} von {total} gesendet",
       "participantsLink": "Teilnehmende",
-      "backupLink": "Ersatz-Wichtel gesucht"
+      "backupLink": "Ersatz-Wichtel gesucht",
+      "collectUntil": "Bis {date} · Madrid",
+      "beforeTitle": "Vor der Auslosung",
+      "beforeText": "Prüfen Sie die Bewohnerliste und entfernen Sie fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Profil teil."
     },
     "draw": {
       "start": "Auslosung starten",
       "confirmTitle": "Auslosung starten?",
-      "confirmText": "Die Kette wird sofort erstellt, die Anmeldung schließt und alle bekommen eine E-Mail. Das lässt sich nicht rückgängig machen.",
+      "confirmText": "Die Anmeldung schließt. Alle bekommen genau eine Person zum Beschenken; wer in derselben Wohnung oder im selben Konto ist, beschenkt sich nicht gegenseitig.",
       "confirm": "Ja, starten",
       "running": "Wird gestartet…",
-      "cancel": "Abbrechen",
+      "cancel": "Zurück zur Prüfung",
       "errorTitle": "Die Auslosung hat nicht stattgefunden",
       "notSaved": "Nichts wurde gespeichert. Die Anmeldung bleibt offen, es wurden keine E-Mails gesendet.",
       "reason": {
@@ -384,7 +387,14 @@
       },
       "resend": "Rest senden",
       "resending": "Wird gesendet…",
-      "resendFailed": "Einige E-Mails sind nicht rausgegangen. Bitte später noch einmal versuchen."
+      "resendFailed": "Einige E-Mails sind nicht rausgegangen. Bitte später noch einmal versuchen.",
+      "hint": "Die Auslosung startet nur von Hand. Danach schließt die Anmeldung. Paare erscheinen weder in der Verwaltung noch in Logs oder E-Mails.",
+      "errorHeading": "Das klappt noch nicht",
+      "check": "Teilnehmende prüfen",
+      "retry": "Noch einmal versuchen",
+      "confirmReady": "Bereite Teilnehmende: {count}",
+      "confirmExcluded": "Unbestätigt und nicht in der Auslosung: {count}. Prüfen Sie die Liste vor dem Start.",
+      "confirmMail": "Teilnehmende erhalten eine E-Mail nur mit dem Link zum Bereich. Die Organisation sieht die Paare nicht."
     }
   }
 }

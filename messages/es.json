@@ -364,15 +364,18 @@
       "drawMail": "Correo del sorteo",
       "sentOf": "Enviados {sent} de {total}",
       "participantsLink": "Participantes",
-      "backupLink": "Hace falta un Santa de reserva"
+      "backupLink": "Hace falta un Santa de reserva",
+      "collectUntil": "Hasta el {date} · Madrid",
+      "beforeTitle": "Antes del sorteo",
+      "beforeText": "Revisa la lista de vecinos y quita las inscripciones ajenas. Solo participan las cuentas confirmadas con la ficha completa."
     },
     "draw": {
       "start": "Hacer el sorteo",
       "confirmTitle": "¿Hacer el sorteo?",
-      "confirmText": "La cadena se crea al instante, las inscripciones se cierran y todos reciben un correo. No se puede deshacer.",
+      "confirmText": "Las inscripciones se cerrarán. Cada persona tendrá a alguien a quien regalar; quienes viven en el mismo piso o comparten cuenta no se regalan entre sí.",
       "confirm": "Sí, hacerlo",
       "running": "Haciendo el sorteo…",
-      "cancel": "Cancelar",
+      "cancel": "Volver a la revisión",
       "errorTitle": "El sorteo no se ha hecho",
       "notSaved": "No se ha guardado nada. Las inscripciones siguen abiertas y no se ha enviado ningún correo.",
       "reason": {
@@ -384,7 +387,14 @@
       },
       "resend": "Enviar los que faltan",
       "resending": "Enviando…",
-      "resendFailed": "Algunos correos no salieron. Inténtalo de nuevo un poco más tarde."
+      "resendFailed": "Algunos correos no salieron. Inténtalo de nuevo un poco más tarde.",
+      "hint": "El sorteo solo se lanza a mano. Después, las inscripciones se cierran. Las parejas no se ven en la administración, los registros ni los correos.",
+      "errorHeading": "Todavía no se puede",
+      "check": "Revisar participantes",
+      "retry": "Intentarlo de nuevo",
+      "confirmReady": "Participantes listos: {count}",
+      "confirmExcluded": "Sin confirmar y fuera del sorteo: {count}. Revisa la lista antes de empezar.",
+      "confirmMail": "Los participantes recibirán un correo solo con el enlace a su espacio. La organización no verá las parejas."
     }
   }
 }
