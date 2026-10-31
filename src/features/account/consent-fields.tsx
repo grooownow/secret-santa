@@ -40,6 +40,7 @@ export function ConsentFields({
         <CheckboxRow name="age14" invalid={invalid === "age"}>
           {t("age")}
         </CheckboxRow>
+        <p className="text-santa-muted text-xs">{t("processors")}</p>
         <TextLink href={RULES_HREF}>{t("rules")}</TextLink>
       </div>
     </>

@@ -20,7 +20,9 @@
   },
   "translate": {
     "button": "Translate",
-    "opensInNewTab": "Opens in a new tab"
+    "opensInNewTab": "Opens in a new tab",
+    "showOriginal": "Show original",
+    "showTranslation": "Show translation"
   },
   "error": {
     "title": "A little holiday pause",
@@ -126,7 +128,8 @@
       "language": "Interface language",
       "consent": "I consent to the processing of my data and accept the rules of the game.",
       "age": "I confirm that I am at least 14 years old.",
-      "rules": "Read the rules and data notice"
+      "rules": "Read the rules and data notice",
+      "processors": "Wishes and wall posts are translated automatically by the Groq service. Only the text itself is sent, never your name or address."
     },
     "register": {
       "title": "Become a Santa",

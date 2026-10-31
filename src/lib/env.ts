@@ -54,6 +54,11 @@ const schema = z
     // Vercel Blob token for participant and wall photos.
     BLOB_READ_WRITE_TOKEN: z.string().optional(),
 
+    // Groq (free tier) translates user texts on save. Without a key,
+    // translation is a fake in dev/test and disabled in production.
+    GROQ_API_KEY: z.string().optional(),
+    GROQ_MODEL: z.string().min(1).default("llama-3.3-70b-versatile"),
+
     // Observability
     SENTRY_DSN: z.url().optional(),
     NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),

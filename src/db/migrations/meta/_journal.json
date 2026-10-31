@@ -50,6 +50,13 @@
       "when": 1793474136980,
       "tag": "0006_cuddly_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793475252739,
+      "tag": "0007_futuristic_scourge",
+      "breakpoints": true
     }
   ]
 }

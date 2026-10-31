@@ -20,7 +20,9 @@
   },
   "translate": {
     "button": "Traducir",
-    "opensInNewTab": "Se abre en una pestaña nueva"
+    "opensInNewTab": "Se abre en una pestaña nueva",
+    "showOriginal": "Mostrar original",
+    "showTranslation": "Mostrar traducción"
   },
   "error": {
     "title": "Una pequeña pausa navideña",
@@ -126,7 +128,8 @@
       "language": "Idioma de la interfaz",
       "consent": "Doy mi consentimiento para el tratamiento de mis datos y acepto las reglas del juego.",
       "age": "Confirmo que tengo al menos 14 años.",
-      "rules": "Leer las reglas y el aviso de datos"
+      "rules": "Leer las reglas y el aviso de datos",
+      "processors": "Los deseos y las publicaciones del muro se traducen automáticamente con el servicio Groq. Solo se envía el texto, sin nombre ni dirección."
     },
     "register": {
       "title": "Hazte Santa",

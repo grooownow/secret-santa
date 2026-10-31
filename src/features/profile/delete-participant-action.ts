@@ -1,11 +1,17 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "@/db/client";
-import { participants } from "@/db/schema";
+import { participants, wallPosts } from "@/db/schema";
 import { requireVerifiedAccount } from "@/features/auth";
 import { HOME } from "@/features/account";
+import {
+  deleteTranslations,
+  participantKeys,
+  postKey,
+} from "@/features/translation";
+import { logger } from "@/lib/logger";
 import { deletePhotos } from "@/lib/photo-storage";
 import { canEdit } from "./edit-gate";
 import { idSchema } from "./schemas";
@@ -35,6 +41,23 @@ export async function deleteParticipantAction(
   if (!row) return { error: "notFound" };
   if (!(await canEdit())) return { error: "closed" };
 
+  // Translations have no foreign key: collect their keys before the rows go.
+  const doomed = await db
+    .select({ id: participants.id })
+    .from(participants)
+    .where(
+      row.kind === "adult"
+        ? eq(participants.userId, account.id)
+        : eq(participants.id, row.id),
+    );
+  const doomedIds = doomed.map((d) => d.id);
+  const posts = doomedIds.length
+    ? await db
+        .select({ id: wallPosts.id })
+        .from(wallPosts)
+        .where(inArray(wallPosts.participantId, doomedIds))
+    : [];
+
   const removed = await db
     .delete(participants)
     .where(
@@ -43,6 +66,13 @@ export async function deleteParticipantAction(
         : eq(participants.id, row.id),
     )
     .returning();
+
+  await deleteTranslations([
+    ...doomedIds.flatMap(participantKeys),
+    ...posts.map((p) => postKey(p.id)),
+  ]).catch((error: unknown) =>
+    logger.error({ err: error }, "could not delete translations"),
+  );
 
   const photos = removed.flatMap((r) => (r.photoUrl ? [r.photoUrl] : []));
   await deletePhotos(photos).catch(() => {});

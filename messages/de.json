@@ -20,7 +20,9 @@
   },
   "translate": {
     "button": "Übersetzen",
-    "opensInNewTab": "Öffnet sich in einem neuen Tab"
+    "opensInNewTab": "Öffnet sich in einem neuen Tab",
+    "showOriginal": "Original anzeigen",
+    "showTranslation": "Übersetzung anzeigen"
   },
   "error": {
     "title": "Eine kleine Winterpause",
@@ -126,7 +128,8 @@
       "language": "Sprache der Oberfläche",
       "consent": "Ich willige in die Verarbeitung meiner Daten ein und akzeptiere die Spielregeln.",
       "age": "Ich bestätige, dass ich mindestens 14 Jahre alt bin.",
-      "rules": "Regeln und Datenhinweis lesen"
+      "rules": "Regeln und Datenhinweis lesen",
+      "processors": "Wünsche und Pinnwand-Beiträge werden automatisch vom Dienst Groq übersetzt. Es wird nur der Text selbst gesendet, ohne Namen und Adresse."
     },
     "register": {
       "title": "Wichtel werden",

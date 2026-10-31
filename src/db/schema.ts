@@ -187,3 +187,23 @@ export const settings = pgTable("settings", {
   drawnAt: timestamp("drawn_at", { withTimezone: true }),
   purgedAt: timestamp("purged_at", { withTimezone: true }),
 });
+
+// Auto-translations of user texts. `sourceKey` is `participant:<id>:wishes`,
+// `participant:<id>:avoid` or `post:<id>`; there is no foreign key, so rows are
+// removed together with their source by the translation feature. `sourceHash`
+// (SHA-256 of the original) marks a translation of an older text as stale.
+export const translations = pgTable(
+  "translations",
+  {
+    sourceKey: text("source_key").notNull(),
+    locale: text("locale").notNull(),
+    text: text("text").notNull(),
+    sourceHash: text("source_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (translation) => [
+    primaryKey({ columns: [translation.sourceKey, translation.locale] }),
+  ],
+);
