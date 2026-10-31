@@ -8,6 +8,7 @@ export { ResetForm } from "./reset-form";
 export { WelcomeForm } from "./welcome-form";
 export { readRegistrationNonce } from "./registration-nonce";
 export { verifyEmailToken } from "./verify-email-action";
+export { confirmEmailAction } from "./confirm-email-action";
 export {
   tokenIsValid,
   issueToken,

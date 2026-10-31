@@ -194,7 +194,9 @@
       "text": "Ha caducado o el correo ya está confirmado. Puedes pedir un correo nuevo.",
       "submit": "Obtener un enlace nuevo",
       "verified": "¿Correo confirmado?",
-      "signIn": "Entrar"
+      "signIn": "Entrar",
+      "passwordHint": "¿La contraseña no funciona?",
+      "newPassword": "Crear una contraseña nueva"
     },
     "forgot": {
       "title": "¿Has olvidado la contraseña?",
@@ -237,6 +239,12 @@
         "age": "Confirma que tienes al menos 14 años.",
         "invalid": "No ha funcionado. Revisa los campos e inténtalo de nuevo."
       }
+    },
+    "verifyConfirm": {
+      "title": "Confirma tu correo",
+      "text": "Pulsa el botón para terminar el registro.",
+      "submit": "Confirmar correo",
+      "pending": "Confirmando…"
     }
   },
   "profile": {

@@ -194,7 +194,9 @@
       "text": "It has expired or the email is already confirmed. You can ask for a new email.",
       "submit": "Get a new link",
       "verified": "Email confirmed?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "passwordHint": "Password not working?",
+      "newPassword": "Set a new password"
     },
     "forgot": {
       "title": "Forgot your password?",
@@ -237,6 +239,12 @@
         "age": "Please confirm that you are at least 14.",
         "invalid": "Something went wrong. Check the fields and try again."
       }
+    },
+    "verifyConfirm": {
+      "title": "Confirm your email",
+      "text": "Press the button to finish signing up.",
+      "submit": "Confirm email",
+      "pending": "Confirming…"
     }
   },
   "profile": {

@@ -194,7 +194,9 @@
       "text": "Er ist abgelaufen oder die E-Mail ist schon bestätigt. Du kannst eine neue E-Mail anfordern.",
       "submit": "Neuen Link erhalten",
       "verified": "E-Mail bestätigt?",
-      "signIn": "Anmelden"
+      "signIn": "Anmelden",
+      "passwordHint": "Passwort funktioniert nicht?",
+      "newPassword": "Neues Passwort festlegen"
     },
     "forgot": {
       "title": "Passwort vergessen?",
@@ -237,6 +239,12 @@
         "age": "Bitte bestätige, dass du mindestens 14 bist.",
         "invalid": "Das hat nicht geklappt. Prüfe die Felder und versuche es erneut."
       }
+    },
+    "verifyConfirm": {
+      "title": "Bestätige deine E-Mail",
+      "text": "Tippe auf den Button, um die Anmeldung abzuschließen.",
+      "submit": "E-Mail bestätigen",
+      "pending": "Wird bestätigt …"
     }
   },
   "profile": {

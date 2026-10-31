@@ -125,6 +125,7 @@ async function registerAndConfirm(page: Page, who: Neighbour) {
 
   const mail = await waitForMail(who.email, SUBJECT.verify);
   await page.goto(linkIn(mail, "/verify-email"));
+  await page.getByRole("button", { name: "Confirm email" }).click();
   await expect(
     page.getByRole("heading", { name: "Email confirmed" }),
   ).toBeVisible();
