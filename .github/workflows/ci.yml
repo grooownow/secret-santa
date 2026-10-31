@@ -32,10 +32,6 @@ jobs:
       # Tier 2: do the skill descriptions still route? Deterministic, no tokens.
       - run: pnpm skills:evals
       - run: pnpm test
-      # Module structure gate — makes docs/rules/modules.md's "validated in
-      # CI" claim true: every modules/<name>/module.md has required
-      # frontmatter and an Apply plan section.
-      - run: pnpm modules:validate
       # Red on high/critical vulnerabilities. Escape hatch for false
       # positives or advisories without a fix: an `overrides:` entry in
       # pnpm-workspace.yaml, with a comment explaining why — see
@@ -68,59 +64,15 @@ jobs:
       # Same ordering requirement as `quality`: pnpm/action-setup must precede
       # setup-node so that the next step's cache: pnpm option can shell out to
       # `pnpm store path` successfully. As a result, pnpm is preinstalled here
-      # and bootstrap's corepack fallback for buyers without pnpm is NOT covered
-      # by this job — the fallback is only tested locally or by buyers running
+      # and bootstrap's corepack fallback for machines without pnpm is NOT covered
+      # by this job — the fallback is only tested locally or by anyone running
       # scripts/bootstrap on a fresh machine with only Node installed.
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with: { node-version: 22, cache: pnpm }
-      - name: Bootstrap from clean checkout (buyer's first-run path)
+      - name: Bootstrap from clean checkout (first-run path)
         run: ./scripts/bootstrap --ci
       - run: pnpm build
-
-  # Compiles and gates App — Landing + the persistence module — end to end:
-  # apply, install (non-frozen: applying changed package.json), migrate,
-  # unit+integration tests, then the module's own e2e (tests/e2e/auth.spec.ts,
-  # materialized under modules/persistence/files/tests/e2e/). This is the
-  # committed form of the round-trip proved out-of-tree in Task 5.
-  materialized-app:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
-        with: { node-version: 22, cache: pnpm }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm module:apply persistence
-      # Not cosmetic ordering: `pnpm module:apply` is a package script, and pnpm
-      # verifies the lockfile against package.json before running one. Applying
-      # persistence added 9 deps, so the NEXT apply aborts with
-      # ERR_PNPM_OUTDATED_LOCKFILE (frozen-lockfile is on by default in CI)
-      # before it does anything. Re-resolve here, between the two applies.
-      - run: pnpm install --no-frozen-lockfile
-      # observability (Sentry) is the other App-preset module; apply it too so
-      # App's instrumentation code compiles and instrumentation.test.ts runs.
-      - run: pnpm module:apply observability
-      # Same again for observability's own deps. The committed repo lockfile
-      # stays the Landing lockfile — both of these are CI-ephemeral.
-      - run: pnpm install --no-frozen-lockfile
-      # Re-lint the materialized App. The persistence code (db/auth/middleware)
-      # now lives in modules/ (excluded from the core lint surface), so once
-      # it is materialized back into src/ this is the only job that runs
-      # oxlint/eslint/prettier/tsc over it — restoring the import-direction,
-      # no-console and window.location guards on the auth slice.
-      - run: pnpm lint
-      - run: pnpm db:migrate
-      - run: pnpm test
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:e2e
-      - name: Upload Playwright report
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
 
   remote-db:
     runs-on: ubuntu-latest
@@ -128,32 +80,25 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_USER: gridfin
-          POSTGRES_PASSWORD: gridfin
-          POSTGRES_DB: gridfin
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: app
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U gridfin" --health-interval 5s
+          --health-cmd "pg_isready -U app" --health-interval 5s
           --health-timeout 5s --health-retries 10
     env:
       GRIDFIN_DB: remote
-      DATABASE_URL: postgres://gridfin:gridfin@localhost:5432/gridfin
+      DATABASE_URL: postgres://app:app@localhost:5432/app
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      # db:migrate/db:reset only exist after persistence is applied — Landing
-      # alone has no db. Non-frozen install: see materialized-app above.
-      - run: pnpm module:apply persistence
-      - run: pnpm install --no-frozen-lockfile
       - run: pnpm db:migrate
       - run: pnpm test
 
-  # Landing smoke: the only e2e spec Landing itself owns
-  # (tests/e2e/smoke.spec.ts) — exercises `/` with no db. The auth e2e spec
-  # moved into modules/persistence and is gated by materialized-app above.
   e2e:
     runs-on: ubuntu-latest
     steps:
@@ -184,9 +129,6 @@ jobs:
       - uses: actions/setup-node@v6
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      # db:reset only exists after persistence is applied — see remote-db.
-      - run: pnpm module:apply persistence
-      - run: pnpm install --no-frozen-lockfile
       - run: pnpm build
       - run: pnpm db:reset
       - run: pnpm exec lhci autorun

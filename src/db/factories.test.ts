@@ -7,8 +7,8 @@ describe("makeUser", () => {
   });
 
   it("applies overrides", () => {
-    expect(makeUser({ email: "fixed@gridfin.dev" }).email).toBe(
-      "fixed@gridfin.dev",
+    expect(makeUser({ email: "fixed@example.test" }).email).toBe(
+      "fixed@example.test",
     );
   });
 });

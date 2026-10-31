@@ -56,12 +56,8 @@ it. That is still yours.
    formatting diff → run `pnpm format`).
 2. **`pnpm test`** — all three Vitest projects (unit, component,
    integration). On FAIL, quote the first failing test name + assertion.
-2b. **DB reset (App/App+Billing only)** — when the project has the
-    `persistence` module installed (`docs/manifest.md` → `## Installed
-    modules` lists it, or a `db:reset` script exists in `package.json`), run
-    the module's `db:reset` (migrate + reseed) and confirm it reproduces a
-    working local database. A Landing project has no database — mark this
-    N.A. and move on, same as the other N.A. rows.
+2b. **DB reset** — run `pnpm db:reset` (migrate + reseed) and confirm it
+    reproduces a working local database.
 3. **`pnpm test:e2e`** — Playwright. Two environment notes:
    - **Browsers:** if it errors with `Executable doesn't exist` /
      "browser is not installed", run `pnpm exec playwright install chromium`

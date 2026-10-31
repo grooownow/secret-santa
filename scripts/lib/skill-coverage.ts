@@ -48,15 +48,6 @@ export const DEFAULT_SIZE_BUDGET_RATIO = 1.5;
  * is the line that changes — and the diff is the record of the promotion.
  */
 export const SKILL_COVERAGE: Readonly<Record<string, string>> = {
-  // A prose skill that drives modules/<name>/module.md apply-plans into an
-  // already-started project. Tier 1 proves it loads; Tier 2 proves its
-  // description routes the "add a database / auth / error tracking" prompts to
-  // it without colliding with gridfin (fresh onboarding), feature, or deploy.
-  // The reconcile-don't-clobber discipline and the manifest bookkeeping are
-  // judged by eye — a fixture could only assert the agent said the right words,
-  // and saying that here is more honest than pretending otherwise.
-  "add-module":
-    "Tier 1 structure + Tier 2 routing (evals.json) ONLY — no behavioral fixture; grading the apply-plan walk needs a real started project with a diverged file to reconcile, which CI does not have.",
   // The taste store is the only part of this skill a machine can grade today:
   // decay, rejection, and determinism are arithmetic, and scripts/lib/taste.test.ts
   // proves each of them can fail. Everything the skill does with a browser — the
@@ -77,19 +68,8 @@ export const SKILL_COVERAGE: Readonly<Record<string, string>> = {
   // job is to make that visible, not to launder it.
   learn:
     "Tier 1 structure + Tier 2 routing (evals.json) ONLY — no behavioral fixture yet; the next detection eval after `review` should be this one.",
-  gridfin:
-    "Tier 1 structure + Tier 2 routing (evals.json); the onboarding commit exception it relies on is pinned in docs/rules/git.md.",
   review:
     "Tier 1 structure + Tier 2 routing (evals.json) + Tier 3 detection rate against tests/fixtures/planted-defects (scripts/skill-detection-eval.ts, run locally on demand — not in CI, see that file for why).",
-  // A prose skill: it drives a git-and-copy workflow against a fresh template
-  // clone, none of which a fixture can grade without a real second repo and a
-  // real network. Tier 1 proves it loads and Tier 2 proves its description
-  // ("template version"/"upgrade"/"apply plan") does not collide with deploy or
-  // feature; the copy-not-fork discipline it hangs on is judged by eye, and
-  // saying that here is more honest than a behavioral fixture that could only
-  // assert the agent said the right words.
-  update:
-    "Tier 1 structure + Tier 2 routing (evals.json) ONLY — no behavioral fixture; grading the apply-plan walk needs a real newer template + network, which CI does not have.",
   verify:
     "Tier 1 structure + Tier 2 routing (evals.json); the gate sequence it runs IS the CI quality job, so a drifted command turns CI red.",
 };

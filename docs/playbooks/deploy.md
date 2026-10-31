@@ -17,20 +17,6 @@ Ship this app to production: Vercel hosting + a managed Postgres database
 
 ## Steps
 
-Read `docs/manifest.md` → `## Preset` before starting — it decides which
-steps below apply.
-
-**Landing preset:** skip steps 2 (Postgres) and 5 (migrations) entirely — go
-straight from step 1 (push to GitHub) to step 3 (Vercel import), and drop
-`DATABASE_URL`/`GRIDFIN_DB` and the auth rows (`AUTH_SECRET`/
-`AUTH_GITHUB_*`/`AUTH_GOOGLE_*`) from step 4's env table. The "Production
-auth checklist" section doesn't apply. Steps 3, 4 (minus the dropped rows),
-6, 7 still apply — step 6's smoke check is just `/` renders, no sign-in
-round-trip.
-
-**App / App+Billing preset:** run every step below in order, including the
-Postgres/migration steps and the full env table.
-
 ### 1. Push the repo to GitHub
 
 **Agent does:** check `git remote -v`. No remote → create one
@@ -40,7 +26,7 @@ otherwise ask the user to create an empty repo on github.com, then
 
 **Done when:** `main` is visible on github.com.
 
-### 2. Create a managed Postgres database (App/App+Billing only)
+### 2. Create a managed Postgres database
 
 **User does** (navigation may differ by provider version — look for the
 nearest equivalent action if a label doesn't match):
@@ -71,20 +57,18 @@ build is expected — env vars aren't set yet).
 
 **User does** (dashboard: Project → Settings → Environment Variables; CLI:
 `npx vercel env add <NAME>`); **agent does** helps produce the values.
-**Landing preset:** skip the `DATABASE_URL`, `GRIDFIN_DB`, and every
-`AUTH_*` row below — only `NEXT_PUBLIC_APP_URL` applies.
 
-| Variable                                                       | Value                                                                 |
-| -------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `DATABASE_URL` (App/App+Billing only)                          | The connection string from step 2.                                    |
-| `GRIDFIN_DB` (App/App+Billing only)                            | `remote` — switches off local PGlite.                                 |
-| `AUTH_SECRET` (App/App+Billing only)                           | `npx auth secret` (agent runs, gives the user the printed value).     |
-| `AUTH_TRUST_HOST` (App/App+Billing only)                       | Not needed on Vercel (auto-trusted). Only for self-hosting elsewhere. |
-| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` (App/App+Billing only) | If GitHub sign-in is used — see callback note below.                  |
-| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` (App/App+Billing only) | If Google sign-in is used — see callback note below.                  |
-| `NEXT_PUBLIC_APP_URL`                                          | The production URL Vercel assigns (or custom domain from step 7).     |
+| Variable                                | Value                                                                 |
+| --------------------------------------- | --------------------------------------------------------------------- |
+| `DATABASE_URL`                          | The connection string from step 2.                                    |
+| `GRIDFIN_DB`                            | `remote` — switches off local PGlite.                                 |
+| `AUTH_SECRET`                           | `npx auth secret` (agent runs, gives the user the printed value).     |
+| `AUTH_TRUST_HOST`                       | Not needed on Vercel (auto-trusted). Only for self-hosting elsewhere. |
+| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | If GitHub sign-in is used — see callback note below.                  |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | If Google sign-in is used — see callback note below.                  |
+| `NEXT_PUBLIC_APP_URL`                   | The production URL Vercel assigns (or custom domain from step 7).     |
 
-**OAuth callback URLs** (App/App+Billing only) — update before sign-in works in production:
+**OAuth callback URLs** — update before sign-in works in production:
 
 - GitHub OAuth App → "Authorization callback URL" →
   `https://<your-domain>/api/auth/callback/github`
@@ -93,7 +77,7 @@ build is expected — env vars aren't set yet).
 
 **Done when:** vars are set and the redeploy succeeds.
 
-### 5. Run migrations against production (App/App+Billing only)
+### 5. Run migrations against production
 
 **Agent does**, from your local machine (never edit an applied migration —
 `docs/rules/architecture.md`):
@@ -107,8 +91,7 @@ GRIDFIN_DB=remote DATABASE_URL="<connection string from step 2>" pnpm db:migrate
 ### 6. Smoke check
 
 **Agent does:** `curl -I https://<your-domain>/` (expect `200`); then a real
-browser pass. **Landing preset:** `/` renders — that's the whole check.
-**App/App+Billing:** `/` renders, and `/signin` completes an actual sign-in
+browser pass. `/` renders, and `/signin` completes an actual sign-in
 round-trip.
 
 **Done when:** both checks pass with quoted evidence.
@@ -123,7 +106,7 @@ DNS resolves, update `NEXT_PUBLIC_APP_URL` and OAuth callback URLs to match.
 
 ### 8. Deploy gate — keep red builds out of production
 
-Gridfin's CI turns red on a broken build, but **nothing stops a red branch
+The CI turns red on a broken build, but **nothing stops a red branch
 from being merged or deployed unless this step is done.** Parts of it live in
 GitHub/Vercel settings the agent cannot change — so the agent's job here is
 to check, explain, and hand over; never to silently skip.
@@ -159,7 +142,7 @@ gh api repos/<owner>/<repo>/branches/main/protection --jq .url
 >    ships a broken build.
 
 **Agent does after the choice:** record it in `docs/manifest.md` under
-`## Deploy` (one line, e.g. `Deploy gate: release-branch (production)`), so
+`## Deploy` (add the section if missing) (one line, e.g. `Deploy gate: release-branch (production)`), so
 future sessions know which flow this project uses. If option 2 was chosen,
 every later deploy goes:
 
@@ -184,7 +167,7 @@ outcome.
 - Live URL serves `/` with a real 200 and expected content.
 - A deploy-gate choice (step 8) is recorded in `docs/manifest.md` — the user
   explicitly picked protection, release-branch gating, or accepted the risk.
-- **App/App+Billing only:** sign-in works end-to-end on the live URL.
+- Sign-in works end-to-end on the live URL.
 - Lighthouse spot-check (Chrome DevTools panel, or `npx lighthouse <url> --view`)
   is in the same range as the local budget in `lighthouserc.js`
   (performance + accessibility ≥ 0.90).

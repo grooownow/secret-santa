@@ -18,7 +18,7 @@ const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY;
  *
  * With no `NEXT_PUBLIC_POSTHOG_KEY` set, this renders `children` only:
  * no `posthog-js` import ever executes, so no PostHog code runs and no
- * network calls are made. Buyers turn it on by setting the env var.
+ * network calls are made. It is turned on by setting the env var.
  *
  * The `posthog-js` import is dynamic (inside `useEffect`, behind the key
  * check) rather than a static top-level import specifically so bundlers

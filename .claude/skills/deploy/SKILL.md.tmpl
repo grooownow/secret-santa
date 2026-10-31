@@ -1,7 +1,7 @@
 ---
 name: deploy
 preamble-tier: 2
-description: Walks the user through shipping the project to production on Vercel with a managed Postgres database when the project needs one, checkpoint by checkpoint, using docs/playbooks/deploy.md as the source of truth. Use when the project is ready to go live for the first time, or when re-running the deploy flow (new environment, migrated database, custom domain). NOT for a local gate run before merging (that is verify) and NOT for setting a fresh project up in the first place (that is gridfin).
+description: Walks the user through shipping the project to production on Vercel with a managed Postgres database when the project needs one, checkpoint by checkpoint, using docs/playbooks/deploy.md as the source of truth. Use when the project is ready to go live for the first time, or when re-running the deploy flow (new environment, migrated database, custom domain). NOT for a local gate run before merging (that is verify).
 ---
 
 # Deploy
@@ -39,9 +39,8 @@ disagree, the playbook wins; update it, don't fork logic in here.
 2. **Load the playbook.** Read `docs/playbooks/deploy.md` fresh each run —
    it may have changed since you last saw it; never recite it from memory.
 3. **Walk it checkpoint by checkpoint**, in the order the playbook lists:
-   GitHub push → managed Postgres (when the manifest's `## Preset` needs a
-   database) → Vercel import → environment variables → migrations against
-   prod (same `## Preset` condition) → smoke check → optional custom domain.
+   GitHub push → managed Postgres → Vercel import → environment variables → migrations
+   against prod → smoke check → optional custom domain.
    For each:
    - State what happens at this step and who does it (agent command vs.
      user dashboard action).

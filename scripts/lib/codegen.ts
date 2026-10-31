@@ -183,7 +183,7 @@ export const STEPS_DIR = path.join(".claude", "skill-steps");
  *
  * A fragment earns its file when more than one skill needs the same rule
  * *verbatim*. Anything a skill states differently because its situation differs
- * (gridfin's non-conventional commit subjects, update's one-commit-per-version)
+ * (a skill's own commit-subject convention)
  * stays in that skill — a fragment that has to be qualified at every call site
  * is worse than the duplication it replaced.
  */

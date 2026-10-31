@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import { loadSkills, parseFrontmatter } from "./skills";
 
 function fixtureDir(skills: Record<string, string>): string {
-  const root = mkdtempSync(path.join(tmpdir(), "gridfin-skills-"));
+  const root = mkdtempSync(path.join(tmpdir(), "skills-"));
   for (const [name, content] of Object.entries(skills)) {
     mkdirSync(path.join(root, name), { recursive: true });
     writeFileSync(path.join(root, name, "SKILL.md"), content, "utf8");
@@ -51,7 +51,7 @@ describe("loadSkills", () => {
   });
 
   it("throws when a skill directory has no SKILL.md", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "gridfin-skills-"));
+    const root = mkdtempSync(path.join(tmpdir(), "skills-"));
     mkdirSync(path.join(root, "broken"), { recursive: true });
     expect(() => loadSkills(root)).toThrow(/broken.*SKILL\.md/);
   });

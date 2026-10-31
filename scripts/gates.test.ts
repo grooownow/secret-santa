@@ -27,7 +27,7 @@ describe("the plan decides what applies before anything runs", () => {
     expect(statusOf(plan(), "db-reset")).toBe("n/a");
   });
 
-  it("leaves db-reset to run once the persistence module provides it", () => {
+  it("leaves db-reset to run only when the script exists", () => {
     expect(statusOf(plan({ scripts: APP }), "db-reset")).toBeUndefined();
   });
 

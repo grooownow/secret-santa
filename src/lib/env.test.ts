@@ -15,7 +15,7 @@ describe("parseEnv", () => {
   it("accepts a valid remote config", () => {
     const env = parseEnv({
       GRIDFIN_DB: "remote",
-      DATABASE_URL: "postgres://gridfin:gridfin@localhost:5432/gridfin",
+      DATABASE_URL: "postgres://app:app@localhost:5432/app",
     });
     expect(env.DATABASE_URL).toContain("5432");
   });

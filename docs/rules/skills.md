@@ -67,8 +67,7 @@ session drops before the answer arrives. A dropped session is the normal case;
 the expensive failure is resuming _past_ an unanswered question because the code
 already looks finished.
 
-Existing patterns to copy rather than reinvent: `gridfin`'s `gridfin:fill`
-markers and step-numbered commits, `feature`'s resume protocol and its
+Existing patterns to copy rather than reinvent: `feature`'s resume protocol and its
 `NO UNRESOLVED DECISIONS` sentinel.
 
 ## Fresh context is a technique, not an accident

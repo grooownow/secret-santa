@@ -114,14 +114,8 @@ describe("validateSkill", () => {
 
   it("allows Cyrillic on a body line marked allow-nonascii", () => {
     const body =
-      "# Gridfin\n\n> 1. English 2. Русский 3. Español <!-- allow-nonascii -->\n";
-    expect(
-      validateSkill(
-        skill({ dir: "gridfin", name: "gridfin", body }),
-        KNOWN,
-        [],
-      ),
-    ).toEqual([]);
+      "# Verify\n\n> 1. English 2. Русский 3. Español <!-- allow-nonascii -->\n";
+    expect(validateSkill(skill({ body }), KNOWN, [])).toEqual([]);
   });
 
   it("does not flag non-Cyrillic non-ASCII (em-dash, CJK, accents)", () => {

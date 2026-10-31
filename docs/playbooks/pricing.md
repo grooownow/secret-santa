@@ -29,7 +29,7 @@ they got twice the value?" If no metric passes, charge a flat subscription.
 - **1 tier** (default): one price, one plan. Least friction, fastest signal
   on willingness to pay. Right for almost every v1.
 - **2 tiers**: only when two clearly different buyer types already exist in
-  the PRD (e.g. solo vs. team).
+  the product spec (e.g. solo vs. team).
 - **3 tiers**: only with real usage data — the middle tier is the one you
   want bought; the top tier anchors it.
 - Free: a trial (time- or usage-limited) beats a forever-free tier. Free

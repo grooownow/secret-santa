@@ -27,10 +27,9 @@ export interface Violation {
   reason: string;
 }
 
-/** Conventional Commits, plus the `gridfin:` exception carved out in docs/rules/git.md. */
+/** Conventional Commits. */
 const CONVENTIONAL =
   /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9._/-]+\))?!?: .+/;
-const GRIDFIN_COMMIT = /^gridfin: step \d+/;
 
 /**
  * `<a href="/dashboard">` — an internal link that throws away client-side
@@ -238,8 +237,7 @@ export function checkBash(command: string): Violation | null {
   if (message === null) return null;
 
   const subject = message.split("\n")[0]?.trim() ?? "";
-  if (!subject || CONVENTIONAL.test(subject) || GRIDFIN_COMMIT.test(subject))
-    return null;
+  if (!subject || CONVENTIONAL.test(subject)) return null;
 
   return {
     decision: "deny",
@@ -247,7 +245,6 @@ export function checkBash(command: string): Violation | null {
     reason:
       `Commit subject "${subject}" is not a Conventional Commit. Use ` +
       "`<type>(<scope>): <subject>` with type one of feat|fix|docs|style|refactor|" +
-      "perf|test|build|ci|chore|revert. (docs/rules/git.md carves out exactly one " +
-      "exception: `gridfin: step N` onboarding commits.)",
+      "perf|test|build|ci|chore|revert.",
   };
 }

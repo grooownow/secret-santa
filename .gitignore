@@ -36,4 +36,3 @@ marketing/landing/dist/
 .env*.local
 .env.vercel
 .vercel
-.env*

@@ -172,12 +172,6 @@ describe("invariant #5 — Conventional Commits", () => {
     ).toBeNull();
   });
 
-  it("allows the one carve-out docs/rules/git.md grants gridfin", () => {
-    expect(
-      checkBash('git commit -m "gridfin: step 3 — domain schema"'),
-    ).toBeNull();
-  });
-
   it("reads the subject line only, ignoring the body", () => {
     expect(checkBash('git commit -m "feat: x\n\nfixed the thing"')).toBeNull();
   });

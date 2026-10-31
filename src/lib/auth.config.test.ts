@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { buildAuthConfig, buildProviders, providerIdsFor } from "./auth.config";
 
 const authenticatedSession: Session = {
-  user: { id: "user-1", email: "a@gridfin.dev" },
+  user: { id: "user-1", email: "a@example.test" },
   expires: "2099-01-01T00:00:00.000Z",
 };
 

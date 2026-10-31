@@ -2,7 +2,7 @@ import type { Route } from "next";
 
 /**
  * Admin routes. typedRoutes learns new pages only at the next `next dev` or
- * `build`, so the helpers cast on purpose (see docs/gridfin-template-gaps.md).
+ * `build`, so the helpers cast on purpose.
  */
 export const ADMIN_HOME = "/admin" as Route;
 export const ADMIN_PARTICIPANTS = "/admin/participants" as Route;

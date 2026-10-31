@@ -21,12 +21,8 @@
         "owner": "review"
       },
       {
-        "prompt": "I have no product yet, help me pick an idea and set the project up",
-        "owner": "gridfin"
-      },
-      {
-        "prompt": "Install the persistence module so my landing project gets a database and login",
-        "owner": "add-module"
+        "prompt": "Ship this to production on Vercel with a managed database",
+        "owner": "deploy"
       }
     ]
   },

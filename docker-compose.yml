@@ -1,17 +1,17 @@
 # OPTIONAL: real local Postgres for those who prefer it over the default PGlite.
 # Usage: docker compose up -d, then set in .env:
 #   GRIDFIN_DB=remote
-#   DATABASE_URL=postgres://gridfin:gridfin@localhost:5432/gridfin
+#   DATABASE_URL=postgres://app:app@localhost:5432/app
 services:
   db:
     image: postgres:17-alpine
     environment:
-      POSTGRES_USER: gridfin
-      POSTGRES_PASSWORD: gridfin
-      POSTGRES_DB: gridfin
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
     ports:
       - "5432:5432"
     volumes:
-      - gridfin-pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 volumes:
-  gridfin-pgdata:
+  pgdata:

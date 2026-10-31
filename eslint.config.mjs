@@ -16,11 +16,6 @@ export default defineConfig(
       // the fixtures into lint errors, and "fixing" the lint errors would delete
       // the eval. They are only ever compiled inside a disposable worktree.
       "tests/fixtures/planted-defects/**",
-      // Modules live outside the core compile/lint/test surface (see
-      // docs/rules/modules.md): materialized files under modules/<name>/files/
-      // are verbatim copies destined for a target project, not this repo's own
-      // lint surface.
-      "modules/**",
     ],
   },
   {

@@ -1,13 +1,8 @@
 import { configDefaults, defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
-import { existsSync } from "node:fs";
 import path from "node:path";
 
-// Modules live outside the core compile/lint/test surface (docs/rules/modules.md):
-// files under modules/<name>/files/ are verbatim copies destined for a target
-// project, not this repo's own test surface. Every project below opts out of
-// modules/** on top of vitest's own defaults.
-const exclude = [...configDefaults.exclude, "modules/**"];
+const exclude = [...configDefaults.exclude];
 
 // `server-only` throws when imported outside a React Server Component
 // context, which includes both vitest projects below. Alias it to a no-op
@@ -20,10 +15,8 @@ const alias = {
 
 export default defineConfig({
   test: {
-    // Landing ships no client-component or integration tests; those live in
-    // the persistence module and re-appear when it is applied. Keep the
-    // "component" and "integration" projects defined (so an applied module has
-    // a home for them) but don't fail the run while they match no files.
+    // Keep the "component" and "integration" projects defined but do not fail
+    // the run while one of them matches no files.
     passWithNoTests: true,
     projects: [
       {
@@ -104,25 +97,6 @@ export default defineConfig({
           exclude,
         },
       },
-      // The marketing landing lives in marketing/landing/ as a self-contained
-      // folder: content JSON per locale, the i18n:check gate, and the
-      // static-site generator. Plain node, no aliases — imports nothing from
-      // src/. Conditional on the directory existing because marketing/ is
-      // excluded from the template export (scripts/export-template.sh): in a
-      // buyer's tree this project must vanish rather than fail with an empty
-      // include glob.
-      ...(existsSync(path.resolve(__dirname, "marketing/landing"))
-        ? [
-            {
-              test: {
-                name: "landing",
-                environment: "node",
-                include: ["marketing/landing/**/*.test.ts"],
-                exclude,
-              },
-            },
-          ]
-        : []),
     ],
   },
 });

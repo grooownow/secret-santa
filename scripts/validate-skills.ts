@@ -21,7 +21,7 @@ const KEBAB_CASE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
  */
 const TRIGGER_CLAUSE = /\buse (this )?(skill )?(when|before|after|during)\b/i;
 
-/** Matches the `` `name` skill `` convention used across Gridfin's skills. */
+/** Matches the `` `name` skill `` convention used across this repo's skills. */
 const SKILL_REFERENCE = /`([a-z][a-z0-9-]*)`\s+skill\b/g;
 
 /** Cyrillic specifically — NOT any non-ASCII. Em-dashes, curly quotes, and the

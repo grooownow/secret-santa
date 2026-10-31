@@ -5,10 +5,6 @@ pre-commit:
       glob: "*.{ts,tsx}"
       exclude:
         - next-env.d.ts
-        # Modules live outside the core lint surface (.oxlintrc.json ignores
-        # modules/**); without this, a modules-only commit hands oxlint a list
-        # it fully ignores and it exits 1 ("No files found to lint").
-        - "modules/**/*"
       run: pnpm oxlint {staged_files}
     prettier:
       glob: "*.{ts,tsx,css,md,json,yml}"

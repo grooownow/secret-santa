@@ -1,8 +1,7 @@
 # ADR <NNNN>: <decision title>
 
 Copy to `docs/decisions/<NNNN>-<slug>.md` (see `docs/rules/docs.md` for when a
-decision earns one). `docs/decisions/0001-gridfin-baseline.md` is a worked
-example of this format.
+decision earns one).
 
 ## Context
 

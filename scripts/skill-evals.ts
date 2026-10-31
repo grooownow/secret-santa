@@ -233,7 +233,7 @@ Reply with JSON only, no prose, in exactly this shape:
 
 /** Disposable, isolated, and real — our skills need the repo, not an empty dir. */
 export function withWorktree<T>(fn: (dir: string) => T): T {
-  const dir = mkdtempSync(path.join(tmpdir(), "gridfin-eval-"));
+  const dir = mkdtempSync(path.join(tmpdir(), "skill-eval-"));
   execFileSync("git", ["worktree", "add", "--detach", dir, "HEAD"], {
     stdio: "inherit",
   });

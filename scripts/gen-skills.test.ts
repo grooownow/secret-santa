@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
@@ -16,34 +16,9 @@ import {
   stepFragments,
   type RepoContext,
 } from "./lib/codegen";
-import { parsePackageDeps } from "./apply-module";
 import { loadSkills, loadSkillSources, SKILLS_DIR } from "./lib/skills";
 
 const ctx: RepoContext = { root: process.cwd() };
-
-/**
- * Scripts contributed by an applicable module (via its
- * `fragments/package-deps.md`). These do not exist in the Landing core
- * `package.json` but become runnable once the module is applied — so a skill
- * that documents the module's workflow may reference them.
- */
-function moduleProvidedScripts(repo: RepoContext): string[] {
-  const modulesDir = path.join(repo.root, "modules");
-  if (!existsSync(modulesDir)) return [];
-  const out: string[] = [];
-  for (const name of readdirSync(modulesDir)) {
-    const depsPath = path.join(
-      modulesDir,
-      name,
-      "fragments",
-      "package-deps.md",
-    );
-    if (!existsSync(depsPath)) continue;
-    const deps = parsePackageDeps(readFileSync(depsPath, "utf8"));
-    out.push(...Object.keys(deps.scripts));
-  }
-  return out;
-}
 
 describe("resolvers read a real source of truth", () => {
   it("lifts the invariants out of CLAUDE.md, not out of memory", () => {
@@ -190,15 +165,7 @@ describe("the compiled skills are in sync with their templates", () => {
  */
 describe("every pnpm script a skill tells the agent to run actually exists", () => {
   it("finds no command that package.json cannot run", () => {
-    // A command is runnable if core package.json defines it, OR a module a
-    // project can apply contributes it. The db:* scripts (db:generate,
-    // db:migrate, db:seed, db:reset) live in the persistence module, not in the
-    // Landing core; skills that describe the DB workflow legitimately reference
-    // them, and a project following that workflow has applied persistence.
-    const known = new Set([
-      ...packageScripts(ctx),
-      ...moduleProvidedScripts(ctx),
-    ]);
+    const known = new Set(packageScripts(ctx));
     const unknown: string[] = [];
 
     for (const skill of loadSkillSources(SKILLS_DIR)) {

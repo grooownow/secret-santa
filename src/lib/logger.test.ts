@@ -7,6 +7,6 @@ describe("logger", () => {
     expect(typeof logger.error).toBe("function");
   });
   it("is bound to the app service name", () => {
-    expect(logger.bindings().service).toBe("gridfin");
+    expect(logger.bindings().service).toBe("secret-santa");
   });
 });

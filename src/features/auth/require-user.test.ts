@@ -56,7 +56,7 @@ describe("requireUser", () => {
 
   it("returns the session user's id/email/name when the session version is current", async () => {
     authMock.mockResolvedValue({
-      user: { id: "user-1", email: "a@gridfin.dev", name: "Ada" },
+      user: { id: "user-1", email: "a@example.test", name: "Ada" },
       sessionVersion: 4,
     });
     selectMock.mockResolvedValue([{ sessionVersion: 4 }]);
@@ -64,7 +64,7 @@ describe("requireUser", () => {
 
     await expect(requireUser()).resolves.toEqual({
       id: "user-1",
-      email: "a@gridfin.dev",
+      email: "a@example.test",
       name: "Ada",
     });
     expect(redirectMock).not.toHaveBeenCalled();

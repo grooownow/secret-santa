@@ -13,15 +13,15 @@ describe("database layer", () => {
   });
 
   it("inserts and reads a user", async () => {
-    await db.insert(users).values({ email: "test@gridfin.dev", name: "Test" });
+    await db.insert(users).values({ email: "test@example.test", name: "Test" });
     const rows = await db.select().from(users);
     expect(rows).toHaveLength(1);
-    expect(rows[0]?.email).toBe("test@gridfin.dev");
+    expect(rows[0]?.email).toBe("test@example.test");
   });
 
   it("enforces unique email", async () => {
     await expect(
-      db.insert(users).values({ email: "test@gridfin.dev" }),
+      db.insert(users).values({ email: "test@example.test" }),
     ).rejects.toThrow();
   });
 });

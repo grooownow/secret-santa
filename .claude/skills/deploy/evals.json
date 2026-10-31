@@ -23,10 +23,6 @@
       {
         "prompt": "Add a settings page where a user can change their email",
         "owner": "feature"
-      },
-      {
-        "prompt": "I have no product yet, help me pick an idea and set the project up",
-        "owner": "gridfin"
       }
     ]
   },

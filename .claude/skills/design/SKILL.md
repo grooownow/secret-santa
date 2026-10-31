@@ -33,12 +33,9 @@ is the only thing about taste that is worth writing down.
 
   1. No internal `<a href>`/`window.location` navigation — always `<Link>`.
   2. No network/db call in `src/middleware.ts` — the JWT check stays local.
-     Applies only once the `persistence` module is installed (`src/middleware.ts`
-     does not exist in a Landing-preset project).
   3. No feature ships without a test proven able to fail.
   4. Every server action/route validates input with `zod` before use.
-  5. Every commit follows Conventional Commits (one exception: `/gridfin`
-     onboarding commits — see `docs/rules/git.md`).
+  5. Every commit follows Conventional Commits (see `docs/rules/git.md`).
   6. UI colors come from the design tokens in `src/app/globals.css` — no
      hardcoded hex/rgb/hsl or arbitrary-value color classes in components
      (Next metadata images are exempt; see `docs/rules/frontend.md`).
@@ -48,10 +45,9 @@ is the only thing about taste that is worth writing down.
 
   - `docs/rules/architecture.md` — new routes, feature slices, data access, import direction, schema changes.
   - `docs/rules/definition-of-done.md` — every change, without exception — this is the standing bar, and the one rules file that is never out of scope.
-  - `docs/rules/docs.md` — any change to `docs/`, `CLAUDE.md`/`AGENTS.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
+  - `docs/rules/docs.md` — any change to `docs/`, `CLAUDE.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
   - `docs/rules/frontend.md` — any page, component, mutation, or loading state — responsiveness is an invariant here, not a nice-to-have.
   - `docs/rules/git.md` — every commit, branch, and merge in this repo.
-  - `docs/rules/modules.md` — any `modules/<name>/` directory and any skill that installs one.
   - `docs/rules/security.md` — every server action, route handler, env var, and auth-adjacent change — this is baseline, not opt-in.
   - `docs/rules/skills.md` — any change under `.claude/skills/**`, `.claude/skill-steps/**`, or the compiler that builds them (`scripts/lib/codegen.ts`, `scripts/gen-skills.ts`). The skills are the product — this is the contract they are written against.
   - `docs/rules/sources.md` — any line of code or prose that asserts how a third-party framework, library, or API behaves.

@@ -8,7 +8,7 @@ const BASE_URL = `http://localhost:${APP_PORT}`;
  * E2E smoke suite (spec §5.6-1: SPA-navigation gate + core golden-path
  * pages). `webServer` resets the local PGlite db, builds, and starts the
  * production server so tests run against a real build rather than `next
- * dev` — closer to what buyers ship. This makes the suite slow to boot
+ * dev` — closer to what ships to production. This makes the suite slow to boot
  * (a full `next build`), so give it a generous timeout. The suite always
  * boots its own server (`reuseExistingServer: false`) so it never silently
  * tests a running `pnpm dev` instead of the production build.

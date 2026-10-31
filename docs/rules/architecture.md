@@ -71,18 +71,6 @@ internal file directly throws `boundaries/dependencies` error, not a warning.
   and security.md before touching either `src/lib/auth.config.ts` (edge-safe)
   or `src/lib/auth.ts` (Node/db-backed adapter).
 
-## Modules are outside this surface
-
-`modules/<name>/` (e.g. `modules/persistence/`) is not part of the FSD-lite
-`src/` this file describes: it is excluded from `tsconfig.json`,
-`eslint.config.mjs`, `.prettierignore`, and `vitest.config.ts`, so nothing
-under `modules/` is compiled, linted, or tested as core. A module is
-materialized into `src/` only when a project installs it (`pnpm module:apply
-<name>`, wrapped by the module's own apply-plan) — at that point its files
-become ordinary `src/` code and the import-direction rules above apply to
-them like any other slice. See `docs/rules/modules.md` for the module format
-itself.
-
 ## Evolutionary note
 
 A monorepo split (`packages/*`) is deliberately **not** part of the box — it's

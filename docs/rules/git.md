@@ -13,14 +13,11 @@ whose subject is not conventional. It is not a `commit-msg` hook — a human
 committing by hand is still on the honour system, and `lefthook.yml`'s
 `pre-commit` only runs `oxlint` and `prettier --check`.
 
-Exception: onboarding commits use the `gridfin: step N` prefix — the
-`/gridfin` skill's resume protocol depends on this exact format.
-
 ## Commit cadence
 
 Commit after every green step, not in one giant batch at the end — this is
-what makes `git log` a usable resume point (the `/gridfin` skill and
-`feature` skill both rely on commit history to resume a multi-step flow).
+what makes `git log` a usable resume point (the `feature` skill relies on
+commit history to resume a multi-step flow).
 A "green step" means the gates relevant to that step passed, not just that
 the code compiles.
 

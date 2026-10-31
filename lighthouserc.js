@@ -6,12 +6,9 @@ module.exports = {
   ci: {
     collect: {
       startServerCommand: "pnpm start",
-      // Base preset ships only "/" — /signin arrives with the persistence
-      // module (src/app/signin appears after `pnpm module:apply persistence`,
-      // which the CI lighthouse job runs). The list is computed from the
-      // filesystem because a URL that 404s would get scored anyway (the
-      // not-found page is fast), which reads as a false-green budget on a
-      // page that does not exist.
+      // The list is computed from the filesystem because a URL that 404s would
+      // get scored anyway (the not-found page is fast), which reads as a
+      // false-green budget on a page that does not exist.
       url: [
         "http://localhost:3210/",
         ...(require("node:fs").existsSync(

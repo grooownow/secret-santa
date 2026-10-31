@@ -12,16 +12,6 @@
           }
         ]
       }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pnpm exec tsx scripts/hooks/session-update-check.ts"
-          }
-        ]
-      }
     ]
   }
 }

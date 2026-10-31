@@ -1,11 +1,8 @@
 # QA Project Profile
 
-> Pre-filled for this template on 2026-07-09. Other qa-pilot skills
-> read this file instead of re-scanning the repo. Stack/frameworks/commands
-> below are pre-filled for the box and stable across projects built on it;
-> only the product-specific fields (marked `<!-- gridfin:fill -->`) change
-> per project — `/gridfin` step 4f fills them from the PRD. Re-run
-> `qa-pilot:onboard` only if the stack or conventions change materially.
+> Pre-filled for this project on 2026-07-09. Other qa-pilot skills read this
+> file instead of re-scanning the repo. Re-run `qa-pilot:onboard` only if the
+> stack or conventions change materially.
 
 ## Stack
 
@@ -13,10 +10,7 @@
 - Package manager: pnpm (single-app repo, no monorepo).
 - Drizzle ORM; local db is PGlite (embedded Postgres, file-backed at
   `.pglite/`), or a real Postgres via `GRIDFIN_DB=remote` + `DATABASE_URL`
-  (see `docker-compose.yml` for a local Postgres option). These db /
-  testing-db sections apply to **App**/**App+Billing** projects only — a
-  **Landing** project (see `docs/manifest.md` → `## Preset`) has no
-  database; skip them.
+  (see `docker-compose.yml` for a local Postgres option).
 - Auth: next-auth (Auth.js) v5 beta, JWT session, edge-safe config split from
   the Node adapter — see `docs/rules/architecture.md` (Framework notes).
 - Run the app locally: `pnpm dev` (dev server, port 3210 — shifts to the
@@ -57,8 +51,7 @@
   `pnpm lint`.
 - Format: `pnpm format` (prettier --write).
 - Start dev server: `pnpm dev` (port 3210).
-- Local db reset (migrate + seed): `pnpm db:reset` — exists only once the
-  `persistence` module is installed; Landing has no database.
+- Local db reset (migrate + seed): `pnpm db:reset`.
 - First-time setup: `./scripts/bootstrap`.
 
 ## Conventions
@@ -71,19 +64,19 @@
   setup (session mocking, `requireUser`): `docs/rules/security.md`.
 - Commit convention (Conventional Commits) and gate cadence:
   `docs/rules/git.md`.
-- Test-fixture emails use the `@gridfin.dev` domain (e.g. `a@gridfin.dev`)
+- Test-fixture emails use the `@example.test` domain (e.g. `a@example.test`)
   — a technical identifier, not a real domain; keep this pattern for new
   fixtures.
 
 ## Environments
 
-- **Local** (App preset — the `persistence` module): PGlite (default,
+- **Local**: PGlite (default,
   `GRIDFIN_DB=pglite`, zero external services); data lives in `.pglite/`
-  (gitignored), reset via `pnpm db:reset`. Landing has no database at all.
+  (gitignored), reset via `pnpm db:reset`.
 - **Remote db option**: `docker compose up -d` + `GRIDFIN_DB=remote` +
-  `DATABASE_URL=postgres://gridfin:gridfin@localhost:5432/gridfin` in `.env`.
+  `DATABASE_URL=postgres://app:app@localhost:5432/app` in `.env`.
 - **E2E webServer**: Playwright's `webServer` runs `pnpm build && pnpm start`
-  (the `persistence` module prepends `pnpm db:reset`) — a real production build on
+  (after `pnpm db:reset`) — a real production build on
   `http://localhost:3210`, not `next dev`; the suite always boots its own
   server (`reuseExistingServer: false`), so a running `pnpm dev` is never
   silently tested in its place. `AUTH_SECRET`/`AUTH_TRUST_HOST` are
@@ -96,24 +89,22 @@
   `lighthouserc.js`).
 - **Never touch production** — no production URL exists until the deploy
   playbook (`docs/playbooks/deploy.md`) is run; treat any deployed URL found
-  in `docs/manifest.md` as read-only unless the user says otherwise.
+  in the repo docs as read-only unless the user says otherwise.
 - Credentials: no real secrets in the repo; `.env` (gitignored) is copied
   from `.env.example` by `scripts/bootstrap`; test/e2e auth uses dummy
   values, never real OAuth credentials.
 
 ## Tracker & access
 
-<!-- gridfin:fill -->
+None configured.
 
 ## Priorities
 
-<!-- gridfin:fill -->
-
-(Product name, one-line domain description, and the 2-3 critical user paths
-that matter most for coverage — filled by `/gridfin` step 4f from
-`docs/prd.md`/`docs/specs/`; stack/commands/conventions above are the box's
-and stay as-is regardless of the product built on it.)
+Secret Santa: a gift exchange with a draw, a reveal, a wall and a daily
+purge job. Critical user paths: sign-in, joining the game, the draw, the
+reveal and gift flow, withdrawal, and the close-date data purge. The spec of
+record is `docs/superpowers/specs/2026-10-31-secret-santa-design.md`.
 
 ## Open gaps
 
-- Product priorities (above) are unknown until `/gridfin` runs.
+- None recorded.

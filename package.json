@@ -1,6 +1,6 @@
 {
-  "name": "gridfin",
-  "version": "0.7.0",
+  "name": "secret-santa",
+  "version": "0.1.0",
   "private": true,
   "engines": {
     "node": ">=22"
@@ -19,14 +19,9 @@
     "gates:show": "tsx scripts/gates.ts --show",
     "gates:note": "tsx scripts/gates.ts --note",
     "bootstrap": "./scripts/bootstrap",
-    "release": "./scripts/release",
     "skills:gen": "tsx scripts/gen-skills.ts",
     "skills:check": "tsx scripts/gen-skills.ts --check",
     "skills:validate": "tsx scripts/validate-skills.ts",
-    "modules:validate": "tsx scripts/validate-modules.ts",
-    "module:apply": "tsx scripts/apply-module.ts",
-    "i18n:check": "tsx marketing/landing/scripts/i18n-check.ts",
-    "landing:build": "tsx marketing/landing/scripts/build.ts",
     "skills:evals": "tsx scripts/skill-evals.ts",
     "skills:evals:behavioral": "tsx scripts/skill-evals.ts --behavioral",
     "skills:evals:detection": "tsx scripts/skill-detection-eval.ts",

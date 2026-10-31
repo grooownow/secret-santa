@@ -19,8 +19,4 @@ docs/superpowers/
 # review skill's detection eval, and nothing would go red.
 tests/fixtures/planted-defects/
 
-# Modules live outside the core surface (docs/rules/modules.md): files under
-# modules/<name>/files/ are verbatim copies destined for a target project, not
-# this repo's own formatting surface.
-modules/
 .playwright-mcp/

@@ -30,12 +30,9 @@ produces evidence, not opinions: a gate is PASS only when its command exited
 
   1. No internal `<a href>`/`window.location` navigation — always `<Link>`.
   2. No network/db call in `src/middleware.ts` — the JWT check stays local.
-     Applies only once the `persistence` module is installed (`src/middleware.ts`
-     does not exist in a Landing-preset project).
   3. No feature ships without a test proven able to fail.
   4. Every server action/route validates input with `zod` before use.
-  5. Every commit follows Conventional Commits (one exception: `/gridfin`
-     onboarding commits — see `docs/rules/git.md`).
+  5. Every commit follows Conventional Commits (see `docs/rules/git.md`).
   6. UI colors come from the design tokens in `src/app/globals.css` — no
      hardcoded hex/rgb/hsl or arbitrary-value color classes in components
      (Next metadata images are exempt; see `docs/rules/frontend.md`).
@@ -45,10 +42,9 @@ produces evidence, not opinions: a gate is PASS only when its command exited
 
   - `docs/rules/architecture.md` — new routes, feature slices, data access, import direction, schema changes.
   - `docs/rules/definition-of-done.md` — every change, without exception — this is the standing bar, and the one rules file that is never out of scope.
-  - `docs/rules/docs.md` — any change to `docs/`, `CLAUDE.md`/`AGENTS.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
+  - `docs/rules/docs.md` — any change to `docs/`, `CLAUDE.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
   - `docs/rules/frontend.md` — any page, component, mutation, or loading state — responsiveness is an invariant here, not a nice-to-have.
   - `docs/rules/git.md` — every commit, branch, and merge in this repo.
-  - `docs/rules/modules.md` — any `modules/<name>/` directory and any skill that installs one.
   - `docs/rules/security.md` — every server action, route handler, env var, and auth-adjacent change — this is baseline, not opt-in.
   - `docs/rules/skills.md` — any change under `.claude/skills/**`, `.claude/skill-steps/**`, or the compiler that builds them (`scripts/lib/codegen.ts`, `scripts/gen-skills.ts`). The skills are the product — this is the contract they are written against.
   - `docs/rules/sources.md` — any line of code or prose that asserts how a third-party framework, library, or API behaves.
@@ -97,12 +93,8 @@ it. That is still yours.
    formatting diff → run `pnpm format`).
 2. **`pnpm test`** — all three Vitest projects (unit, component,
    integration). On FAIL, quote the first failing test name + assertion.
-   2b. **DB reset (App/App+Billing only)** — when the project has the
-   `persistence` module installed (`docs/manifest.md` → `## Installed
- modules` lists it, or a `db:reset` script exists in `package.json`), run
-   the module's `db:reset` (migrate + reseed) and confirm it reproduces a
-   working local database. A Landing project has no database — mark this
-   N.A. and move on, same as the other N.A. rows.
+   2b. **DB reset** — run `pnpm db:reset` (migrate + reseed) and confirm it
+   reproduces a working local database.
 3. **`pnpm test:e2e`** — Playwright. Two environment notes:
    - **Browsers:** if it errors with `Executable doesn't exist` /
      "browser is not installed", run `pnpm exec playwright install chromium`

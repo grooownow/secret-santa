@@ -49,10 +49,8 @@ test.describe("credentials login", () => {
   });
 
   // SPA-navigation gate (spec §5.6-1): internal navigation must stay
-  // client-side (<Link>, never a full-page <a href>). This lives with the
-  // persistence module because Landing has no internal links to navigate —
-  // the sign-in link on the landing page (re-added by this module) is the
-  // first internal navigation target.
+  // client-side (<Link>, never a full-page <a href>). The sign-in link on
+  // the home page is the first internal navigation target.
   test("SPA-navigation gate: Link navigation stays client-side", async ({
     page,
   }) => {

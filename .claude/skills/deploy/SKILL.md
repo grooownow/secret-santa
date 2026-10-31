@@ -1,7 +1,7 @@
 ---
 name: deploy
 preamble-tier: 2
-description: Walks the user through shipping the project to production on Vercel with a managed Postgres database when the project needs one, checkpoint by checkpoint, using docs/playbooks/deploy.md as the source of truth. Use when the project is ready to go live for the first time, or when re-running the deploy flow (new environment, migrated database, custom domain). NOT for a local gate run before merging (that is verify) and NOT for setting a fresh project up in the first place (that is gridfin).
+description: Walks the user through shipping the project to production on Vercel with a managed Postgres database when the project needs one, checkpoint by checkpoint, using docs/playbooks/deploy.md as the source of truth. Use when the project is ready to go live for the first time, or when re-running the deploy flow (new environment, migrated database, custom domain). NOT for a local gate run before merging (that is verify).
 ---
 
 <!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly. Regenerate: pnpm skills:gen -->
@@ -30,12 +30,9 @@ disagree, the playbook wins; update it, don't fork logic in here.
 
   1. No internal `<a href>`/`window.location` navigation — always `<Link>`.
   2. No network/db call in `src/middleware.ts` — the JWT check stays local.
-     Applies only once the `persistence` module is installed (`src/middleware.ts`
-     does not exist in a Landing-preset project).
   3. No feature ships without a test proven able to fail.
   4. Every server action/route validates input with `zod` before use.
-  5. Every commit follows Conventional Commits (one exception: `/gridfin`
-     onboarding commits — see `docs/rules/git.md`).
+  5. Every commit follows Conventional Commits (see `docs/rules/git.md`).
   6. UI colors come from the design tokens in `src/app/globals.css` — no
      hardcoded hex/rgb/hsl or arbitrary-value color classes in components
      (Next metadata images are exempt; see `docs/rules/frontend.md`).
@@ -45,10 +42,9 @@ disagree, the playbook wins; update it, don't fork logic in here.
 
   - `docs/rules/architecture.md` — new routes, feature slices, data access, import direction, schema changes.
   - `docs/rules/definition-of-done.md` — every change, without exception — this is the standing bar, and the one rules file that is never out of scope.
-  - `docs/rules/docs.md` — any change to `docs/`, `CLAUDE.md`/`AGENTS.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
+  - `docs/rules/docs.md` — any change to `docs/`, `CLAUDE.md`, or a decision worth remembering across sessions. Docs are the interface between agent sessions — stale docs are worse than missing ones.
   - `docs/rules/frontend.md` — any page, component, mutation, or loading state — responsiveness is an invariant here, not a nice-to-have.
   - `docs/rules/git.md` — every commit, branch, and merge in this repo.
-  - `docs/rules/modules.md` — any `modules/<name>/` directory and any skill that installs one.
   - `docs/rules/security.md` — every server action, route handler, env var, and auth-adjacent change — this is baseline, not opt-in.
   - `docs/rules/skills.md` — any change under `.claude/skills/**`, `.claude/skill-steps/**`, or the compiler that builds them (`scripts/lib/codegen.ts`, `scripts/gen-skills.ts`). The skills are the product — this is the contract they are written against.
   - `docs/rules/sources.md` — any line of code or prose that asserts how a third-party framework, library, or API behaves.
@@ -88,9 +84,8 @@ disagree, the playbook wins; update it, don't fork logic in here.
 2. **Load the playbook.** Read `docs/playbooks/deploy.md` fresh each run —
    it may have changed since you last saw it; never recite it from memory.
 3. **Walk it checkpoint by checkpoint**, in the order the playbook lists:
-   GitHub push → managed Postgres (when the manifest's `## Preset` needs a
-   database) → Vercel import → environment variables → migrations against
-   prod (same `## Preset` condition) → smoke check → optional custom domain.
+   GitHub push → managed Postgres → Vercel import → environment variables → migrations
+   against prod → smoke check → optional custom domain.
    For each:
    - State what happens at this step and who does it (agent command vs.
      user dashboard action).

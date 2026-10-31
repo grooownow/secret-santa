@@ -6,11 +6,7 @@
     "suspicious": "error",
     "perf": "warn"
   },
-  "ignorePatterns": [
-    "next-env.d.ts",
-    "tests/fixtures/planted-defects/**",
-    "modules/**"
-  ],
+  "ignorePatterns": ["next-env.d.ts", "tests/fixtures/planted-defects/**"],
   "rules": {
     "no-console": "error",
     "no-empty": "error",

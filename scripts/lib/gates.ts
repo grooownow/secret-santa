@@ -82,7 +82,6 @@ const SKILL_HARNESS_PATHS = [
   ".claude/skill-steps/",
   "docs/rules/",
   "CLAUDE.md",
-  "AGENTS.md",
 ];
 
 export interface PlanInput {
@@ -102,7 +101,7 @@ export interface PlanInput {
  * Decide, before running anything, what this run consists of.
  *
  * The two conditional gates are the ones a human gets wrong most often, in
- * opposite directions: `db:reset` gets run on a Landing project where the
+ * opposite directions: `db:reset` gets run in a checkout where the
  * script does not exist (and the failure reads like a broken database), and the
  * skill harness gets skipped on a diff that edited a skill (and nothing else in
  * the sequence reads those files, so the break ships).
