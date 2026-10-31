@@ -1,7 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton, TextLink } from "@/components/form-ui";
 import { RunDrawForm } from "@/features/draw";
-import { addDays, type GameSettings } from "@/features/game";
+import type { GameSettings } from "@/features/game";
+import { addDays } from "@/lib/game-phase";
 import type { BroadcastEvent } from "@/features/mail";
 import { daysBetween, formatGameDay, todayInMadrid } from "@/lib/game-time";
 import type { Overview } from "./queries";
