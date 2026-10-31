@@ -34,16 +34,22 @@ describe("PostForm", () => {
     expect(screen.getAllByText(new RegExp(sentence))).toHaveLength(1);
   });
 
-  it("closes with the back link and with cancel", async () => {
+  async function closesWith(name: string) {
     render(
       <PostForm authorName="Anna">
         <p>feed</p>
       </PostForm>,
     );
-    for (const name of [messages.wall.add.back, messages.wall.add.cancel]) {
-      await userEvent.click(screen.getByRole("button", { name: /Add a post/ }));
-      await userEvent.click(screen.getByRole("button", { name }));
-      expect(screen.getByText("feed")).toBeTruthy();
-    }
+    await userEvent.click(screen.getByRole("button", { name: /Add a post/ }));
+    await userEvent.click(screen.getByRole("button", { name }));
+    expect(screen.getByText("feed")).toBeTruthy();
+  }
+
+  it("closes with the back link", async () => {
+    await closesWith(messages.wall.add.back);
+  });
+
+  it("closes with cancel", async () => {
+    await closesWith(messages.wall.add.cancel);
   });
 });
