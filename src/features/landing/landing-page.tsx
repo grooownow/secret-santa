@@ -229,12 +229,8 @@ export async function LandingPage({
                 : t("final.ctaClosed")}
           </LinkButton>
         </section>
-
-        <p className="bg-santa-mint text-santa-muted px-[26px] pb-6 text-xs leading-relaxed">
-          {t.rich("organizer", { link: telegram })}
-        </p>
       </main>
-      <SiteFooter />
+      <SiteFooter organizer={t.rich("organizer", { link: telegram })} />
     </div>
   );
 }

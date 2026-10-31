@@ -1,4 +1,4 @@
-import { Lock } from "lucide-react";
+import { Lock, UserRound } from "lucide-react";
 import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton } from "@/components/form-ui";
@@ -118,7 +118,14 @@ export async function RecipientCard({
         </>
       ) : null}
 
-      <div className="flex items-center gap-4">
+      {/* Without a photo: round placeholder above the name (frame Ygz4u). */}
+      <div
+        className={
+          recipient.photoUrl
+            ? "flex items-center gap-4"
+            : "flex flex-col items-start gap-3"
+        }
+      >
         {recipient.photoUrl ? (
           <Image
             src={recipient.photoUrl}
@@ -128,14 +135,27 @@ export async function RecipientCard({
             unoptimized
             className="size-20 shrink-0 rounded-full object-cover"
           />
-        ) : null}
+        ) : (
+          <span
+            data-testid="photo-placeholder"
+            className="bg-santa-mint text-santa-green flex size-[68px] shrink-0 items-center justify-center rounded-full"
+          >
+            <UserRound className="size-[30px]" aria-hidden />
+          </span>
+        )}
         <div className="flex flex-col gap-1">
           {reassigned ? (
             <p className="text-santa-ink text-lg font-bold">{recipient.name}</p>
           ) : (
             <PageTitle>{recipient.name}</PageTitle>
           )}
-          <PageText>
+          <p
+            className={
+              recipient.photoUrl
+                ? "text-santa-muted text-sm leading-relaxed"
+                : "text-santa-ink text-[17px] leading-relaxed"
+            }
+          >
             {t("address", {
               building: recipient.building ?? "",
               apartment: recipient.apartment ?? "",
@@ -143,7 +163,7 @@ export async function RecipientCard({
             {recipient.kind === "child"
               ? ` · ${t("childAge", { age: recipient.age ?? 0 })}`
               : ""}
-          </PageText>
+          </p>
         </div>
       </div>
 

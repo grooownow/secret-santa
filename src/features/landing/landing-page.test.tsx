@@ -24,7 +24,9 @@ vi.mock("@/features/game", () => ({
   SiteHeader: ({ action }: { action?: React.ReactNode }) => (
     <header>{action}</header>
   ),
-  SiteFooter: () => <footer />,
+  SiteFooter: ({ organizer }: { organizer?: React.ReactNode }) => (
+    <footer>{organizer}</footer>
+  ),
 }));
 
 const open = new Date("2026-11-20T10:00:00Z");
@@ -85,6 +87,13 @@ describe("LandingPage", () => {
     expect(out).toContain("25 декабря");
     expect(out).not.toContain("6 декабря");
     expect(out).not.toContain("с 25 по 31");
+  });
+
+  it("the organizer line sits inside the footer block", async () => {
+    const out = await render();
+    const footer = out.slice(out.indexOf("<footer>"));
+    expect(footer).toContain("Kate");
+    expect(footer).toContain("https://t.me/ludvik4");
   });
 
   it("FAQ names the real button label", async () => {
