@@ -1,0 +1,116 @@
+"use client";
+
+import { Camera } from "lucide-react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { browserIo } from "./browser-io";
+import { compressPhoto } from "./compress-photo";
+
+interface PhotoInputProps {
+  /** Saved photo to show before a new one is picked. */
+  currentUrl?: string | null;
+  /** Called with the compressed file, or null when cleared. */
+  onChange: (file: File | null) => void;
+  /** Reports that a photo is being prepared, so the form can wait. */
+  onBusyChange?: (busy: boolean) => void;
+  /** Name of the checkbox that asks the server to drop the saved photo. */
+  removeName?: string;
+}
+
+/**
+ * Photo picker with client-side compression. The raw file has no `name`, so
+ * it is never submitted; the form adds the compressed result to its data.
+ */
+export function PhotoInput({
+  currentUrl,
+  onChange,
+  onBusyChange,
+  removeName,
+}: PhotoInputProps) {
+  const t = useTranslations("profile.photo");
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
+
+  async function pick(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setFailed(false);
+    setBusy(true);
+    onBusyChange?.(true);
+    try {
+      const small = await compressPhoto(file, browserIo);
+      onChange(small);
+      setPreview(
+        typeof URL.createObjectURL === "function"
+          ? URL.createObjectURL(small)
+          : null,
+      );
+    } catch {
+      onChange(null);
+      setPreview(null);
+      setFailed(true);
+    } finally {
+      setBusy(false);
+      onBusyChange?.(false);
+    }
+  }
+
+  const shown = preview ?? currentUrl ?? null;
+
+  return (
+    <div className="bg-santa-mint flex flex-col gap-3 rounded-2xl p-4">
+      <p className="text-santa-green text-xs font-semibold">{t("title")}</p>
+      <div className="flex items-center gap-4">
+        <div className="bg-santa-white text-santa-green flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full">
+          {shown ? (
+            // Previews are local or Blob URLs of already compressed photos.
+            <Image
+              src={shown}
+              alt=""
+              width={64}
+              height={64}
+              unoptimized
+              className="size-full object-cover"
+            />
+          ) : (
+            <Camera className="size-6" aria-hidden />
+          )}
+        </div>
+        <label className="text-santa-green cursor-pointer text-sm font-semibold underline-offset-4 hover:underline">
+          {busy ? t("preparing") : shown ? t("change") : t("upload")}
+          <input
+            type="file"
+            accept="image/*,.heic,.heif"
+            className="sr-only"
+            data-testid="photo-file"
+            onChange={pick}
+          />
+        </label>
+      </div>
+      <p className="text-santa-muted text-xs leading-relaxed">{t("hint")}</p>
+      {failed ? (
+        <p role="alert" className="text-santa-danger text-sm">
+          {t("failed")}
+        </p>
+      ) : null}
+      {removeName && currentUrl && !preview ? (
+        <label className="text-santa-ink flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            name={removeName}
+            className="accent-santa-green size-4"
+          />
+          {t("remove")}
+        </label>
+      ) : null}
+    </div>
+  );
+}

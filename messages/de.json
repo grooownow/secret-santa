@@ -236,5 +236,106 @@
         "invalid": "Das hat nicht geklappt. Prüfe die Felder und versuche es erneut."
       }
     }
+  },
+  "profile": {
+    "nav": {
+      "label": "Menü des Bereichs",
+      "home": "Start",
+      "gift": "Geschenk",
+      "wall": "Wand",
+      "settings": "Einstellungen",
+      "signOut": "Abmelden"
+    },
+    "home": {
+      "phase": "Anmeldung bis {date}",
+      "inGame": "Du bist dabei, {name}!",
+      "tellAboutYou": "Erzähl von dir",
+      "inGameText": "Bis zur Auslosung kannst du Kinder hinzufügen oder Steckbriefe ändern.",
+      "notReady": "Dein Steckbrief ist noch nicht fertig",
+      "notReadyText": "Ohne Name, Haus und Wohnung können wir keinen Wichtel für dich finden. Fülle ihn bis {date} aus.",
+      "drawOn": "Die Auslosung ist am {date}",
+      "drawText": "Wir schreiben dir, sobald sie stattgefunden hat. Bis dahin lassen sich Steckbriefe ändern.",
+      "family": "Deine Familie im Spiel",
+      "owner": "dein Steckbrief",
+      "childAge": "{age, plural, one {# Jahr} other {# Jahre}}",
+      "address": "Haus {building} · Wohnung {apartment}",
+      "filled": "Steckbrief ausgefüllt",
+      "edit": "Steckbrief bearbeiten",
+      "addChild": "Kind hinzufügen",
+      "fillProfile": "Steckbrief ausfüllen",
+      "hintTitle": "Was deinen Wichtel freuen würde",
+      "hintText": "Nenne ein paar Wünsche und was man besser nicht schenkt. Ein paar Worte genügen.",
+      "drawLine": "Die Auslosung ist am {draw}."
+    },
+    "unverified": {
+      "title": "Noch ein Schritt",
+      "boxTitle": "E-Mail bestätigen",
+      "boxText": "Wir haben eine Nachricht an {email} geschickt. Solange die E-Mail nicht bestätigt ist, nimmst du nicht an der Auslosung teil.",
+      "action": "E-Mail erneut senden",
+      "hint": "Schau im Spam-Ordner nach. Falls die Adresse einen Tippfehler hat, registriere dich neu."
+    },
+    "adult": {
+      "title": "Lernen wir uns kennen",
+      "titleEdit": "Dein Steckbrief",
+      "intro": "Das sieht nur dein Wichtel. Die Adresse hilft ihm, deine Wohnung zu finden.",
+      "name": "Name",
+      "namePlaceholder": "Wie sollen wir dich nennen",
+      "building": "Haus",
+      "buildingPlaceholder": "Haus wählen",
+      "apartment": "Wohnung",
+      "apartmentHint": "Zum Beispiel 24 oder 2B.",
+      "apartmentPlaceholder": "Wohnungsnummer",
+      "wishes": "Was dich freuen würde",
+      "wishesPlaceholder": "Süßes, Bücher, Gemütliches",
+      "avoid": "Was man nicht schenken sollte",
+      "avoidPlaceholder": "Allergien, Dinge, die dir nicht gefallen",
+      "create": "Steckbrief speichern",
+      "save": "Steckbrief speichern",
+      "pending": "Wird gespeichert…"
+    },
+    "child": {
+      "title": "Ein kleiner Mitspieler",
+      "titleEdit": "Steckbrief des Kindes",
+      "intro": "Den Steckbrief des Kindes füllt eine erwachsene Person aus. Haus und Wohnung stammen aus deinem Steckbrief.",
+      "name": "Name des Kindes",
+      "namePlaceholder": "Wie heißt das Kind",
+      "age": "Alter",
+      "agePlaceholder": "Von 0 bis 17",
+      "address": "Haus {building} · Wohnung {apartment}",
+      "addressHint": "Die Adresse stammt aus deinem Steckbrief. Ein Foto des Kindes kann nicht hinzugefügt werden.",
+      "wishes": "Was es freuen würde",
+      "wishesPlaceholder": "Spielzeug, Bücher, Baukästen",
+      "avoid": "Was man nicht schenken sollte",
+      "avoidPlaceholder": "Allergien, Ängste, Dinge, die nicht gefallen",
+      "consentUnder14": "Ich bin Elternteil oder Vormund und stimme der Teilnahme des Kindes und der Verarbeitung seiner Daten zu.",
+      "consentTeen": "Ich bestätige, dass die jugendliche Person selbst der Teilnahme und der Verarbeitung ihrer Daten zustimmt.",
+      "create": "Steckbrief des Kindes speichern",
+      "save": "Steckbrief des Kindes speichern",
+      "pending": "Wird gespeichert…"
+    },
+    "photo": {
+      "title": "Foto, wenn du magst",
+      "upload": "Foto hochladen",
+      "change": "Foto ersetzen",
+      "preparing": "Foto wird vorbereitet…",
+      "hint": "Jedes Foto geht, auch vom iPhone. Es wird automatisch verkleinert. Nur dein Wichtel sieht es.",
+      "failed": "Dieses Foto ließ sich nicht öffnen. Wähle ein anderes oder speichere den Steckbrief ohne Foto; dein Text bleibt erhalten.",
+      "remove": "Gespeichertes Foto entfernen"
+    },
+    "delete": {
+      "action": "Steckbrief löschen",
+      "confirm": "Diesen Steckbrief löschen?",
+      "confirmOwner": "Deinen Steckbrief löschen? Die Steckbriefe der Kinder werden ebenfalls gelöscht."
+    },
+    "errors": {
+      "invalid": "Prüfe die Felder und versuche es erneut.",
+      "photo": "Das Foto konnte nicht gespeichert werden. Versuche ein anderes.",
+      "photoTooLarge": "Das Foto ist zu groß. Wähle ein anderes.",
+      "closed": "Steckbriefe lassen sich nicht mehr ändern.",
+      "noOwner": "Fülle zuerst deinen eigenen Steckbrief aus.",
+      "notFound": "Steckbrief nicht gefunden.",
+      "consent": "Die Zustimmung muss angekreuzt werden.",
+      "failed": "Speichern fehlgeschlagen. Bitte versuche es erneut."
+    }
   }
 }

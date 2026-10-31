@@ -236,5 +236,106 @@
         "invalid": "No ha funcionado. Revisa los campos e inténtalo de nuevo."
       }
     }
+  },
+  "profile": {
+    "nav": {
+      "label": "Menú del área personal",
+      "home": "Inicio",
+      "gift": "Regalo",
+      "wall": "Muro",
+      "settings": "Ajustes",
+      "signOut": "Salir"
+    },
+    "home": {
+      "phase": "Inscripciones hasta el {date}",
+      "inGame": "Estás dentro, {name}.",
+      "tellAboutYou": "Cuéntanos sobre ti",
+      "inGameText": "Hasta el sorteo puedes añadir menores o cambiar cualquier ficha.",
+      "notReady": "Tu ficha aún no está lista",
+      "notReadyText": "Sin nombre, edificio y piso no podemos encontrarte un Santa. Rellénala antes del {date}.",
+      "drawOn": "El sorteo es el {date}",
+      "drawText": "Te escribiremos cuando se haga. Hasta entonces las fichas se pueden cambiar.",
+      "family": "Tu familia en el juego",
+      "owner": "tu ficha",
+      "childAge": "{age, plural, one {# año} other {# años}}",
+      "address": "Edificio {building} · piso {apartment}",
+      "filled": "Ficha completada",
+      "edit": "Editar ficha",
+      "addChild": "Añadir un menor",
+      "fillProfile": "Rellenar mi ficha",
+      "hintTitle": "Qué alegraría a tu Santa",
+      "hintText": "Añade unos deseos y lo que es mejor no regalar. Bastan unas palabras.",
+      "drawLine": "El sorteo es el {draw}."
+    },
+    "unverified": {
+      "title": "Solo falta un paso",
+      "boxTitle": "Confirma tu correo",
+      "boxText": "Enviamos un mensaje a {email}. Mientras el correo no esté confirmado, no participas en el sorteo.",
+      "action": "Enviar el correo otra vez",
+      "hint": "Revisa la carpeta de spam. Si la dirección tiene un error, regístrate de nuevo."
+    },
+    "adult": {
+      "title": "Vamos a conocernos",
+      "titleEdit": "Tu ficha",
+      "intro": "Solo la verá tu Santa. La dirección sirve para que encuentre tu piso.",
+      "name": "Nombre",
+      "namePlaceholder": "Cómo quieres que te llamemos",
+      "building": "Edificio",
+      "buildingPlaceholder": "Elige un edificio",
+      "apartment": "Piso",
+      "apartmentHint": "Por ejemplo 24 o 2B.",
+      "apartmentPlaceholder": "Número de piso",
+      "wishes": "Qué te alegraría",
+      "wishesPlaceholder": "Dulces, libros, cosas acogedoras",
+      "avoid": "Qué no regalar",
+      "avoidPlaceholder": "Alergias, cosas que no te gustan",
+      "create": "Guardar ficha",
+      "save": "Guardar ficha",
+      "pending": "Guardando…"
+    },
+    "child": {
+      "title": "Un pequeño participante",
+      "titleEdit": "Ficha del menor",
+      "intro": "La ficha del menor la rellena una persona adulta. El edificio y el piso salen de tu ficha.",
+      "name": "Nombre del menor",
+      "namePlaceholder": "Cómo se llama",
+      "age": "Edad",
+      "agePlaceholder": "De 0 a 17",
+      "address": "Edificio {building} · piso {apartment}",
+      "addressHint": "La dirección sale de tu ficha. No se puede añadir foto del menor.",
+      "wishes": "Qué le alegraría",
+      "wishesPlaceholder": "Juguetes, libros, construcciones",
+      "avoid": "Qué no regalar",
+      "avoidPlaceholder": "Alergias, miedos, cosas que no le gustan",
+      "consentUnder14": "Soy madre, padre o tutor legal y acepto la participación del menor y el tratamiento de sus datos.",
+      "consentTeen": "Confirmo que la persona adolescente acepta participar y el tratamiento de sus datos.",
+      "create": "Guardar ficha del menor",
+      "save": "Guardar ficha del menor",
+      "pending": "Guardando…"
+    },
+    "photo": {
+      "title": "Foto opcional",
+      "upload": "Subir foto",
+      "change": "Cambiar la foto",
+      "preparing": "Preparando la foto…",
+      "hint": "Vale cualquier foto, también de iPhone. Se reduce sola. Solo la verá tu Santa.",
+      "failed": "No se pudo abrir esta foto. Elige otra o guarda la ficha sin foto; el texto se conserva.",
+      "remove": "Quitar la foto guardada"
+    },
+    "delete": {
+      "action": "Eliminar ficha",
+      "confirm": "¿Eliminar esta ficha?",
+      "confirmOwner": "¿Eliminar tu ficha? Las fichas de los menores también se eliminarán."
+    },
+    "errors": {
+      "invalid": "Revisa los campos e inténtalo de nuevo.",
+      "photo": "No se pudo guardar la foto. Prueba con otra.",
+      "photoTooLarge": "La foto es demasiado grande. Elige otra.",
+      "closed": "Las fichas ya no se pueden cambiar.",
+      "noOwner": "Primero rellena tu propia ficha.",
+      "notFound": "Ficha no encontrada.",
+      "consent": "Hay que marcar el consentimiento.",
+      "failed": "No se pudo guardar. Inténtalo de nuevo."
+    }
   }
 }

@@ -236,5 +236,106 @@
         "invalid": "Something went wrong. Check the fields and try again."
       }
     }
+  },
+  "profile": {
+    "nav": {
+      "label": "Cabinet menu",
+      "home": "Home",
+      "gift": "Gift",
+      "wall": "Wall",
+      "settings": "Settings",
+      "signOut": "Sign out"
+    },
+    "home": {
+      "phase": "Sign-ups until {date}",
+      "inGame": "You are in, {name}!",
+      "tellAboutYou": "Tell us about you",
+      "inGameText": "Until the draw you can add children or change any profile.",
+      "notReady": "Your profile is not ready",
+      "notReadyText": "Without a name, building and flat we cannot find you a Santa. Fill it in before {date}.",
+      "drawOn": "The draw is on {date}",
+      "drawText": "We will email you when it is done. Until then profiles can be changed.",
+      "family": "Your family in the game",
+      "owner": "your profile",
+      "childAge": "{age, plural, one {# year old} other {# years old}}",
+      "address": "Building {building} · flat {apartment}",
+      "filled": "Profile filled in",
+      "edit": "Edit profile",
+      "addChild": "Add a child",
+      "fillProfile": "Fill in your profile",
+      "hintTitle": "What would delight your Santa",
+      "hintText": "Add a few wishes and things better not to give. A few words are enough.",
+      "drawLine": "The draw is on {draw}."
+    },
+    "unverified": {
+      "title": "One step left",
+      "boxTitle": "Confirm your email",
+      "boxText": "We sent a message to {email}. Until the email is confirmed you are not in the draw.",
+      "action": "Send the email again",
+      "hint": "Check your spam folder. If the address has a typo, register again."
+    },
+    "adult": {
+      "title": "Let us get to know you",
+      "titleEdit": "Your profile",
+      "intro": "Only your Santa sees this. The address helps them find your flat.",
+      "name": "Name",
+      "namePlaceholder": "What should we call you",
+      "building": "Building",
+      "buildingPlaceholder": "Choose a building",
+      "apartment": "Flat",
+      "apartmentHint": "For example 24 or 2B.",
+      "apartmentPlaceholder": "Flat number",
+      "wishes": "What would delight you",
+      "wishesPlaceholder": "Sweets, books, cosy things",
+      "avoid": "What not to give",
+      "avoidPlaceholder": "Allergies, things you dislike",
+      "create": "Save profile",
+      "save": "Save profile",
+      "pending": "Saving…"
+    },
+    "child": {
+      "title": "A little player",
+      "titleEdit": "Child profile",
+      "intro": "An adult fills in the child profile. Building and flat come from your own profile.",
+      "name": "Child name",
+      "namePlaceholder": "What is the name",
+      "age": "Age",
+      "agePlaceholder": "From 0 to 17",
+      "address": "Building {building} · flat {apartment}",
+      "addressHint": "The address comes from your profile. A child photo cannot be added.",
+      "wishes": "What would delight",
+      "wishesPlaceholder": "Toys, books, building sets",
+      "avoid": "What not to give",
+      "avoidPlaceholder": "Allergies, fears, things they dislike",
+      "consentUnder14": "I am the parent or guardian and agree to the child taking part and to the processing of their data.",
+      "consentTeen": "I confirm that the teenager agrees to take part and to the processing of their data.",
+      "create": "Save child profile",
+      "save": "Save child profile",
+      "pending": "Saving…"
+    },
+    "photo": {
+      "title": "Photo, if you like",
+      "upload": "Upload a photo",
+      "change": "Replace the photo",
+      "preparing": "Preparing the photo…",
+      "hint": "Any photo works, including iPhone ones. It is shrunk automatically. Only your Santa sees it.",
+      "failed": "This photo could not be opened. Pick another one or save the profile without a photo; your text is kept.",
+      "remove": "Remove the saved photo"
+    },
+    "delete": {
+      "action": "Delete profile",
+      "confirm": "Delete this profile?",
+      "confirmOwner": "Delete your profile? The children profiles will be deleted too."
+    },
+    "errors": {
+      "invalid": "Check the fields and try again.",
+      "photo": "The photo could not be saved. Try another one.",
+      "photoTooLarge": "The photo is too large. Pick another one.",
+      "closed": "Profiles can no longer be changed.",
+      "noOwner": "Fill in your own profile first.",
+      "notFound": "Profile not found.",
+      "consent": "The consent must be ticked.",
+      "failed": "Could not save. Please try again."
+    }
   }
 }

@@ -38,6 +38,19 @@ export function SelectInput(props: React.ComponentProps<"select">) {
   return <select {...props} className={cn(controlClass, props.className)} />;
 }
 
+export function TextAreaInput(props: React.ComponentProps<"textarea">) {
+  return (
+    <textarea
+      {...props}
+      className={cn(
+        controlClass,
+        "h-auto min-h-28 resize-y py-3 leading-relaxed",
+        props.className,
+      )}
+    />
+  );
+}
+
 /** Checkbox with a text label; `invalid` marks the one the error is about. */
 export function CheckboxRow({
   name,
