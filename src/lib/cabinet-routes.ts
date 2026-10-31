@@ -3,7 +3,7 @@ import type { Route } from "next";
 /**
  * Cabinet routes shared by several features. They live in `lib` so the game,
  * profile and gift features can link to each other without importing each
- * other. Pages that arrive in later tasks (wall, settings, guess, reveal) are
+ * other. Pages that arrive in later tasks (wall, settings) are
  * not known to typedRoutes yet; drop the casts once they exist.
  */
 export const CABINET_HOME = "/home" as Route;
@@ -35,7 +35,7 @@ export function giftPath(id: string): Route {
 export function myGiftPath(id: string): Route {
   return `/home/my-gift/${id}` as Route;
 }
-/** Task 9 pages: guess and reveal. */
+/** Guess (until 31 Dec) and reveal (from 1 Jan) pages. */
 export function guessPath(id: string): Route {
   return `/home/guess/${id}` as Route;
 }

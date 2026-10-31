@@ -554,5 +554,45 @@
   },
   "organizer": {
     "write": "Kate auf Telegram schreiben"
+  },
+  "reveal": {
+    "guess": {
+      "chip": "Tipp bis {date}",
+      "title": "Wer ist dein Santa?",
+      "intro": "Wähle, wer deiner Meinung nach dein Santa ist. Den Tipp kannst du bis Ende {date} ändern. Am 1. Januar zeigt sich, ob er stimmt.",
+      "search": "Teilnehmer suchen",
+      "searchPlaceholder": "Name oder Haus",
+      "noMatches": "Niemand gefunden",
+      "option": "{name} · Haus {building}",
+      "submit": "Tipp speichern",
+      "pending": "Wird gespeichert…",
+      "hint": "Die Liste zeigt nur Name und Haus: Adressen und Fotos anderer Teilnehmer bleiben verborgen.",
+      "savedTitle": "Tipp auf {name}",
+      "savedBox": "Tipp gespeichert",
+      "savedHint": "Am 1. Januar erfahren wir, ob er stimmt.",
+      "change": "Tipp ändern",
+      "changeUntil": "Die Wahl kann bis Ende {date} geändert werden.",
+      "errors": {
+        "invalid": "Wähle einen Teilnehmer aus der Liste.",
+        "notFound": "Teilnehmer nicht gefunden.",
+        "closed": "Tipps werden nicht mehr angenommen.",
+        "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal."
+      }
+    },
+    "card": {
+      "chip": "Santas enthüllt",
+      "title": "Dein Santa ist {name}",
+      "text": "Das Geschenk kam aus Haus {building}.",
+      "rightTitle": "Volltreffer!",
+      "rightText": "Der Tipp war {name}. Genau ins Schwarze.",
+      "wrongTitle": "Der Tipp war ein anderer",
+      "wrongText": "Der Tipp war {guess}, aber das Geschenk kam von {santa}. Ein schönes Rätsel.",
+      "backupTitle": "Dein Geschenk kommt vom Ersatz-Santa",
+      "backupText": "Jemand aus der Nachbarschaft hat das Fest ein wenig wärmer gemacht. Der Name bleibt ein kleines Geheimnis.",
+      "backupBoxTitle": "Danke fürs Mitmachen",
+      "backupBoxText": "Das Ergebnis des Tipps zeigen wir nicht: Das Geschenk hat der Ersatz-Santa vorbereitet.",
+      "wall": "Zur Dankeswand",
+      "myGift": "Mein Geschenk"
+    }
   }
 }

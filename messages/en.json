@@ -554,5 +554,45 @@
   },
   "organizer": {
     "write": "Write to Kate on Telegram"
+  },
+  "reveal": {
+    "guess": {
+      "chip": "Guess until {date}",
+      "title": "Who is your Santa?",
+      "intro": "Pick who you think your Santa is. You can change the guess until the end of {date}. On 1 January you will see whether it was right.",
+      "search": "Find a participant",
+      "searchPlaceholder": "Name or building",
+      "noMatches": "No one found",
+      "option": "{name} · building {building}",
+      "submit": "Save my guess",
+      "pending": "Saving…",
+      "hint": "The list shows only names and buildings: other participants' addresses and photos stay hidden.",
+      "savedTitle": "Betting on {name}",
+      "savedBox": "Guess saved",
+      "savedHint": "We will find out on 1 January whether it was right.",
+      "change": "Change my guess",
+      "changeUntil": "You can change the choice until the end of {date}.",
+      "errors": {
+        "invalid": "Pick a participant from the list.",
+        "notFound": "Participant not found.",
+        "closed": "Guesses are no longer accepted.",
+        "failed": "Could not save. Please try again."
+      }
+    },
+    "card": {
+      "chip": "Santas revealed",
+      "title": "Your Santa is {name}",
+      "text": "The gift came from building {building}.",
+      "rightTitle": "Spot on!",
+      "rightText": "The guess was {name}. A perfect hit.",
+      "wrongTitle": "The guess was someone else",
+      "wrongText": "The guess was {guess}, but the gift came from {santa}. What a nice mystery.",
+      "backupTitle": "Your gift is from the Backup Santa",
+      "backupText": "One of the neighbours helped make the holiday a little warmer. Their name stays a small secret.",
+      "backupBoxTitle": "Thank you for caring",
+      "backupBoxText": "We do not show the guess result: the gift was prepared by the Backup Santa.",
+      "wall": "To the thank-you wall",
+      "myGift": "My gift"
+    }
   }
 }

@@ -554,5 +554,45 @@
   },
   "organizer": {
     "write": "Escribir a Kate por Telegram"
+  },
+  "reveal": {
+    "guess": {
+      "chip": "Apuesta hasta el {date}",
+      "title": "¿Quién es tu Santa?",
+      "intro": "Elige quién crees que es tu Santa. Puedes cambiar la apuesta hasta el final del {date}. El 1 de enero se sabrá si acertaste.",
+      "search": "Buscar participante",
+      "searchPlaceholder": "Nombre o edificio",
+      "noMatches": "No se encontró a nadie",
+      "option": "{name} · edificio {building}",
+      "submit": "Guardar apuesta",
+      "pending": "Guardando…",
+      "hint": "La lista solo muestra nombres y edificios: las direcciones y fotos de otros participantes no se ven.",
+      "savedTitle": "Apuesta por {name}",
+      "savedBox": "Apuesta guardada",
+      "savedHint": "El 1 de enero sabremos si fue acertada.",
+      "change": "Cambiar apuesta",
+      "changeUntil": "Puedes cambiar la elección hasta el final del {date}.",
+      "errors": {
+        "invalid": "Elige a un participante de la lista.",
+        "notFound": "Participante no encontrado.",
+        "closed": "Ya no se aceptan apuestas.",
+        "failed": "No se pudo guardar. Inténtalo de nuevo."
+      }
+    },
+    "card": {
+      "chip": "Santas revelados",
+      "title": "Tu Santa es {name}",
+      "text": "El regalo llegó del edificio {building}.",
+      "rightTitle": "¡Apuesta acertada!",
+      "rightText": "La apuesta era {name}. Justo en el blanco.",
+      "wrongTitle": "La apuesta era otra",
+      "wrongText": "La apuesta era {guess}, pero el regalo vino de {santa}. Un misterio muy bonito.",
+      "backupTitle": "Tu regalo es del Santa de reserva",
+      "backupText": "Alguien del vecindario ayudó a que la fiesta fuera un poco más cálida. Su nombre sigue siendo un pequeño secreto.",
+      "backupBoxTitle": "Gracias por el cariño",
+      "backupBoxText": "No mostramos el resultado de la apuesta: el regalo lo preparó el Santa de reserva.",
+      "wall": "Al muro de gracias",
+      "myGift": "Mi regalo"
+    }
   }
 }
