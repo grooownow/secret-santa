@@ -16,6 +16,9 @@ export type GameDates = {
   /** Start and end of the gift window: "25" and "31 December" in one month. */
   from: string;
   to: string;
+  /** Full start day and an end day without the month when it repeats. */
+  startFull: string;
+  endShort: string;
 };
 
 function fmt(locale: string, options: Intl.DateTimeFormatOptions) {
@@ -50,5 +53,9 @@ export function gameDates(s: GameSettings, locale: string): GameDates {
     range: dayMonth.formatRange(start, end),
     from: sameMonth ? dayOnly.format(start) : dayMonth.format(start),
     to: formatGameDay(s.giftsEndOn, locale),
+    startFull: dayMonth.format(start),
+    endShort: sameMonth
+      ? dayOnly.format(end)
+      : formatGameDay(s.giftsEndOn, locale),
   };
 }

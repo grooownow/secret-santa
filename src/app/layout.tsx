@@ -17,6 +17,14 @@ const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
 });
 
+const OG_LOCALES: Record<string, string> = {
+  ru: "ru_RU",
+  uk: "uk_UA",
+  en: "en_US",
+  es: "es_ES",
+  de: "de_DE",
+};
+
 // Localized by the visitor's interface language. Nothing here reads the
 // database, so error pages can still render when it is down.
 export async function generateMetadata(): Promise<Metadata> {
@@ -33,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: t("title"),
       description: t("description"),
       type: "website",
-      locale,
+      locale: OG_LOCALES[locale] ?? "en_US",
     },
     // The site is for neighbours only: keep it out of every search index.
     robots: { index: false, follow: false },

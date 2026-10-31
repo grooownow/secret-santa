@@ -781,7 +781,7 @@
     "description": "Un intercambio de regalos de Año Nuevo entre vecinos."
   },
   "landing": {
-    "metaDescription": "Un intercambio de regalos de Año Nuevo entre vecinos. Inscripciones hasta el {close}, regalos del {range}, presupuesto de unos 10–15 €.",
+    "metaDescription": "Un intercambio de regalos de Año Nuevo entre vecinos. Inscripciones hasta el {close}, regalos del {from} al {to}, presupuesto de unos 10–15 €.",
     "hero": {
       "title": "Amigo Invisible para el vecindario de Bialto",
       "subtitle": "Regalémonos un poco de fiesta: una bonita sorpresa de un vecino a otro.",
@@ -811,7 +811,7 @@
           "text": "Lee las pistas de esa persona y busca algo que le guste. Precio orientativo: 10–15 €."
         },
         "4": {
-          "title": "Deja el regalo del {range}.",
+          "title": "Deja el regalo del {from} al {to}.",
           "text": "Ponlo en una taquilla o buzón del edificio de esa persona y pulsa «Regalo dejado». Recibirá un correo que explica dónde buscarlo."
         },
         "5": {
@@ -895,7 +895,8 @@
     "final": {
       "title": "Alguien del vecindario ya puede ser tu Santa",
       "text": "Solo falta unirse. Las inscripciones están abiertas hasta el {close}.",
-      "cta": "Ser un Santa"
+      "cta": "Ser un Santa",
+      "textClosed": "Solo falta unirse."
     },
     "organizer": "Organiza el juego: Kate, <link>escríbele por Telegram</link>."
   },
@@ -905,7 +906,7 @@
     "intro": "El juego es solo para quienes viven en Bialto. Participar es gratis y cada persona compra su propio regalo.",
     "gift": {
       "title": "Un regalo de vecino a vecino",
-      "text": "Las inscripciones están abiertas hasta el {close} y el sorteo se hace el {draw}. Precio orientativo: 10–15 €. El regalo se deja del {range} en una taquilla o buzón del edificio de la persona asignada. Los nombres de los Santas se revelan el {reveal}. El servicio no puede garantizar un regalo para todos: el juego depende de quienes participan."
+      "text": "Las inscripciones están abiertas hasta el {close} y el sorteo se hace el {draw}. Precio orientativo: 10–15 €. El regalo se deja del {from} al {to} en una taquilla o buzón del edificio de la persona asignada. Los nombres de los Santas se revelan el {reveal}. El servicio no puede garantizar un regalo para todos: el juego depende de quienes participan."
     },
     "kids": {
       "title": "Los niños participan con adultos",

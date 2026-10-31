@@ -19,7 +19,7 @@ function LinkButton({
   href,
   children,
 }: {
-  href: "/register" | "/signin";
+  href: "/register" | "/signin" | "/home";
   children: ReactNode;
 }) {
   return (
@@ -54,7 +54,8 @@ export async function LandingPage({
   const open = registrationOpen(now, settings);
   // After the deadline "become a Santa" only makes sense for people who
   // already have an account, so it leads to sign-in.
-  const ctaHref = open ? "/register" : "/signin";
+  // A signed-in visitor gets the cabinet instead of a second "become a Santa".
+  const ctaHref = signedIn ? "/home" : open ? "/register" : "/signin";
   const d = gameDates(settings, locale);
   const link = (chunks: ReactNode) => (
     <Link href="/signin" className="font-semibold underline">
@@ -116,15 +117,10 @@ export async function LandingPage({
         </section>
 
         <section className="bg-santa-mint flex flex-col gap-3.5 px-[26px] pt-4 pb-[26px]">
-          <LinkButton href={ctaHref}>{t("hero.cta")}</LinkButton>
-          {signedIn ? (
-            <Link
-              href="/home"
-              className="text-santa-green text-center text-[13px] font-semibold"
-            >
-              {t("hero.toCabinet")}
-            </Link>
-          ) : (
+          <LinkButton href={ctaHref}>
+            {signedIn ? t("hero.toCabinet") : t("hero.cta")}
+          </LinkButton>
+          {signedIn ? null : (
             <p className="text-santa-green text-center text-[13px]">
               {t.rich("hero.alreadyIn", { link })}
             </p>
@@ -220,9 +216,11 @@ export async function LandingPage({
         <section className="bg-santa-mint flex flex-col gap-4 px-[26px] py-8">
           <h2 className={H2}>{t("final.title")}</h2>
           <p className="text-santa-muted text-sm leading-relaxed">
-            {t("final.text", d)}
+            {open ? t("final.text", d) : t("final.textClosed")}
           </p>
-          <LinkButton href={ctaHref}>{t("final.cta")}</LinkButton>
+          <LinkButton href={ctaHref}>
+            {signedIn ? t("hero.toCabinet") : t("final.cta")}
+          </LinkButton>
         </section>
 
         <p className="bg-santa-mint text-santa-muted px-[26px] pb-6 text-xs leading-relaxed">

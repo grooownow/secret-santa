@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { createTranslator } from "next-intl";
 import { renderServerToHtml as html } from "../../../test/render-server";
@@ -90,10 +92,46 @@ describe("LandingPage", () => {
     expect(out).toContain("«Подарка нет на месте»");
   });
 
-  it("a signed-in visitor gets a link to the cabinet", async () => {
+  it("a signed-in visitor gets the cabinet instead of the Santa CTAs", async () => {
     const out = await render({ signedIn: true });
     expect(out).toContain('href="/home"');
     expect(out).toContain("В кабинет");
+    expect(out).not.toContain("Стать Сантой");
+    expect(out).not.toContain('href="/register"');
+  });
+
+  it("after the deadline the final block drops the deadline sentence", async () => {
+    const out = await render({ now: closed });
+    expect(out).toContain("Осталось только присоединиться.");
+    expect(out).not.toContain("Заявки принимаем до");
+    const whileOpen = await render();
+    expect(whileOpen).toContain(
+      "Осталось только присоединиться. Заявки принимаем до 6 декабря.",
+    );
+  });
+});
+
+describe("translations of the landing", () => {
+  const load = (l: string) =>
+    JSON.parse(
+      readFileSync(
+        path.resolve(__dirname, "../../../messages", `${l}.json`),
+        "utf8",
+      ),
+    );
+
+  it("step 4 names the real «gift left» button in every locale", () => {
+    for (const l of ["ru", "uk", "en", "es", "de"]) {
+      const m = load(l);
+      expect(m.landing.how.steps["4"].text).toContain(m.gift.form.submit);
+    }
+  });
+
+  it("es and en step 4 titles use the from/to dates", () => {
+    expect(load("es").landing.how.steps["4"].title).toContain("{from} al {to}");
+    expect(load("en").landing.how.steps["4"].title).toContain(
+      "{startFull} to {endShort}",
+    );
   });
 });
 

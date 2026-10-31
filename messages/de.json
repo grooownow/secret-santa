@@ -653,7 +653,7 @@
       "chip": "Tipp bis {date}",
       "title": "Wer ist dein Santa?",
       "intro": "Wähle, wer deiner Meinung nach dein Santa ist. Den Tipp kannst du bis Ende {date} ändern. Am 1. Januar zeigt sich, ob er stimmt.",
-      "search": "Teilnehmer suchen",
+      "search": "Person suchen",
       "searchPlaceholder": "Name oder Haus",
       "noMatches": "Niemand gefunden",
       "option": "{name} · Haus {building}",
@@ -812,7 +812,7 @@
         },
         "4": {
           "title": "Lege das Geschenk {range} ab.",
-          "text": "Lege es in ein Schließfach oder einen Briefkasten im Haus der beschenkten Person und tippe auf „Geschenk abgelegt“. Sie bekommt eine E-Mail, wo sie suchen soll."
+          "text": "Lege es in ein Schließfach oder einen Briefkasten im Haus der beschenkten Person und tippe auf „Geschenk hinterlegt“. Sie bekommt eine E-Mail, wo sie suchen soll."
         },
         "5": {
           "title": "Erfahre, wer dein Santa war.",
@@ -895,7 +895,8 @@
     "final": {
       "title": "Jemand aus der Nachbarschaft ist schon bereit, dein Santa zu sein",
       "text": "Du musst nur noch mitmachen. Anmeldung bis {close}.",
-      "cta": "Santa werden"
+      "cta": "Santa werden",
+      "textClosed": "Du musst nur noch mitmachen."
     },
     "organizer": "Organisation des Spiels: Kate, <link>auf Telegram schreiben</link>."
   },

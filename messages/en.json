@@ -811,7 +811,7 @@
           "text": "Read your recipient’s hints and find something they will enjoy. Price guide: €10–15."
         },
         "4": {
-          "title": "Leave the gift {range}.",
+          "title": "Leave the gift from {startFull} to {endShort}.",
           "text": "Put it in a locker or mailbox in your recipient’s building and press “Gift left”. Your neighbour will get an email saying where to look."
         },
         "5": {
@@ -895,7 +895,8 @@
     "final": {
       "title": "A neighbour is already ready to be your Santa",
       "text": "All that is left is to join. Sign-ups are open until {close}.",
-      "cta": "Become a Santa"
+      "cta": "Become a Santa",
+      "textClosed": "All that is left is to join."
     },
     "organizer": "Game organizer: Kate, <link>write on Telegram</link>."
   },
