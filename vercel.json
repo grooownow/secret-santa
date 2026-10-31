@@ -1,1 +1,4 @@
-{ "crons": [{ "path": "/api/cron/daily", "schedule": "0 8 * * *" }] }
+{
+  "fluid": true,
+  "crons": [{ "path": "/api/cron/daily", "schedule": "0 8 * * *" }]
+}

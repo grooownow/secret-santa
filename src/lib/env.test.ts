@@ -177,4 +177,44 @@ describe("parseEnv", () => {
       /ADMIN_EMAIL/,
     );
   });
+
+  describe("production boot guard (Vercel production only)", () => {
+    const live = {
+      NODE_ENV: "production",
+      VERCEL: "1",
+      VERCEL_ENV: "production",
+      GRIDFIN_DB: "remote",
+      DATABASE_URL: "postgresql://u:p@ep-x.neon.tech/db?sslmode=require",
+      NEXT_PUBLIC_APP_URL: "https://santa.vercel.app",
+    } as const;
+
+    it("boots with a complete production set", () => {
+      expect(parseEnv(live).GRIDFIN_DB).toBe("remote");
+    });
+
+    it("refuses a localhost or missing app URL", () => {
+      const { NEXT_PUBLIC_APP_URL: _, ...noUrl } = live;
+      expect(() => parseEnv(noUrl)).toThrow(/NEXT_PUBLIC_APP_URL/);
+      expect(() =>
+        parseEnv({ ...live, NEXT_PUBLIC_APP_URL: "http://127.0.0.1:3000" }),
+      ).toThrow(/NEXT_PUBLIC_APP_URL/);
+    });
+
+    it("refuses PGlite or a missing DATABASE_URL", () => {
+      const { GRIDFIN_DB: _, DATABASE_URL: __, ...local } = live;
+      expect(() => parseEnv(local)).toThrow(/GRIDFIN_DB/);
+      expect(() => parseEnv(local)).toThrow(/DATABASE_URL/);
+    });
+
+    it("leaves a local production build and previews alone", () => {
+      expect(() => parseEnv({ NODE_ENV: "production" })).not.toThrow();
+      expect(() =>
+        parseEnv({
+          NODE_ENV: "production",
+          VERCEL: "1",
+          VERCEL_ENV: "preview",
+        }),
+      ).not.toThrow();
+    });
+  });
 });

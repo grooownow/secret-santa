@@ -61,6 +61,9 @@ const schema = z
     E2E_MAIL_OUTBOX: z.string().min(1).optional(),
     // Set to "1" by Vercel on every deployment; read only for that guard.
     VERCEL: z.string().optional(),
+    // Set by Vercel at build and run time: "production", "preview" or
+    // "development". Only "production" gets the boot guard below.
+    VERCEL_ENV: z.string().optional(),
 
     // Groq (free tier) translates user texts on save. Without a key,
     // translation is a fake in dev/test and disabled in production.
@@ -95,6 +98,41 @@ const schema = z
           path: ["E2E_MAIL_OUTBOX"],
           message:
             "E2E_MAIL_OUTBOX is for local e2e runs only: it cannot be set on Vercel, with Gmail credentials, or with a non-local NEXT_PUBLIC_APP_URL",
+        });
+      }
+    }
+    // The live site must not boot half-configured: links in mails would
+    // point at localhost, or the data would go to a throwaway PGlite on a
+    // read-only disk. Only the Vercel production deployment is checked, so a
+    // local `pnpm build` and the e2e run (no VERCEL_ENV) still work.
+    if (val.VERCEL_ENV === "production") {
+      const host = (() => {
+        try {
+          return new URL(val.NEXT_PUBLIC_APP_URL).hostname;
+        } catch {
+          return "";
+        }
+      })();
+      if (!host || host === "localhost" || host === "127.0.0.1") {
+        ctx.addIssue({
+          code: "custom",
+          path: ["NEXT_PUBLIC_APP_URL"],
+          message:
+            "NEXT_PUBLIC_APP_URL must be the public https URL in production, not localhost",
+        });
+      }
+      if (val.GRIDFIN_DB !== "remote") {
+        ctx.addIssue({
+          code: "custom",
+          path: ["GRIDFIN_DB"],
+          message: 'GRIDFIN_DB must be "remote" in production',
+        });
+      }
+      if (!val.DATABASE_URL) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["DATABASE_URL"],
+          message: "DATABASE_URL is required in production",
         });
       }
     }
