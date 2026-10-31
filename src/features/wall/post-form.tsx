@@ -66,9 +66,13 @@ export function PostForm({
       }}
       className="flex flex-col gap-4"
     >
-      <p className="text-santa-muted text-xs">
-        {t("as", { name: authorName })}
-      </p>
+      <button
+        type="button"
+        onClick={() => setOpen(false)}
+        className="text-santa-green self-start text-[13px] font-semibold"
+      >
+        {t("back")}
+      </button>
       <Field label={t("text")}>
         <TextAreaInput
           name="text"
