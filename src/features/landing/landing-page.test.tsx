@@ -100,9 +100,12 @@ describe("LandingPage", () => {
     expect(out).not.toContain('href="/register"');
   });
 
-  it("after the deadline the final block drops the deadline sentence", async () => {
+  it("after the deadline the final block no longer invites to join", async () => {
     const out = await render({ now: closed });
-    expect(out).toContain("Осталось только присоединиться.");
+    expect(out).not.toContain("Осталось только присоединиться");
+    expect(out).not.toContain("Кто-то из соседей уже готов");
+    expect(out).toContain("Заявки закрыты");
+    expect(out).toMatch(/<a [^>]*href="\/signin"[^>]*><span>Войти/);
     expect(out).not.toContain("Заявки принимаем до");
     const whileOpen = await render();
     expect(whileOpen).toContain(

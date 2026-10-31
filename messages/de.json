@@ -905,7 +905,9 @@
       "title": "Jemand aus der Nachbarschaft ist schon bereit, dein Santa zu sein",
       "text": "Du musst nur noch mitmachen. Anmeldung bis {close}.",
       "cta": "Santa werden",
-      "textClosed": "Du musst nur noch mitmachen."
+      "textClosed": "Die Anmeldung ist vorbei. Wenn du schon mitmachst, melde dich in deinem Konto an.",
+      "titleClosed": "Anmeldung geschlossen",
+      "ctaClosed": "Anmelden"
     },
     "organizer": "Organisation des Spiels: Kate, <link>auf Telegram schreiben</link>."
   },

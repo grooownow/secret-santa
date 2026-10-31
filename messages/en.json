@@ -905,7 +905,9 @@
       "title": "A neighbour is already ready to be your Santa",
       "text": "All that is left is to join. Sign-ups are open until {close}.",
       "cta": "Become a Santa",
-      "textClosed": "All that is left is to join."
+      "textClosed": "Sign-ups have ended. If you are already in the game, sign in to your account.",
+      "titleClosed": "Sign-ups are closed",
+      "ctaClosed": "Sign in"
     },
     "organizer": "Game organizer: Kate, <link>write on Telegram</link>."
   },

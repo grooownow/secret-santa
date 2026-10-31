@@ -214,12 +214,19 @@ export async function LandingPage({
         </section>
 
         <section className="bg-santa-mint flex flex-col gap-4 px-[26px] py-8">
-          <h2 className={H2}>{t("final.title")}</h2>
+          {/* After the deadline the block no longer invites to join. */}
+          <h2 className={H2}>
+            {open ? t("final.title") : t("final.titleClosed")}
+          </h2>
           <p className="text-santa-muted text-sm leading-relaxed">
             {open ? t("final.text", d) : t("final.textClosed")}
           </p>
           <LinkButton href={ctaHref}>
-            {signedIn ? t("hero.toCabinet") : t("final.cta")}
+            {signedIn
+              ? t("hero.toCabinet")
+              : open
+                ? t("final.cta")
+                : t("final.ctaClosed")}
           </LinkButton>
         </section>
 

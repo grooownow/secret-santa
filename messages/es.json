@@ -905,7 +905,9 @@
       "title": "Alguien del vecindario ya puede ser tu Santa",
       "text": "Solo falta unirse. Las inscripciones están abiertas hasta el {close}.",
       "cta": "Ser un Santa",
-      "textClosed": "Solo falta unirse."
+      "textClosed": "Las inscripciones han terminado. Si ya participas, entra en tu cuenta.",
+      "titleClosed": "Inscripciones cerradas",
+      "ctaClosed": "Entrar"
     },
     "organizer": "Organiza el juego: Kate, <link>escríbele por Telegram</link>."
   },
