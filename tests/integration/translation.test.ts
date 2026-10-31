@@ -18,7 +18,6 @@ import {
   wallPosts,
 } from "@/db/schema";
 import {
-  deleteAllTranslations,
   getLocalized,
   retryMissingTranslations,
   setTranslatorForTests,
@@ -402,12 +401,5 @@ describe("auto-translation", () => {
     );
     failing = true;
     expect(await retryMissingTranslations(10)).toEqual({ done: 0, failed: 3 });
-  });
-
-  it("deleteAllTranslations purges everything", async () => {
-    await signedInUser("ru");
-    await saveAdult();
-    await deleteAllTranslations();
-    expect(await db.select().from(translations)).toHaveLength(0);
   });
 });

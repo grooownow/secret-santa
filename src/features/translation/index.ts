@@ -1,7 +1,6 @@
 export { getTranslator, setTranslatorForTests } from "./translator";
 export type { Translator } from "./translator";
 export {
-  deleteAllTranslations,
   deleteTranslations,
   getLocalized,
   type LocalizedSource,

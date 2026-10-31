@@ -229,12 +229,6 @@ export async function deleteTranslations(sourceKeys: string[]): Promise<void> {
     .where(inArray(translationAttempts.sourceKey, sourceKeys));
 }
 
-/** Deletes every translation (the January 10 purge). */
-export async function deleteAllTranslations(): Promise<void> {
-  await getDb().delete(translations);
-  await getDb().delete(translationAttempts);
-}
-
 interface Source {
   key: string;
   text: string;

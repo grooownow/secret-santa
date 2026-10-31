@@ -287,8 +287,8 @@ describe("runDraw", () => {
     await expect(draw()).rejects.toThrow("NEXT_NOT_FOUND");
     const { getOverview } = await import("@/features/admin");
     await expect(getOverview()).rejects.toThrow("NEXT_NOT_FOUND");
-    const { resendDrawMail } = await import("@/features/draw");
-    await expect(resendDrawMail()).rejects.toThrow("NEXT_NOT_FOUND");
+    const { resendBroadcast } = await import("@/features/admin");
+    await expect(resendBroadcast("draw")).rejects.toThrow("NEXT_NOT_FOUND");
     expect(await drawnAt()).toBeNull();
   });
 });
@@ -339,8 +339,11 @@ describe("overview and resend", () => {
       sent: 2,
     });
 
-    const { resendDrawMail } = await import("@/features/draw");
-    expect(await resendDrawMail()).toMatchObject({ sent: 1, failed: 0 });
+    const { resendBroadcast } = await import("@/features/admin");
+    expect(await resendBroadcast("draw")).toMatchObject({
+      sent: 1,
+      failed: 0,
+    });
     expect((await getOverview()).broadcasts.draw).toEqual({
       total: 3,
       sent: 3,
@@ -355,8 +358,12 @@ describe("overview and resend", () => {
   it("resend before the draw sends nothing", async () => {
     await organizer("1");
     await account("2");
-    const { resendDrawMail } = await import("@/features/draw");
-    expect(await resendDrawMail()).toEqual({ total: 0, sent: 0, failed: 0 });
+    const { resendBroadcast } = await import("@/features/admin");
+    expect(await resendBroadcast("draw")).toEqual({
+      total: 0,
+      sent: 0,
+      failed: 0,
+    });
     expect(sent).toHaveLength(0);
   });
 });
