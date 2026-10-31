@@ -1,6 +1,7 @@
 import "server-only";
 import { runBroadcast, type BroadcastEvent } from "@/features/mail";
 import { retryMissingTranslations } from "@/features/translation";
+import { mailWindow } from "@/lib/game-phase";
 import { todayInMadrid } from "@/lib/game-time";
 import { logger } from "@/lib/logger";
 import { getSettings } from "./settings";
@@ -22,12 +23,7 @@ export type DailyReport = {
   failed: boolean;
 };
 
-/** `YYYY-MM-DD` shifted by whole days (calendar arithmetic, no time zones). */
-export function addDays(date: string, days: number): string {
-  const d = new Date(`${date}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
-}
+export { addDays } from "@/lib/game-phase";
 
 /**
  * The once-a-day job (Vercel cron, 08:00 UTC = 09:00/10:00 in Madrid).
@@ -76,20 +72,11 @@ export async function runDaily(now: Date): Promise<DailyReport> {
     }
   };
 
-  if (settings.drawnAt) {
-    const reminderFrom = addDays(settings.giftsEndOn, -2);
-    if (today >= settings.giftsStartOn && today < settings.revealOn) {
-      await broadcast("gifts-open");
-    }
-    if (
-      today >= settings.giftsStartOn &&
-      today >= reminderFrom &&
-      today <= settings.giftsEndOn
-    ) {
-      await broadcast("reminder");
-    }
-    if (today >= settings.revealOn) {
-      await broadcast("reveal");
+  // Windows shared with the admin's «Дослать» (see `mailWindow`).
+  for (const event of ["gifts-open", "reminder", "reveal"] as const) {
+    if (mailWindow(event, settings, today) === "open") {
+      // oxlint-disable-next-line no-await-in-loop
+      await broadcast(event);
     }
   }
 

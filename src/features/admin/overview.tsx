@@ -6,7 +6,7 @@ import type { BroadcastEvent } from "@/features/mail";
 import { daysBetween, formatGameDay, todayInMadrid } from "@/lib/game-time";
 import type { Overview } from "./queries";
 import { ResendBroadcastForm } from "./resend-broadcast-form";
-import { canResend } from "./resend-rules";
+import { canResend, showMailing } from "./resend-rules";
 import { ADMIN_BACKUP, ADMIN_PARTICIPANTS } from "./routes";
 
 function Stat({ label, value }: { label: string; value: React.ReactNode }) {
@@ -110,18 +110,19 @@ export async function OverviewView({
   const giftsOn = formatGameDay(settings.giftsStartOn, locale);
   const days = daysBetween(todayInMadrid(new Date()), settings.giftsStartOn);
 
-  const mailing = (event: BroadcastEvent, label: string) => (
-    <BroadcastStatus
-      key={event}
-      label={label}
-      status={overview.broadcasts[event]}
-      resend={
-        canResend(event, overview.phase) ? (
-          <ResendBroadcastForm event={event} />
-        ) : undefined
-      }
-    />
-  );
+  const mailing = (event: BroadcastEvent, label: string) =>
+    showMailing(event, settings) ? (
+      <BroadcastStatus
+        key={event}
+        label={label}
+        status={overview.broadcasts[event]}
+        resend={
+          canResend(event, settings) ? (
+            <ResendBroadcastForm event={event} />
+          ) : undefined
+        }
+      />
+    ) : null;
 
   if (overview.phase === "waiting") {
     return (

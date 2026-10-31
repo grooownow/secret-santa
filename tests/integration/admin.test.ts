@@ -438,4 +438,38 @@ describe("resendBroadcast", () => {
     });
     expect(await resendBroadcast("gifts-open")).toMatchObject({ sent: 0 });
   });
+
+  it("the reminder can be resent only in its own window, so the real one still goes out", async () => {
+    await asOrganizer();
+    const ids = [
+      (await person("1")).id,
+      (await person("2")).id,
+      (await person("3")).id,
+    ];
+    await link(ids);
+    const { resendBroadcast } = await import("@/features/admin");
+    const { runDaily } = await import("@/features/game");
+
+    // 26 December: gifts phase, but the reminder is due from the 29th.
+    vi.setSystemTime(new Date("2026-12-26T12:00:00+01:00"));
+    expect(await resendBroadcast("reminder")).toEqual({
+      total: 0,
+      sent: 0,
+      failed: 0,
+    });
+    expect(sent).toHaveLength(0);
+
+    // 29 December: the daily job sends it to everyone.
+    const day = new Date("2026-12-29T09:00:00+01:00");
+    vi.setSystemTime(day);
+    const report = await runDaily(day);
+    expect(report.broadcasts.reminder).toMatchObject({ total: 3, sent: 3 });
+
+    // After giftsEndOn it can no longer be resent.
+    vi.setSystemTime(new Date("2027-01-02T12:00:00+01:00"));
+    sent.length = 0;
+    await db.delete(sentEmails);
+    expect(await resendBroadcast("reminder")).toMatchObject({ sent: 0 });
+    expect(sent).toHaveLength(0);
+  });
 });

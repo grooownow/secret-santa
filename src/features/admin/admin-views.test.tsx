@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { renderServerToHtml as html } from "../../../test/render-server";
 import { defaultSettings } from "@/lib/game-phase";
 import { OverviewView } from "./overview";
@@ -40,8 +40,18 @@ const overview = (patch: Partial<Overview>): Overview => ({
   ...patch,
 });
 const settings = defaultSettings();
+const drawn = defaultSettings({ drawnAt: new Date("2026-12-07T10:00:00Z") });
+/** Pins "today" (Madrid) for the date-aware mailing windows. */
+function today(day: string) {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date(`${day}T12:00:00+01:00`));
+}
 
 describe("OverviewView per phase", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("collect: counts, check link and the draw button", async () => {
     const out = await html(
       await OverviewView({ overview: overview({}), settings }),
@@ -52,10 +62,11 @@ describe("OverviewView per phase", () => {
   });
 
   it("waiting: draw mail status with resend, links to participants and backup", async () => {
+    today("2026-12-10");
     const out = await html(
       await OverviewView({
         overview: overview({ phase: "waiting" }),
-        settings,
+        settings: drawn,
       }),
     );
     expect(out).toContain("admin.overview.drawnTitle");
@@ -66,6 +77,7 @@ describe("OverviewView per phase", () => {
   });
 
   it("gifts: gifts marked, waiting for backup, the 25 and 29 Dec mailings", async () => {
+    today("2026-12-30");
     const out = await html(
       await OverviewView({
         overview: overview({
@@ -78,7 +90,7 @@ describe("OverviewView per phase", () => {
             reveal: none,
           },
         }),
-        settings,
+        settings: drawn,
       }),
     );
     expect(out).toContain("admin.overview.giftsTitle");
@@ -93,7 +105,29 @@ describe("OverviewView per phase", () => {
     expect(out).not.toContain("admin.overview.drawMail");
   });
 
+  it("gifts before the reminder window: no reminder block and no «Дослать» for it", async () => {
+    today("2026-12-26");
+    const out = await html(
+      await OverviewView({
+        overview: overview({
+          phase: "gifts",
+          broadcasts: {
+            draw: none,
+            "gifts-open": { total: 5, sent: 2 },
+            reminder: { total: 5, sent: 0 },
+            reveal: none,
+          },
+        }),
+        settings: drawn,
+      }),
+    );
+    expect(out).toContain("resend:gifts-open");
+    expect(out).not.toContain("admin.overview.reminderMail");
+    expect(out).not.toContain("resend:reminder");
+  });
+
   it("reveal: backup counts, reveal mail, reminder and the purge note", async () => {
+    today("2027-01-02");
     const out = await html(
       await OverviewView({
         overview: overview({
@@ -101,7 +135,7 @@ describe("OverviewView per phase", () => {
           backupNeeded: 2,
           backupOrganized: 1,
         }),
-        settings,
+        settings: drawn,
       }),
     );
     expect(out).toContain("admin.overview.revealTitle");

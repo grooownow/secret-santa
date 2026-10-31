@@ -74,3 +74,46 @@ export function wallOpen(now: Date, s: GameSettings): boolean {
   const today = todayInMadrid(now);
   return today >= s.giftsStartOn && today < s.closeOn;
 }
+
+/** `YYYY-MM-DD` shifted by whole days (calendar arithmetic, no time zones). */
+export function addDays(date: string, days: number): string {
+  const d = new Date(`${date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+export type MailEvent = "draw" | "gifts-open" | "reminder" | "reveal";
+
+/**
+ * Where `today` (Madrid `YYYY-MM-DD`) stands against the days on which the
+ * mailing of `event` is due. The daily job sends only inside the window, and
+ * the admin's «Дослать» uses the same rule, so a manual send can never land
+ * early and use up the keys of the real one:
+ *  - draw: from the draw until closeOn (exclusive)
+ *  - gifts-open: giftsStartOn until revealOn (exclusive)
+ *  - reminder: giftsEndOn - 2 days (never before giftsStartOn) through giftsEndOn
+ *  - reveal: revealOn until closeOn (exclusive)
+ * Nothing is due before the draw.
+ */
+export function mailWindow(
+  event: MailEvent,
+  s: GameSettings,
+  today: string,
+): "before" | "open" | "after" {
+  if (!s.drawnAt) return "before";
+  const reminderFrom = addDays(s.giftsEndOn, -2);
+  const windows: Record<MailEvent, [from: string, until: string]> = {
+    // The draw mail is due as soon as the draw has run.
+    draw: ["", addDays(s.closeOn, -1)],
+    "gifts-open": [s.giftsStartOn, addDays(s.revealOn, -1)],
+    reminder: [
+      reminderFrom > s.giftsStartOn ? reminderFrom : s.giftsStartOn,
+      s.giftsEndOn,
+    ],
+    reveal: [s.revealOn, addDays(s.closeOn, -1)],
+  };
+  const [from, until] = windows[event];
+  if (today < from) return "before";
+  if (today > until || today >= s.closeOn) return "after";
+  return "open";
+}
