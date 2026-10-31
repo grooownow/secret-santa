@@ -148,11 +148,16 @@ export const authTokens = pgTable("auth_tokens", {
   usedAt: timestamp("used_at", { withTimezone: true }),
 });
 
-// Idempotency ledger for mass mailings: a key is inserted before/after a send
-// so a retry never mails the same person twice.
+// Idempotency ledger for mass mailings. A row is a claim made before sending
+// (only the inserter sends); sentAt is set once the send succeeds, and a failed
+// send deletes the claim. A claim with sentAt null older than 10 minutes may be
+// reclaimed (crash recovery). See src/features/mail/sender.ts.
 export const sentEmails = pgTable("sent_emails", {
   key: text("key").primaryKey(),
-  sentAt: timestamp("sent_at", { withTimezone: true }).defaultNow().notNull(),
+  claimedAt: timestamp("claimed_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  sentAt: timestamp("sent_at", { withTimezone: true }),
 });
 
 // Single-row table (id is always 1). Dates are `YYYY-MM-DD` strings in the

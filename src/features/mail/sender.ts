@@ -4,7 +4,7 @@ import { getDb } from "@/db/client";
 import { sentEmails } from "@/db/schema";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull, lt } from "drizzle-orm";
 
 export type MailMessage = {
   to: string;
@@ -57,23 +57,58 @@ export async function sendMail(message: MailMessage): Promise<void> {
   await gmailTransport(GMAIL_USER, GMAIL_APP_PASSWORD)(message);
 }
 
+const STALE_CLAIM_MS = 10 * 60 * 1000;
+
+/** True when this caller now owns the key and must send. */
+async function claim(key: string): Promise<boolean> {
+  const db = getDb();
+  const inserted = await db
+    .insert(sentEmails)
+    .values({ key })
+    .onConflictDoNothing()
+    .returning();
+  if (inserted.length > 0) return true;
+
+  // Crash recovery: take over an unfinished claim. The conditional update
+  // lets exactly one reclaimer win.
+  const reclaimed = await db
+    .update(sentEmails)
+    .set({ claimedAt: new Date() })
+    .where(
+      and(
+        eq(sentEmails.key, key),
+        isNull(sentEmails.sentAt),
+        lt(sentEmails.claimedAt, new Date(Date.now() - STALE_CLAIM_MS)),
+      ),
+    )
+    .returning();
+  return reclaimed.length > 0;
+}
+
 /**
- * Sends at most once per key. The key is recorded only after a successful
- * send, so a failed send can be retried. Returns false when already sent.
+ * Sends at most once per key: claim first, then send, then mark sent. A failed
+ * send releases the claim so a rerun retries; a failure to mark leaves the
+ * claim in place so nobody is mailed twice. Returns false when the key is
+ * already sent or being sent by someone else.
  */
 export async function sendOnce(
   key: string,
   message: MailMessage,
 ): Promise<boolean> {
+  if (!(await claim(key))) return false;
   const db = getDb();
-  const [existing] = await db
-    .select({ key: sentEmails.key })
-    .from(sentEmails)
-    .where(eq(sentEmails.key, key))
-    .limit(1);
-  if (existing) return false;
 
-  await sendMail(message);
-  await db.insert(sentEmails).values({ key }).onConflictDoNothing();
+  try {
+    await sendMail(message);
+  } catch (error) {
+    await db
+      .delete(sentEmails)
+      .where(and(eq(sentEmails.key, key), isNull(sentEmails.sentAt)));
+    throw error;
+  }
+  await db
+    .update(sentEmails)
+    .set({ sentAt: new Date() })
+    .where(eq(sentEmails.key, key));
   return true;
 }

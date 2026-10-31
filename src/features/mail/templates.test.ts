@@ -33,21 +33,28 @@ describe("renderEmail", () => {
   });
 
   it("draw and reveal emails never contain recipient or santa names", () => {
-    // The caller only knows the account's own participants; pair data has no
-    // way in. Names of pair members passed anywhere else must not appear.
+    // Every EmailData field gets a distinct marker; only the account's own
+    // participant name may appear, and only draw/reveal drop the gift fields.
+    const data = {
+      names: ["OwnChildMarker"],
+      url: "https://santa.example/home",
+      place: "locker" as const,
+      code: "CodeMarker77",
+      note: "NoteMarker88",
+      noReceiver: true,
+    };
     for (const type of ["draw", "reveal"] as const) {
-      const out = renderEmail(type, "en", { names: ["Own Child"] });
-      expect(out.text).toContain("https://santa.example/home");
-      expect(out.text).not.toMatch(/Receiver|Santa Name/);
-      expect(out.text.match(/Own Child/g)).toHaveLength(1);
+      for (const locale of LOCALES) {
+        const out = renderEmail(type, locale, data);
+        const all = out.subject + out.text + out.html;
+        expect(all).not.toMatch(/CodeMarker77|NoteMarker88/);
+        expect(out.text.match(/OwnChildMarker/g)).toHaveLength(1);
+      }
     }
-    const draw = renderEmail("draw", "en", {
-      names: ["Own Child"],
-      place: "locker",
-      code: "1234",
-      note: "secret note",
-    });
-    expect(draw.text + draw.html).not.toMatch(/1234|secret note|Locker/);
+    // Control: the same data does reach a gift-waiting email.
+    const waiting = renderEmail("giftWaiting", "en", data);
+    expect(waiting.text).toMatch(/CodeMarker77/);
+    expect(waiting.text).toMatch(/NoteMarker88/);
   });
 
   it("only the reveal email has the developer line", () => {

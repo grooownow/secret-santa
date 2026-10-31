@@ -29,6 +29,13 @@
       "when": 1793471229419,
       "tag": "0003_mute_shinobi_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793472344912,
+      "tag": "0004_fine_agent_brand",
+      "breakpoints": true
     }
   ]
 }

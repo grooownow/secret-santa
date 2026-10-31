@@ -39,6 +39,7 @@ function installTransport() {
   calls = 0;
   setMailTransportForTests(async (m) => {
     calls += 1;
+    await new Promise((r) => setTimeout(r, 2));
     if (failOn.has(calls)) throw new Error("gmail down");
     outbox.push(m);
   });
@@ -141,6 +142,26 @@ describe("runBroadcast", () => {
     expect(outbox).toHaveLength(3);
   });
 
+  it("two parallel broadcasts mail each account exactly once", async () => {
+    const accounts = [
+      await account(["A"]),
+      await account(["B"]),
+      await account(["C"]),
+    ];
+    await chain(accounts.map((x) => x.ids[0]!));
+    installTransport();
+
+    const [r1, r2] = await Promise.all([
+      runBroadcast("draw"),
+      runBroadcast("draw"),
+    ]);
+
+    expect(r1.sent + r2.sent).toBe(3);
+    expect(outbox.map((m) => m.to).sort()).toEqual(
+      accounts.map((x) => x.email).sort(),
+    );
+  });
+
   it("reminder goes only to accounts with an unmarked gift", async () => {
     const a = await account(["A"]);
     const b = await account(["B"]);
@@ -189,5 +210,53 @@ describe("sendOnce", () => {
     expect(await sendOnce("k:1", msg)).toBe(false);
     expect(outbox).toHaveLength(1);
     expect(await db.select().from(sentEmails)).toHaveLength(1);
+  });
+
+  it("parallel sendOnce on one key sends once", async () => {
+    const msg = { to: "x@y.dev", subject: "s", text: "t", html: "h" };
+    installTransport();
+    const results = await Promise.all([
+      sendOnce("p:1", msg),
+      sendOnce("p:1", msg),
+      sendOnce("p:1", msg),
+    ]);
+    expect(results.filter(Boolean)).toHaveLength(1);
+    expect(outbox).toHaveLength(1);
+  });
+
+  it("a failed send leaves no claim", async () => {
+    const msg = { to: "x@y.dev", subject: "s", text: "t", html: "h" };
+    failOn = new Set([1]);
+    installTransport();
+    await expect(sendOnce("f:1", msg)).rejects.toThrow();
+    expect(await db.select().from(sentEmails)).toHaveLength(0);
+  });
+
+  it("does not reclaim a fresh claim but reclaims a stale one", async () => {
+    const msg = { to: "x@y.dev", subject: "s", text: "t", html: "h" };
+    installTransport();
+    await db.insert(sentEmails).values({ key: "c:1" }); // fresh, unsent
+    expect(await sendOnce("c:1", msg)).toBe(false);
+    expect(outbox).toHaveLength(0);
+
+    await db
+      .update(sentEmails)
+      .set({ claimedAt: new Date(Date.now() - 11 * 60 * 1000) });
+    const results = await Promise.all([
+      sendOnce("c:1", msg),
+      sendOnce("c:1", msg),
+    ]);
+    expect(results.filter(Boolean)).toHaveLength(1);
+    expect(outbox).toHaveLength(1);
+    const [row] = await db.select().from(sentEmails);
+    expect(row?.sentAt).not.toBeNull();
+  });
+
+  it("an unfinished claim does not count as sent in the status", async () => {
+    const a = await account(["A"]);
+    const b = await account(["B"]);
+    await chain([a.ids[0]!, b.ids[0]!]);
+    await db.insert(sentEmails).values({ key: `draw:${a.userId}` });
+    expect(await broadcastStatus("draw")).toEqual({ total: 2, sent: 0 });
   });
 });

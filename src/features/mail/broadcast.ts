@@ -1,5 +1,5 @@
 import "server-only";
-import { eq } from "drizzle-orm";
+import { eq, isNotNull } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { assignments, participants, sentEmails, users } from "@/db/schema";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/locale";
@@ -124,9 +124,12 @@ export async function broadcastStatus(
 ): Promise<{ total: number; sent: number }> {
   const recipients = await audience(event);
   const keys = new Set(
-    (await getDb().select({ key: sentEmails.key }).from(sentEmails)).map(
-      (row) => row.key,
-    ),
+    (
+      await getDb()
+        .select({ key: sentEmails.key })
+        .from(sentEmails)
+        .where(isNotNull(sentEmails.sentAt))
+    ).map((row) => row.key),
   );
   return {
     total: recipients.length,
