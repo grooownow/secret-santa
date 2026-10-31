@@ -3,7 +3,6 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import type { Unnotified } from "./withdraw";
 import { UnnotifiedNotice } from "./unnotified-notice";
 import { withdrawAction } from "./withdraw-action";
 
@@ -13,14 +12,20 @@ export function WithdrawConfirm({ id }: { id: string }) {
   const [error, setError] = useState<"closed" | "notFound" | "failed" | null>(
     null,
   );
-  const [unnotified, setUnnotified] = useState<Unnotified[] | null>(null);
+  const [unnotified, setUnnotified] = useState<{
+    count: number;
+    retryToken: string;
+  } | null>(null);
   const [pending, startTransition] = useTransition();
 
   if (unnotified) {
     return (
       <div className="flex flex-col gap-3">
         <p className="text-santa-ink text-sm font-semibold">{t("done")}</p>
-        <UnnotifiedNotice items={unnotified} />
+        <UnnotifiedNotice
+          count={unnotified.count}
+          retryToken={unnotified.retryToken}
+        />
       </div>
     );
   }
@@ -36,7 +41,11 @@ export function WithdrawConfirm({ id }: { id: string }) {
               // Success redirects to the table; nothing comes back then.
               if (!result) return;
               if (!result.ok) setError(result.reason);
-              else setUnnotified(result.unnotified);
+              else
+                setUnnotified({
+                  count: result.unnotified,
+                  retryToken: result.retryToken,
+                });
             } catch (caught) {
               if (isRedirectError(caught)) throw caught;
               setError("failed");

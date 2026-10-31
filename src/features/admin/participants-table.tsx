@@ -8,7 +8,6 @@ import { TextInput } from "@/components/form-ui";
 import type { ParticipantRow } from "./queries";
 import { withdrawPath } from "./routes";
 import { UnnotifiedNotice } from "./unnotified-notice";
-import type { Unnotified } from "./withdraw";
 import { withdrawAction } from "./withdraw-action";
 
 export type TablePhase = "collect" | "waiting" | "later";
@@ -16,9 +15,18 @@ export type TablePhase = "collect" | "waiting" | "later";
 function RemoveButton({ id }: { id: string }) {
   const t = useTranslations("admin.participants");
   const [error, setError] = useState(false);
-  const [unnotified, setUnnotified] = useState<Unnotified[] | null>(null);
+  const [unnotified, setUnnotified] = useState<{
+    count: number;
+    retryToken: string;
+  } | null>(null);
   const [pending, startTransition] = useTransition();
-  if (unnotified) return <UnnotifiedNotice items={unnotified} />;
+  if (unnotified)
+    return (
+      <UnnotifiedNotice
+        count={unnotified.count}
+        retryToken={unnotified.retryToken}
+      />
+    );
   return (
     <div className="flex flex-col gap-1">
       <button
@@ -32,7 +40,11 @@ function RemoveButton({ id }: { id: string }) {
               const result = await withdrawAction(id);
               if (!result) return;
               if (!result.ok) setError(true);
-              else setUnnotified(result.unnotified);
+              else
+                setUnnotified({
+                  count: result.unnotified,
+                  retryToken: result.retryToken,
+                });
             } catch (caught) {
               if (isRedirectError(caught)) throw caught;
               setError(true);

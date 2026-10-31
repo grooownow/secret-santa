@@ -21,7 +21,6 @@ const actions = vi.hoisted(() => ({
 vi.mock("./withdraw-action", () => actions);
 
 const ID = "11111111-1111-4111-8111-111111111111";
-const item = { userId: ID, giverIds: [ID], at: 1 };
 
 beforeEach(() => {
   actions.withdrawAction.mockReset();
@@ -33,7 +32,8 @@ describe("WithdrawConfirm", () => {
     actions.withdrawAction.mockResolvedValue({
       ok: true,
       removed: 1,
-      unnotified: [item],
+      unnotified: 1,
+      retryToken: "opaque",
     });
     render(<WithdrawConfirm id={ID} />);
     await userEvent.click(
@@ -51,9 +51,14 @@ describe("WithdrawConfirm", () => {
     actions.withdrawAction.mockResolvedValue({
       ok: true,
       removed: 1,
-      unnotified: [item],
+      unnotified: 1,
+      retryToken: "opaque",
     });
-    actions.retryNotify.mockResolvedValue({ ok: true, failed: [] });
+    actions.retryNotify.mockResolvedValue({
+      ok: true,
+      left: 0,
+      retryToken: null,
+    });
     render(<WithdrawConfirm id={ID} />);
     await userEvent.click(
       screen.getByRole("button", { name: "Confirm withdrawal" }),
@@ -68,7 +73,8 @@ describe("WithdrawConfirm", () => {
     actions.withdrawAction.mockResolvedValue({
       ok: true,
       removed: 1,
-      unnotified: [item],
+      unnotified: 1,
+      retryToken: "opaque",
     });
     actions.retryNotify.mockResolvedValue({ ok: false });
     render(<WithdrawConfirm id={ID} />);

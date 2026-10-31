@@ -7,15 +7,20 @@ import { FormAlert } from "@/components/form-ui";
 import { ORGANIZER_TELEGRAM } from "@/lib/organizer";
 import { ADMIN_PARTICIPANTS } from "./routes";
 import { retryNotify } from "./withdraw-action";
-import type { Unnotified } from "./withdraw";
 
 /**
  * Shown when the withdrawal went through but some givers did not get their
  * mail: a retry button and the hint to write to them in Telegram.
  */
-export function UnnotifiedNotice({ items }: { items: Unnotified[] }) {
+export function UnnotifiedNotice({
+  count,
+  retryToken,
+}: {
+  count: number;
+  retryToken: string;
+}) {
   const t = useTranslations("admin.withdraw");
-  const [left, setLeft] = useState(items);
+  const [left, setLeft] = useState({ count, token: retryToken });
   const [failed, setFailed] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -27,7 +32,7 @@ export function UnnotifiedNotice({ items }: { items: Unnotified[] }) {
       {t("toList")}
     </Link>
   );
-  if (left.length === 0) {
+  if (left.count === 0) {
     return (
       <div className="flex flex-col gap-3">
         <output className="text-santa-green text-sm font-semibold">
@@ -40,17 +45,17 @@ export function UnnotifiedNotice({ items }: { items: Unnotified[] }) {
   return (
     <div className="flex flex-col gap-3">
       <FormAlert title={t("unnotifiedTitle")}>
-        {t("unnotifiedText", { count: left.length })}
+        {t("unnotifiedText", { count: left.count })}
       </FormAlert>
       <button
         type="button"
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
-            const result = await retryNotify(left).catch(() => null);
+            const result = await retryNotify(left.token).catch(() => null);
             if (result?.ok) {
               setFailed(false);
-              setLeft(result.failed);
+              setLeft({ count: result.left, token: result.retryToken ?? "" });
             } else {
               setFailed(true);
             }

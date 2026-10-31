@@ -327,6 +327,35 @@ describe("withdrawParticipant", () => {
     expect(sent).toHaveLength(0);
   });
 
+  it("withdrawing the organizer removes her participants but keeps her account (admin stays)", async () => {
+    await asOrganizer();
+    const [kate] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, ORGANIZER_EMAIL));
+    const [k] = await db
+      .insert(participants)
+      .values(makeParticipant(kate!.id, { name: "Kate" }))
+      .returning();
+    await db
+      .insert(participants)
+      .values(makeParticipant(kate!.id, { kind: "child", name: "Kid" }));
+    const [a, r] = [await person("1"), await person("3")] as const;
+    await link([a.id, k!.id, r.id]);
+
+    expect(await withdraw(k!.id)).toMatchObject({ ok: true, removed: 2 });
+    expect(
+      (await db.select().from(users)).some((u) => u.email === ORGANIZER_EMAIL),
+    ).toBe(true);
+    expect(
+      await db
+        .select()
+        .from(participants)
+        .where(eq(participants.userId, kate!.id)),
+    ).toHaveLength(0);
+    expect((await giverOf(r.id))?.giverId).toBe(a.id);
+  });
+
   it("removing a child removes only the child", async () => {
     const a = await person("1");
     const [kid] = await db
@@ -421,22 +450,42 @@ describe("withdrawParticipant", () => {
     });
     vi.mocked(revalidatePath).mockClear();
 
-    const { withdrawAction } = await import("@/features/admin");
+    const { withdrawAction, retryNotify } = await import("@/features/admin");
     const result = await withdrawAction(d.id);
-    expect(result).toMatchObject({ ok: true, removed: 1 });
+    expect(result).toMatchObject({ ok: true, removed: 1, unnotified: 1 });
     if (!result?.ok) throw new Error("unreachable");
-    expect(result.unnotified).toHaveLength(1);
     expect(revalidatePath).not.toHaveBeenCalled();
+    // The browser gets a count and an opaque token, never whose Santa it was.
+    const payload = JSON.stringify(result);
+    for (const id of [a.id, a.user.id, d.id, d.user.id, r.id, r.user.id]) {
+      expect(payload).not.toContain(id);
+    }
+
+    // Still failing: the retry hands back a new token for what is left.
+    const again = await retryNotify(result.retryToken);
+    expect(again).toMatchObject({ ok: true, left: 1 });
+    if (!again.ok || !again.retryToken) throw new Error("unreachable");
+    expect(JSON.stringify(again)).not.toContain(a.user.id);
+
     setMailTransportForTests(async (m) => {
       sent.push(m);
     });
+    expect(await retryNotify(again.retryToken)).toEqual({
+      ok: true,
+      left: 0,
+      retryToken: null,
+    });
+    expect(sent.map((m) => m.to)).toEqual([a.user.email]);
+    // A tampered token is refused.
+    const tampered = `${again.retryToken.slice(0, -2)}xx`;
+    expect(await retryNotify(tampered)).toEqual({ ok: false });
   });
 
   it("the retry action is organizer-only and validates input", async () => {
     const a = await person("1");
     signInAsUser(a.user);
     const { retryNotify } = await import("@/features/admin");
-    await expect(retryNotify([])).rejects.toThrow("NEXT_NOT_FOUND");
+    await expect(retryNotify("token")).rejects.toThrow("NEXT_NOT_FOUND");
     await asOrganizer();
     expect(await retryNotify("nonsense")).toEqual({ ok: false });
   });
