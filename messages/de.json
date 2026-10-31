@@ -371,7 +371,7 @@
       "giftsTitle": "Zeit der Geschenke",
       "revealTitle": "Santas aufgedeckt",
       "helpTitle": "Nachbarn brauchen Hilfe",
-      "helpText": "Ohne Santa: {count}. Organisiert das Geschenk selbst oder bittet eine Nachbarin oder einen Nachbarn.",
+      "helpText": "Ohne Santa: {count}. Organisiere das Geschenk selbst oder bitte jemanden aus der Nachbarschaft.",
       "waitingBackup": "Warten auf einen Ersatz-Santa",
       "backupNeeded": "Auf der Ersatzliste",
       "backupOrganized": "Davon organisiert",
@@ -410,7 +410,7 @@
     "participants": {
       "title": "Unsere Teilnehmenden",
       "intro": {
-        "collect": "Teilnehmende: {count}. Entfernt fremde Anmeldungen vor der Auslosung.",
+        "collect": "Teilnehmende: {count}. Entferne fremde Anmeldungen vor der Auslosung.",
         "waiting": "Teilnehmende: {count}. Der Ausstieg ist bis zum 24. Dezember möglich.",
         "later": "Teilnehmende: {count}. Ab dem 25. Dezember gibt es keinen Ausstieg."
       },
@@ -421,7 +421,7 @@
       "verified": "E-Mail bestätigt",
       "unverified": "E-Mail nicht bestätigt",
       "remove": "Anmeldung löschen",
-      "removeConfirm": "Anmeldung löschen? Profil, Foto und Daten der Person werden gelöscht.",
+      "removeConfirm": "Anmeldung löschen? Profil, Foto und Daten der Person werden gelöscht, bei Erwachsenen auch das ganze Konto samt Kindern.",
       "removeFailed": "Löschen hat nicht geklappt. Bitte versuche es noch einmal.",
       "withdraw": "Ausstieg"
     },
@@ -436,7 +436,15 @@
       "running": "Wird ausgetragen…",
       "cancel": "Abbrechen",
       "closed": "Der Ausstieg ist nicht mehr möglich: er gilt bis zum 24. Dezember.",
-      "notFound": "Diese Person ist schon weg."
+      "notFound": "Diese Person ist schon weg.",
+      "done": "Die Person ist ausgestiegen.",
+      "failed": "Das hat nicht geklappt. Prüfe die Teilnehmendenliste und versuche es noch einmal.",
+      "notifiedAll": "Alle E-Mails sind verschickt.",
+      "unnotifiedTitle": "Eine E-Mail ging nicht raus",
+      "unnotifiedText": "Der Ausstieg ist gespeichert, aber {count, plural, one {# Konto hat} other {# Konten haben}} die E-Mail über die Änderung nicht bekommen. Sende sie erneut oder schreibe per Telegram.",
+      "retry": "Erneut senden",
+      "retrying": "Wird gesendet…",
+      "telegramHint": "Per Telegram schreiben"
     },
     "backup": {
       "title": "Ersatz-Santa gesucht",
@@ -464,9 +472,10 @@
         "closeOn": "Ende des Spiels"
       },
       "errors": {
-        "invalid": "Prüft die Termine: Es müssen echte Tage sein.",
+        "invalid": "Prüfe die Termine: Es müssen echte Tage sein.",
         "order": "Die Termine sind nicht in der richtigen Reihenfolge: Anmeldung, Auslosung, Geschenke, Aufdeckung, Ende.",
-        "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal."
+        "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal.",
+        "closeSoon": "Das Enddatum ist heute oder schon vorbei: Das Spiel würde enden und die Daten würden gelöscht. Wähle ein späteres Datum."
       },
       "saved": "Termine gespeichert.",
       "saving": "Wird gespeichert…",

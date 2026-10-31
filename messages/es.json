@@ -369,9 +369,9 @@
       "beforeTitle": "Antes del sorteo",
       "beforeText": "Revisa la lista de vecinos y quita las inscripciones ajenas. Solo participan las cuentas confirmadas con la ficha completa.",
       "giftsTitle": "Hora de los regalos",
-      "revealTitle": "Santas reveladas",
+      "revealTitle": "Identidades reveladas",
       "helpTitle": "Los vecinos necesitan ayuda",
-      "helpText": "Sin Santa: {count}. Organiza el regalo tú o pídeselo a un vecino.",
+      "helpText": "Sin Santa: {count}. Organiza el regalo tú o pídeselo a alguien del vecindario.",
       "waitingBackup": "Esperan un Santa de reserva",
       "backupNeeded": "En la lista de reserva",
       "backupOrganized": "De ellos, organizados",
@@ -421,7 +421,7 @@
       "verified": "Correo confirmado",
       "unverified": "Correo sin confirmar",
       "remove": "Eliminar solicitud",
-      "removeConfirm": "¿Eliminar la solicitud? Se borrarán el perfil, la foto y los datos del participante.",
+      "removeConfirm": "¿Eliminar la solicitud? Se borrarán el perfil, la foto y los datos de la persona y, si es adulta, toda la cuenta con sus hijos.",
       "removeFailed": "No se pudo eliminar. Inténtalo de nuevo.",
       "withdraw": "Baja"
     },
@@ -429,22 +429,30 @@
       "title": "Un participante sale del juego",
       "flat": "Edificio {building}, piso {apartment}",
       "boxTitle": "Disponible hasta el 24 de diciembre",
-      "boxText": "La Santa de este participante recibe a su persona asignada y un correo sobre el cambio. El participante desaparece del juego con su perfil y su foto.",
+      "boxText": "Quien hace de Santa de esta persona recibe a su persona asignada y un correo sobre el cambio. La persona desaparece del juego con su perfil y su foto.",
       "backupNote": "Si la nueva persona asignada vive en el mismo piso que quien regala, pasa a la lista «Se necesita un Santa de reserva» y quien regala recibe un correo avisando de que ya no tiene a quién regalar.",
-      "accountNote": "Cuando sale un adulto, salen también todos los participantes de su cuenta.",
+      "accountNote": "Cuando sale una persona adulta, salen también todos los participantes de su cuenta y se borra la cuenta.",
       "confirm": "Confirmar la baja",
       "running": "Dando de baja…",
       "cancel": "Cancelar",
       "closed": "La baja ya no está disponible: funciona hasta el 24 de diciembre.",
-      "notFound": "Este participante ya no está."
+      "notFound": "Este participante ya no está.",
+      "done": "La persona ha salido.",
+      "failed": "Algo ha fallado. Revisa la lista de participantes e inténtalo de nuevo.",
+      "notifiedAll": "Todos los correos enviados.",
+      "unnotifiedTitle": "Un correo no salió",
+      "unnotifiedText": "La baja está guardada, pero {count, plural, one {# cuenta no ha recibido} other {# cuentas no han recibido}} el correo sobre el cambio. Envíalo de nuevo o escribe por Telegram.",
+      "retry": "Enviar de nuevo",
+      "retrying": "Enviando…",
+      "telegramHint": "Escribir por Telegram"
     },
     "backup": {
       "title": "Se necesita un Santa de reserva",
-      "intro": "Puedes preparar el regalo tú o pedírselo a un vecino. En la lista no aparecen las Santas.",
+      "intro": "Puedes preparar el regalo tú o pedírselo a alguien del vecindario. En la lista no aparece quién hace de Santa.",
       "empty": "Ahora nadie necesita ayuda.",
       "flat": "Edificio {building}, piso {apartment}",
       "reason": {
-        "noSanta": "El Santa se dio de baja",
+        "noSanta": "Quien hacía de Santa se dio de baja",
         "notFound": "El regalo no está en su sitio",
         "notMarked": "El regalo no está marcado"
       },
@@ -460,13 +468,14 @@
         "drawOn": "Fecha del sorteo",
         "giftsStartOn": "Inicio de los regalos",
         "giftsEndOn": "Fin de los regalos",
-        "revealOn": "Revelación de los Santas",
+        "revealOn": "Revelación de quién es Santa",
         "closeOn": "Cierre del juego"
       },
       "errors": {
         "invalid": "Revisa las fechas: deben ser días reales.",
         "order": "Las fechas no van en orden: solicitudes, sorteo, regalos, revelación, cierre.",
-        "failed": "No se pudo guardar. Inténtalo de nuevo."
+        "failed": "No se pudo guardar. Inténtalo de nuevo.",
+        "closeSoon": "La fecha de cierre es hoy o ya pasó: el juego se cerraría y se borrarían los datos. Elige una fecha posterior."
       },
       "saved": "Fechas guardadas.",
       "saving": "Guardando…",
@@ -732,7 +741,7 @@
     "email": "Correo electrónico",
     "language": "Idioma de la interfaz",
     "dataTitle": "Participación y datos",
-    "dataCollect": "Antes del sorteo puedes eliminar tu cuenta tú mismo. Después, solo a través de la organización.",
+    "dataCollect": "Antes del sorteo puedes eliminar tu cuenta por tu cuenta. Después, solo a través de la organización.",
     "dataLater": "Después del sorteo solo se puede salir del juego a través de la organización.",
     "delete": {
       "back": "Ajustes",
@@ -743,7 +752,7 @@
       "stay": "Seguir en el juego",
       "confirm": "Sí, eliminar la cuenta",
       "deleting": "Eliminando…",
-      "closed": "El sorteo ya se ha hecho: no puedes eliminar la cuenta tú mismo.",
+      "closed": "El sorteo ya se ha hecho: no puedes eliminar la cuenta por tu cuenta.",
       "failed": "No se pudo eliminar la cuenta. Inténtalo de nuevo."
     },
     "leave": {

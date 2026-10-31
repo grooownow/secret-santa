@@ -421,7 +421,7 @@
       "verified": "Email confirmed",
       "unverified": "Email not confirmed",
       "remove": "Delete entry",
-      "removeConfirm": "Delete this entry? The profile, photo and data of the participant will be deleted.",
+      "removeConfirm": "Delete this entry? The profile, photo and data of the participant will be deleted, and for an adult the whole account with the children too.",
       "removeFailed": "Could not delete. Please try again.",
       "withdraw": "Withdraw"
     },
@@ -436,7 +436,15 @@
       "running": "Withdrawing…",
       "cancel": "Cancel",
       "closed": "Withdrawal is no longer available: it works until 24 December.",
-      "notFound": "This participant is already gone."
+      "notFound": "This participant is already gone.",
+      "done": "The participant has left.",
+      "failed": "Something went wrong. Check the participants list and try again.",
+      "notifiedAll": "All emails sent.",
+      "unnotifiedTitle": "An email did not go out",
+      "unnotifiedText": "The withdrawal is saved, but {count, plural, one {# account has} other {# accounts have}} not got the email about the change. Send it again or write to them on Telegram.",
+      "retry": "Send again",
+      "retrying": "Sending…",
+      "telegramHint": "Write on Telegram"
     },
     "backup": {
       "title": "Backup Santa needed",
@@ -466,7 +474,8 @@
       "errors": {
         "invalid": "Check the dates: they must be real days.",
         "order": "The dates are out of order: entries, draw, gifts, reveal, close.",
-        "failed": "Could not save. Please try again."
+        "failed": "Could not save. Please try again.",
+        "closeSoon": "The closing date is today or already past: the game would close and the data would be deleted. Pick a later date."
       },
       "saved": "Dates saved.",
       "saving": "Saving…",

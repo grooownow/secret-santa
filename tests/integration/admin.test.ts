@@ -250,6 +250,21 @@ describe("backup list", () => {
     ]);
   });
 
+  it("refuses to mark someone who is not on the list", async () => {
+    await asOrganizer();
+    const ids = [
+      (await person("1")).id,
+      (await person("2")).id,
+      (await person("3")).id,
+    ];
+    await link(ids);
+    const { organizeBackup } = await import("@/features/admin");
+    expect(await organizeBackup(ids[0])).toEqual({ ok: false });
+    expect(await organizeBackup("nope")).toEqual({ ok: false });
+    const rows = await db.select().from(assignments);
+    expect(rows.every((r) => r.backupOrganizedAt === null)).toBe(true);
+  });
+
   it("is closed to everyone but the organizer", async () => {
     const a = await person("1");
     signIn(a.user);
@@ -282,6 +297,26 @@ describe("updateSettings", () => {
       await updateSettings({}, form({ ...good, drawOn: "2026-02-30" })),
     ).toEqual({ error: "invalid" });
     expect((await db.select().from(settings))[0]).toEqual(before);
+  });
+
+  it("rejects a closing day that would end the game right now", async () => {
+    await asOrganizer();
+    const { updateSettings } = await import("@/features/admin");
+    // The clock is 10 December 2026 in these tests.
+    expect(
+      await updateSettings(
+        {},
+        form({
+          ...good,
+          drawOn: "2026-12-07",
+          giftsStartOn: "2026-12-08",
+          giftsEndOn: "2026-12-08",
+          revealOn: "2026-12-09",
+          closeOn: "2026-12-10",
+        }),
+      ),
+    ).toEqual({ error: "closeSoon" });
+    expect((await db.select().from(settings))[0]?.closeOn).toBe("2027-01-10");
   });
 
   it("saves valid dates and never runs the draw", async () => {

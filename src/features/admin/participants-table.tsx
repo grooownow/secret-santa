@@ -1,11 +1,14 @@
 "use client";
 
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { TextInput } from "@/components/form-ui";
 import type { ParticipantRow } from "./queries";
 import { withdrawPath } from "./routes";
+import { UnnotifiedNotice } from "./unnotified-notice";
+import type { Unnotified } from "./withdraw";
 import { withdrawAction } from "./withdraw-action";
 
 export type TablePhase = "collect" | "waiting" | "later";
@@ -13,6 +16,7 @@ export type TablePhase = "collect" | "waiting" | "later";
 function RemoveButton({ id }: { id: string }) {
   const t = useTranslations("admin.participants");
   const [error, setError] = useState(false);
+  const [unnotified, setUnnotified] = useState<Unnotified[] | null>(null);
   const [pending, startTransition] = useTransition();
   return (
     <div className="flex flex-col gap-1">
@@ -23,13 +27,21 @@ function RemoveButton({ id }: { id: string }) {
         onClick={() => {
           if (!window.confirm(t("removeConfirm"))) return;
           startTransition(async () => {
-            const result = await withdrawAction(id).catch(() => null);
-            setError(result !== null);
+            try {
+              const result = await withdrawAction(id);
+              if (!result) return;
+              if (!result.ok) setError(true);
+              else setUnnotified(result.unnotified);
+            } catch (caught) {
+              if (isRedirectError(caught)) throw caught;
+              setError(true);
+            }
           });
         }}
       >
         {t("remove")}
       </button>
+      {unnotified ? <UnnotifiedNotice items={unnotified} /> : null}
       {error ? (
         <p role="alert" className="text-santa-danger text-sm">
           {t("removeFailed")}

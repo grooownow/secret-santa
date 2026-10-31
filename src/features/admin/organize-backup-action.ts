@@ -6,6 +6,7 @@ import { z } from "zod";
 import { getDb } from "@/db/client";
 import { assignments } from "@/db/schema";
 import { requireOrganizer } from "@/features/auth";
+import { listBackupNeeded } from "./backup";
 import { logger } from "@/lib/logger";
 import { ADMIN_BACKUP } from "./routes";
 
@@ -19,6 +20,11 @@ export async function organizeBackup(id: unknown): Promise<{ ok: boolean }> {
   await requireOrganizer();
   const parsed = idSchema.safeParse(id);
   if (!parsed.success) return { ok: false };
+  // Only someone who is on the list right now can be marked as organized.
+  const needed = await listBackupNeeded();
+  if (!needed.some((entry) => entry.participantId === parsed.data)) {
+    return { ok: false };
+  }
   const updated = await getDb()
     .update(assignments)
     .set({ backupOrganizedAt: new Date() })

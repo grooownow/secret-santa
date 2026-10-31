@@ -142,6 +142,17 @@ async function asOrganizer() {
   });
 }
 
+function signInAsUser(user: {
+  id: string;
+  email: string;
+  sessionVersion: number;
+}) {
+  authMock.mockResolvedValue({
+    user: { id: user.id, email: user.email },
+    sessionVersion: user.sessionVersion,
+  });
+}
+
 async function withdraw(id: string) {
   const { withdrawParticipant } = await import("@/features/admin");
   return withdrawParticipant(id);
@@ -157,7 +168,11 @@ describe("withdrawParticipant", () => {
     ] as const;
     await link([a.id, d.id, r.id, x.id]);
 
-    expect(await withdraw(d.id)).toEqual({ ok: true, removed: 1 });
+    expect(await withdraw(d.id)).toEqual({
+      ok: true,
+      removed: 1,
+      unnotified: [],
+    });
 
     const row = await giverOf(r.id);
     expect(row?.giverId).toBe(a.id);
@@ -278,7 +293,10 @@ describe("withdrawParticipant", () => {
       },
     ]);
 
-    expect(await withdraw(d.id)).toEqual({ ok: true, removed: 2 });
+    expect(await withdraw(d.id)).toMatchObject({ ok: true, removed: 2 });
+    expect(
+      await db.select().from(users).where(eq(users.id, d.user.id)),
+    ).toEqual([]);
 
     const left = await db.select({ id: participants.id }).from(participants);
     expect(left.map((p) => p.id).sort()).toEqual([a.id, r.id, x.id].sort());
@@ -308,11 +326,105 @@ describe("withdrawParticipant", () => {
     expect(sent).toHaveLength(0);
   });
 
+  it("removing a child removes only the child", async () => {
+    const a = await person("1");
+    const [kid] = await db
+      .insert(participants)
+      .values(makeParticipant(a.user.id, { kind: "child", name: "Kid" }))
+      .returning();
+    const b = await person("2");
+    const c = await person("3");
+    await link([a.id, kid!.id, b.id, c.id]);
+
+    expect(await withdraw(kid!.id)).toMatchObject({ ok: true, removed: 1 });
+
+    expect(
+      await db.select().from(users).where(eq(users.id, a.user.id)),
+    ).toHaveLength(1);
+    const left = await db.select({ id: participants.id }).from(participants);
+    expect(left.map((p) => p.id)).not.toContain(kid!.id);
+    expect(left).toHaveLength(3);
+  });
+
+  it("one mail per account when several of its givers are affected", async () => {
+    const g = await person("1", "Gina");
+    const [g2] = await db
+      .insert(participants)
+      .values(makeParticipant(g.user.id, { kind: "child", name: "Gus" }))
+      .returning();
+    const d = await person("2");
+    const [dk] = await db
+      .insert(participants)
+      .values(makeParticipant(d.user.id, { kind: "child", name: "Dk" }))
+      .returning();
+    const r1 = await person("4");
+    const r2 = await person("5");
+    await link([g.id, d.id, r1.id, g2!.id, dk!.id, r2.id]);
+
+    expect(await withdraw(d.id)).toMatchObject({ ok: true, removed: 2 });
+
+    expect(sent).toHaveLength(1);
+    expect(sent[0]?.to).toBe(g.user.email);
+    expect(sent[0]?.text).toContain("Gina");
+    expect(sent[0]?.text).toContain("Gus");
+    expect((await giverOf(r1.id))?.giverId).toBe(g.id);
+    expect((await giverOf(r2.id))?.giverId).toBe(g2!.id);
+  });
+
+  it("a failed mail is reported and can be retried; keys hold no pair", async () => {
+    const [a, d, r, x] = [
+      await person("1"),
+      await person("2"),
+      await person("3"),
+      await person("4"),
+    ] as const;
+    await link([a.id, d.id, r.id, x.id]);
+    let fail = true;
+    setMailTransportForTests(async (m) => {
+      if (fail) throw new Error("smtp down");
+      sent.push(m);
+    });
+
+    const result = await withdraw(d.id);
+    expect(result).toMatchObject({ ok: true, removed: 1 });
+    if (!result.ok) throw new Error("unreachable");
+    expect(result.unnotified).toHaveLength(1);
+    expect(result.unnotified[0]?.userId).toBe(a.user.id);
+    expect(sent).toHaveLength(0);
+
+    fail = false;
+    const { notifyAccount } = await import("@/features/admin/withdraw");
+    const item = result.unnotified[0]!;
+    await notifyAccount(item.userId, item.giverIds, item.at);
+    expect(sent.map((m) => m.to)).toEqual([a.user.email]);
+    const keys = (await db.select().from(sentEmails)).map((k) => k.key);
+    expect(keys).toHaveLength(1);
+    for (const id of [a.id, d.id, r.id, x.id]) {
+      expect(keys[0]).not.toContain(id);
+    }
+    setMailTransportForTests(async (m) => {
+      sent.push(m);
+    });
+  });
+
+  it("the retry action is organizer-only and validates input", async () => {
+    const a = await person("1");
+    signInAsUser(a.user);
+    const { retryNotify } = await import("@/features/admin");
+    await expect(retryNotify([])).rejects.toThrow("NEXT_NOT_FOUND");
+    await asOrganizer();
+    expect(await retryNotify("nonsense")).toEqual([]);
+  });
+
   it("collect: removing an application is plain deletion", async () => {
     await db.update(settings).set({ drawnAt: null });
     vi.setSystemTime(new Date("2026-11-20T12:00:00+01:00"));
     const a = await person("1");
-    expect(await withdraw(a.id)).toEqual({ ok: true, removed: 1 });
+    expect(await withdraw(a.id)).toEqual({
+      ok: true,
+      removed: 1,
+      unnotified: [],
+    });
     expect(await db.select().from(participants)).toHaveLength(0);
   });
 

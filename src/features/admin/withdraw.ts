@@ -1,5 +1,5 @@
 import "server-only";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import {
   assignments,
@@ -21,8 +21,17 @@ import { DEFAULT_DATES } from "@/lib/game-phase";
 import { logger } from "@/lib/logger";
 import { deletePhotos } from "@/lib/photo-storage";
 
+/** Givers of one account whose "recipient changed" mail did not go out. */
+export interface Unnotified {
+  userId: string;
+  giverIds: string[];
+  /** Withdrawal time in ms; part of the mail key, so a retry is idempotent. */
+  at: number;
+}
+
 export type WithdrawResult =
-  { ok: true; removed: number } | { ok: false; reason: "notFound" | "closed" };
+  | { ok: true; removed: number; unnotified: Unnotified[] }
+  | { ok: false; reason: "notFound" | "closed" };
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -99,34 +108,53 @@ async function removeFromChain(
   return { giverId, receiverId };
 }
 
-async function notifyGiver(giverId: string, receiverId: string | null) {
+/**
+ * One mail per account and variant, listing the account's affected givers.
+ * The key holds the account and the withdrawal time, never a pair. Givers who
+ * have left since are skipped. Throws when the send fails.
+ */
+export async function notifyAccount(
+  userId: string,
+  giverIds: string[],
+  at: number,
+): Promise<void> {
   const db = getDb();
-  const [giver] = await db
+  const people = await db
     .select({
-      userId: users.id,
+      id: participants.id,
+      name: participants.name,
       email: users.email,
       locale: users.locale,
     })
     .from(participants)
     .innerJoin(users, eq(users.id, participants.userId))
-    .where(eq(participants.id, giverId))
-    .limit(1);
-  if (!giver) return;
-  const names = (
-    await db
-      .select({ name: participants.name })
-      .from(participants)
-      .where(eq(participants.id, giverId))
-  ).map((row) => row.name);
-  const rendered = renderEmail(
-    "reassigned",
-    isLocale(giver.locale) ? giver.locale : DEFAULT_LOCALE,
-    { names, noReceiver: receiverId === null },
+    .where(
+      and(eq(participants.userId, userId), inArray(participants.id, giverIds)),
+    )
+    .orderBy(participants.createdAt);
+  const first = people[0];
+  if (!first) return;
+  const withReceiver = new Set(
+    (
+      await db
+        .select({ giverId: assignments.giverId })
+        .from(assignments)
+        .where(inArray(assignments.giverId, giverIds))
+    ).map((row) => row.giverId),
   );
-  await sendOnce(`reassigned:${giverId}:${receiverId ?? "none"}`, {
-    to: giver.email,
-    ...rendered,
-  });
+  const locale = isLocale(first.locale) ? first.locale : DEFAULT_LOCALE;
+  for (const noReceiver of [false, true]) {
+    const names = people
+      .filter((p) => withReceiver.has(p.id) !== noReceiver)
+      .map((p) => p.name);
+    if (names.length === 0) continue;
+    const rendered = renderEmail("reassigned", locale, { names, noReceiver });
+    // oxlint-disable-next-line no-await-in-loop
+    await sendOnce(`reassigned:${userId}:${at}:${noReceiver ? "n" : "r"}`, {
+      to: first.email,
+      ...rendered,
+    });
+  }
 }
 
 /**
@@ -187,7 +215,12 @@ export async function withdrawParticipant(
       const change = await removeFromChain(tx, p.id, now);
       if (change) affected.push(change);
     }
-    await tx.delete(participants).where(inArray(participants.id, doomedIds));
+    // An adult leaves with the whole account (spec, "Данные"); a child alone.
+    if (target.kind === "adult") {
+      await tx.delete(users).where(eq(users.id, target.userId));
+    } else {
+      await tx.delete(participants).where(eq(participants.id, target.id));
+    }
     return {
       ok: true,
       doomedIds,
@@ -212,29 +245,36 @@ export async function withdrawParticipant(
     logger.error({ err: error }, "could not delete photos"),
   );
 
-  // Final state per giver: a giver changed twice (two withdrawals in a row)
-  // gets one mail about where they ended up.
+  // Final state per giver: a giver changed twice gets one mail about where
+  // they ended up, and an account with several givers gets one mail.
   const gone = new Set(outcome.doomedIds);
-  const last = new Set(outcome.affected.map((a) => a.giverId));
-  for (const giverId of last) {
-    if (gone.has(giverId)) continue;
+  const givers = [...new Set(outcome.affected.map((a) => a.giverId))].filter(
+    (g) => !gone.has(g),
+  );
+  const owners = givers.length
+    ? await getDb()
+        .select({ id: participants.id, userId: participants.userId })
+        .from(participants)
+        .where(inArray(participants.id, givers))
+    : [];
+  const byAccount = new Map<string, string[]>();
+  for (const o of owners) {
+    byAccount.set(o.userId, [...(byAccount.get(o.userId) ?? []), o.id]);
+  }
+  const at = now.getTime();
+  const unnotified: Unnotified[] = [];
+  for (const [userId, giverIds] of byAccount) {
     try {
       // oxlint-disable-next-line no-await-in-loop
-      await notifyGiver(giverId, await currentReceiver(giverId));
+      await notifyAccount(userId, giverIds, at);
     } catch (error) {
       logger.error({ err: error }, "could not send the reassigned mail");
+      unnotified.push({ userId, giverIds, at });
     }
   }
-  logger.info({ removed: outcome.doomedIds.length }, "participant withdrawn");
-  return { ok: true, removed: outcome.doomedIds.length };
-}
-
-/** The receiver a giver has now (a later withdrawal may have changed it). */
-async function currentReceiver(giverId: string): Promise<string | null> {
-  const [row] = await getDb()
-    .select({ receiverId: assignments.receiverId })
-    .from(assignments)
-    .where(eq(assignments.giverId, giverId))
-    .limit(1);
-  return row ? row.receiverId : null;
+  logger.info(
+    { removed: outcome.doomedIds.length, unnotified: unnotified.length },
+    "participant withdrawn",
+  );
+  return { ok: true, removed: outcome.doomedIds.length, unnotified };
 }

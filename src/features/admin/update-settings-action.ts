@@ -6,12 +6,13 @@ import { getDb } from "@/db/client";
 import { settings } from "@/db/schema";
 import { requireOrganizer } from "@/features/auth";
 import { getSettings } from "@/features/game";
+import { todayInMadrid } from "@/lib/game-time";
 import { logger } from "@/lib/logger";
 import { datesInOrder, datesSchema } from "./dates-schema";
 
 export interface SettingsState {
   saved?: boolean;
-  error?: "invalid" | "order" | "failed";
+  error?: "invalid" | "order" | "closeSoon" | "failed";
 }
 
 /**
@@ -27,6 +28,10 @@ export async function updateSettings(
   const parsed = datesSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   if (!datesInOrder(parsed.data)) return { error: "order" };
+  // A closing day of today or earlier would purge the game at once.
+  if (parsed.data.closeOn <= todayInMadrid(new Date())) {
+    return { error: "closeSoon" };
+  }
 
   try {
     await getSettings();
