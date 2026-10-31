@@ -277,7 +277,7 @@ describe("deleting a post", () => {
 
 describe("feed", () => {
   it("lists newest first and exposes author name but no apartment or email", async () => {
-    const ann = await person("Ann", { apartment: "77", building: "K" });
+    const ann = await person("Ann", { apartment: "zz-apt-91", building: "K" });
     const bob = await person("Bob");
     await addAs(ann, "older");
     at("2026-12-27T12:00:00+01:00");
@@ -289,7 +289,7 @@ describe("feed", () => {
     expect(posts.map((p) => p.canDelete)).toEqual([false, true]);
     const dump = JSON.stringify(posts);
     expect(dump).not.toContain(ann.user.email);
-    expect(dump).not.toContain("77");
+    expect(dump).not.toContain("zz-apt-91");
     expect(Object.keys(posts[0] ?? {}).toSorted()).toEqual([
       "authorLocale",
       "authorName",

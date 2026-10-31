@@ -603,12 +603,14 @@
     },
     "add": {
       "open": "Añadir una publicación",
-      "as": "La publicación aparecerá a nombre de: {name}",
+      "as": "La publicación mostrará el nombre: {name}. Puedes eliminarla con su foto en cualquier momento.",
       "text": "Tu publicación",
       "placeholder": "Cuéntanos cómo fue el regalo",
       "submit": "Publicar",
       "posting": "Publicando…",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "visibleTitle": "Tu nombre se verá",
+      "back": "← Volver al muro"
     },
     "photo": {
       "title": "Foto del regalo, opcional",
@@ -621,7 +623,7 @@
     },
     "feed": {
       "emptyTitle": "El muro está vacío por ahora",
-      "emptyText": "Sé el primero: cuenta cómo fue el regalo.",
+      "emptyText": "Abre el muro: cuenta cómo fue el regalo.",
       "photoAlt": "Foto de {name}"
     },
     "delete": {
@@ -629,7 +631,7 @@
       "title": "¿Eliminar esta publicación?",
       "text": "La publicación y su foto desaparecerán del muro.",
       "confirm": "Sí, eliminar",
-      "cancel": "Cancelar",
+      "cancel": "Conservar la publicación",
       "failed": "No se pudo eliminar. Inténtalo de nuevo."
     },
     "errors": {

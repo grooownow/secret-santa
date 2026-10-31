@@ -17,7 +17,14 @@ import type { PostState } from "./state";
 const initial: PostState = {};
 
 /** "Добавить запись" (frame V4kc7x): opens right above the feed. */
-export function PostForm({ authorName }: { authorName: string }) {
+export function PostForm({
+  authorName,
+  children,
+}: {
+  authorName: string;
+  /** The feed: hidden while the form is open (frame V4kc7x is its own screen). */
+  children: React.ReactNode;
+}) {
   const t = useTranslations("wall.add");
   const e = useTranslations("wall.errors");
   const [open, setOpen] = useState(false);
@@ -37,14 +44,17 @@ export function PostForm({ authorName }: { authorName: string }) {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold"
-      >
-        <span>{t("open")}</span>
-        <Plus className="size-[18px]" aria-hidden />
-      </button>
+      <>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold"
+        >
+          <span>{t("open")}</span>
+          <Plus className="size-[18px]" aria-hidden />
+        </button>
+        {children}
+      </>
     );
   }
 
@@ -73,6 +83,14 @@ export function PostForm({ authorName }: { authorName: string }) {
         onChange={setPhoto}
         onBusyChange={setBusy}
       />
+      <div className="bg-santa-mint flex flex-col gap-[7px] rounded-xl p-[18px]">
+        <p className="text-santa-ink text-[17px] font-bold">
+          {t("visibleTitle")}
+        </p>
+        <p className="text-santa-muted text-[13px] leading-relaxed">
+          {t("as", { name: authorName })}
+        </p>
+      </div>
       {state.error ? <FormAlert>{e(state.error)}</FormAlert> : null}
       <SubmitButton pendingLabel={t("posting")} disabled={busy}>
         {t("submit")}
@@ -80,7 +98,7 @@ export function PostForm({ authorName }: { authorName: string }) {
       <button
         type="button"
         onClick={() => setOpen(false)}
-        className="text-santa-green self-start text-[13px] font-semibold underline-offset-4 hover:underline"
+        className="text-santa-green self-start text-[13px] font-semibold"
       >
         {t("cancel")}
       </button>

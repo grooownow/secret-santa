@@ -16,11 +16,13 @@ export async function WallFeed({ posts }: { posts: WallPost[] }) {
 
   if (posts.length === 0) {
     return (
-      <div className="flex flex-col items-start gap-3">
-        <div className="bg-santa-mint text-santa-green flex size-14 items-center justify-center rounded-full">
-          <Heart className="size-6" aria-hidden />
+      <div className="flex flex-col items-start gap-5">
+        <div className="bg-santa-mint text-santa-green flex size-[68px] items-center justify-center rounded-full">
+          <Heart className="size-[30px]" aria-hidden />
         </div>
-        <h2 className="text-santa-ink text-xl font-bold">{t("emptyTitle")}</h2>
+        <h2 className="text-santa-ink text-[26px] leading-tight font-bold">
+          {t("emptyTitle")}
+        </h2>
         <p className="text-santa-muted text-sm leading-relaxed">
           {t("emptyText")}
         </p>
@@ -39,24 +41,19 @@ export async function WallFeed({ posts }: { posts: WallPost[] }) {
   });
 
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-5">
       {posts.map((post) => (
         <li
           key={post.id}
-          className="border-santa-line bg-santa-white flex flex-col gap-3 rounded-2xl border p-4"
+          className="border-santa-line flex flex-col gap-2 border-b pb-[18px]"
         >
-          <div className="flex items-baseline justify-between gap-3">
-            <p className="text-santa-green text-sm font-semibold">
-              {post.authorName}
-            </p>
-            <time
-              dateTime={post.createdAt.toISOString()}
-              className="text-santa-muted text-xs"
-            >
+          <p className="text-santa-ink text-[17px] font-bold">
+            {post.authorName} ·{" "}
+            <time dateTime={post.createdAt.toISOString()}>
               {date.format(post.createdAt)}
             </time>
-          </div>
-          <p className="text-santa-ink text-sm leading-relaxed">
+          </p>
+          <p className="text-santa-muted text-sm leading-relaxed">
             <LocalizedText
               original={post.text}
               translated={translated.get(postKey(post.id)) ?? null}
@@ -71,7 +68,7 @@ export async function WallFeed({ posts }: { posts: WallPost[] }) {
               width={600}
               height={450}
               unoptimized
-              className="h-auto w-full rounded-xl object-cover"
+              className="h-[210px] w-full rounded-xl object-cover"
             />
           ) : null}
           {post.canDelete ? <DeletePostButton id={post.id} /> : null}

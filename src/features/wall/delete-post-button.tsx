@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -30,7 +31,7 @@ export function DeletePostButton({ id }: { id: string }) {
       <button
         type="button"
         onClick={() => setConfirming(true)}
-        className="text-santa-danger self-start text-[13px] font-semibold underline-offset-4 hover:underline"
+        className="text-santa-danger self-start text-[13px] font-semibold"
       >
         {t("action")}
       </button>
@@ -38,35 +39,36 @@ export function DeletePostButton({ id }: { id: string }) {
   }
 
   return (
-    <div className="bg-santa-danger-bg flex flex-col gap-3 rounded-2xl p-4">
-      <p className="text-santa-danger text-base font-bold">{t("title")}</p>
-      <p className="text-santa-danger text-sm leading-relaxed">{t("text")}</p>
+    <div className="flex flex-col gap-4">
+      <p className="text-santa-ink text-[26px] leading-tight font-bold">
+        {t("title")}
+      </p>
+      <p className="text-santa-muted text-sm leading-relaxed">{t("text")}</p>
       {failed ? (
         <p role="alert" className="text-santa-danger text-sm">
           {t("failed")}
         </p>
       ) : null}
-      <div className="flex items-center gap-4">
-        <button
-          type="button"
-          disabled={pending}
-          onClick={remove}
-          className="bg-santa-danger text-santa-white h-11 rounded-full px-5 text-sm font-semibold disabled:opacity-60"
-        >
-          {t("confirm")}
-        </button>
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() => {
-            setConfirming(false);
-            setFailed(false);
-          }}
-          className="text-santa-ink text-sm font-semibold"
-        >
-          {t("cancel")}
-        </button>
-      </div>
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() => {
+          setConfirming(false);
+          setFailed(false);
+        }}
+        className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold disabled:opacity-60"
+      >
+        <span>{t("cancel")}</span>
+        <ArrowUpRight className="size-[18px]" aria-hidden />
+      </button>
+      <button
+        type="button"
+        disabled={pending}
+        onClick={remove}
+        className="text-santa-danger self-start text-[13px] font-semibold disabled:opacity-60"
+      >
+        {t("confirm")}
+      </button>
     </div>
   );
 }

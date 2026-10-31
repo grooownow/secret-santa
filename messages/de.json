@@ -603,12 +603,14 @@
     },
     "add": {
       "open": "Beitrag hinzufügen",
-      "as": "Der Beitrag erscheint unter dem Namen: {name}",
+      "as": "Unter dem Beitrag steht der Name: {name}. Beitrag und Foto kannst du jederzeit löschen.",
       "text": "Dein Beitrag",
       "placeholder": "Erzähl, wie das Geschenk war",
       "submit": "Veröffentlichen",
       "posting": "Wird veröffentlicht…",
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "visibleTitle": "Dein Name ist sichtbar",
+      "back": "← Zur Wand"
     },
     "photo": {
       "title": "Foto vom Geschenk, optional",
@@ -621,7 +623,7 @@
     },
     "feed": {
       "emptyTitle": "Die Wand ist noch leer",
-      "emptyText": "Sei die erste Person: Erzähl, wie das Geschenk war.",
+      "emptyText": "Starte die Wand: Erzähl, wie das Geschenk war.",
       "photoAlt": "Foto von {name}"
     },
     "delete": {
@@ -629,7 +631,7 @@
       "title": "Diesen Beitrag löschen?",
       "text": "Der Beitrag und sein Foto verschwinden von der Wand.",
       "confirm": "Ja, löschen",
-      "cancel": "Abbrechen",
+      "cancel": "Beitrag behalten",
       "failed": "Löschen ist fehlgeschlagen. Bitte versuche es noch einmal."
     },
     "errors": {

@@ -26,8 +26,13 @@ export default async function WallPage() {
   return (
     <>
       <PageTitle>{t("title")}</PageTitle>
-      {author ? <PostForm authorName={author.name} /> : null}
-      <WallFeed posts={posts} />
+      {author ? (
+        <PostForm authorName={author.name}>
+          <WallFeed posts={posts} />
+        </PostForm>
+      ) : (
+        <WallFeed posts={posts} />
+      )}
     </>
   );
 }

@@ -603,12 +603,14 @@
     },
     "add": {
       "open": "Add a post",
-      "as": "The post will appear as: {name}",
+      "as": "The post will show the name: {name}. You can delete the post and its photo at any time.",
       "text": "Your post",
       "placeholder": "Tell us how the gift went",
       "submit": "Post",
       "posting": "Posting…",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "visibleTitle": "Your name is shown",
+      "back": "← Back to the wall"
     },
     "photo": {
       "title": "Gift photo, optional",
@@ -621,7 +623,7 @@
     },
     "feed": {
       "emptyTitle": "The wall is empty for now",
-      "emptyText": "Be the first: tell us how the gift went.",
+      "emptyText": "Start the wall: tell us how the gift went.",
       "photoAlt": "Photo from {name}"
     },
     "delete": {
@@ -629,7 +631,7 @@
       "title": "Delete this post?",
       "text": "The post and its photo will disappear from the wall.",
       "confirm": "Yes, delete",
-      "cancel": "Cancel",
+      "cancel": "Keep the post",
       "failed": "Could not delete. Please try again."
     },
     "errors": {
