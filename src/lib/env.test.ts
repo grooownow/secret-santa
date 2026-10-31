@@ -131,6 +131,21 @@ describe("parseEnv", () => {
       ).toThrow(/E2E_MAIL_OUTBOX/);
     });
 
+    it("matches the hostname exactly: localhost.evil.com is rejected, 127.0.0.1 accepted", () => {
+      expect(() =>
+        parseEnv({
+          E2E_MAIL_OUTBOX: outbox,
+          NEXT_PUBLIC_APP_URL: "http://localhost.evil.com:3210",
+        }),
+      ).toThrow(/E2E_MAIL_OUTBOX/);
+      expect(
+        parseEnv({
+          E2E_MAIL_OUTBOX: outbox,
+          NEXT_PUBLIC_APP_URL: "http://127.0.0.1:3210",
+        }).E2E_MAIL_OUTBOX,
+      ).toBe(outbox);
+    });
+
     it("refuses to boot with a public app URL", () => {
       expect(() =>
         parseEnv({

@@ -1,13 +1,8 @@
-import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 import { APP_PORT } from "./config/ports";
+import { MAIL_OUTBOX } from "./tests/e2e/paths";
 
 const BASE_URL = `http://localhost:${APP_PORT}`;
-
-// Mail sink for the e2e server (see E2E_MAIL_OUTBOX in src/lib/env.ts): the
-// tests read confirmation links from it. Absolute, because the server and the
-// test workers must agree on the file.
-export const MAIL_OUTBOX = path.resolve(".e2e", "mail.jsonl");
 
 /**
  * E2E smoke suite (spec §5.6-1: SPA-navigation gate + core golden-path
@@ -29,8 +24,13 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "setup",
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
       name: "desktop-chromium",
-      testIgnore: /game\.spec\.ts/,
+      dependencies: ["setup"],
+      testIgnore: /game\.spec\.ts|\.setup\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 720 },
@@ -38,7 +38,8 @@ export default defineConfig({
     },
     {
       name: "mobile-chromium",
-      testIgnore: /game\.spec\.ts/,
+      dependencies: ["setup"],
+      testIgnore: /game\.spec\.ts|\.setup\.ts/,
       use: { ...devices["Pixel 7"] },
     },
     {
@@ -48,15 +49,16 @@ export default defineConfig({
       // neighbours on a Pixel 7), see tests/e2e/game.spec.ts.
       name: "game-flow",
       testMatch: /game\.spec\.ts/,
-      dependencies: ["desktop-chromium", "mobile-chromium"],
+      dependencies: ["setup", "desktop-chromium", "mobile-chromium"],
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 720 },
+        trace: "retain-on-failure",
       },
     },
   ],
   webServer: {
-    command: `mkdir -p .e2e && : > ${MAIL_OUTBOX} && pnpm db:reset && pnpm build && pnpm start`,
+    command: `mkdir -p .e2e && : > "${MAIL_OUTBOX}" && pnpm db:reset && pnpm build && pnpm start`,
     url: BASE_URL,
     reuseExistingServer: false,
     timeout: 5 * 60 * 1000,

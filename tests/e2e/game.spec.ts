@@ -6,8 +6,10 @@ import {
   type BrowserContext,
   type Page,
 } from "@playwright/test";
+import en from "../../messages/en.json";
 import es from "../../messages/es.json";
-import { MAIL_OUTBOX } from "../../playwright.config";
+import { ORGANISER, PHASES, setDates, signIn } from "./helpers";
+import { MAIL_OUTBOX } from "./paths";
 
 /**
  * The whole game on one server, end to end: three accounts (one with a child)
@@ -29,7 +31,6 @@ import { MAIL_OUTBOX } from "../../playwright.config";
  *   because the draw and the dates are global to the server.
  */
 
-const ORGANISER = { email: "admin@example.local", password: "dev-admin-pw" };
 const PASSWORD = "a-long-password";
 
 const RUN = Date.now();
@@ -61,44 +62,6 @@ const NEIGHBOURS: Neighbour[] = [
 ];
 const CHILD = "Kiddo Anders";
 
-/** Today in Madrid, the clock the game itself uses, shifted by `days`. */
-function madridDay(days = 0): string {
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Madrid",
-  }).format(new Date());
-  const [y, m, d] = today.split("-").map(Number) as [number, number, number];
-  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
-}
-
-const PHASES = {
-  // Sign-ups open (the server starts with the real defaults; a test run long
-  // after them would otherwise find sign-ups already closed).
-  collect: {
-    "Last day for entries": madridDay(5),
-    "Draw date": madridDay(6),
-    "Gifts start": madridDay(7),
-    "Gifts end": madridDay(8),
-    "Santas revealed": madridDay(9),
-    "Game closes": madridDay(20),
-  },
-  gifts: {
-    "Last day for entries": madridDay(-2),
-    "Draw date": madridDay(-1),
-    "Gifts start": madridDay(0),
-    "Gifts end": madridDay(1),
-    "Santas revealed": madridDay(2),
-    "Game closes": madridDay(20),
-  },
-  reveal: {
-    "Last day for entries": madridDay(-4),
-    "Draw date": madridDay(-3),
-    "Gifts start": madridDay(-2),
-    "Gifts end": madridDay(-1),
-    "Santas revealed": madridDay(0),
-    "Game closes": madridDay(20),
-  },
-} as const;
-
 interface Mail {
   to: string;
   subject: string;
@@ -107,22 +70,36 @@ interface Mail {
 
 async function readMails(): Promise<Mail[]> {
   const raw = await readFile(MAIL_OUTBOX, "utf8").catch(() => "");
-  return raw
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => JSON.parse(line) as Mail);
+  const mails: Mail[] = [];
+  for (const line of raw.split("\n")) {
+    if (!line) continue;
+    try {
+      mails.push(JSON.parse(line) as Mail);
+    } catch {
+      // The server may still be writing the last line; the next poll sees it.
+    }
+  }
+  return mails;
 }
 
-/** Waits for the nth (1-based) mail to `to` and returns it. */
-async function waitForMail(to: string, nth = 1): Promise<Mail> {
+const SUBJECT = {
+  verify: en.emails.verify.subject,
+  draw: en.emails.draw.subject,
+  giftWaiting: en.emails.giftWaiting.subject,
+};
+
+/** Waits for a mail to `to` with this subject (matched by content, not order). */
+async function waitForMail(to: string, subject: string): Promise<Mail> {
   let found: Mail | undefined;
   await expect
     .poll(
       async () => {
-        found = (await readMails()).filter((m) => m.to === to)[nth - 1];
+        found = (await readMails()).find(
+          (m) => m.to === to && m.subject === subject,
+        );
         return found !== undefined;
       },
-      { message: `mail #${nth} to ${to}`, timeout: 20_000 },
+      { message: `mail "${subject}" to ${to}`, timeout: 20_000 },
     )
     .toBe(true);
   return found as Mail;
@@ -136,26 +113,6 @@ function linkIn(mail: Mail, part: string): string {
   return url.pathname + url.search;
 }
 
-async function signIn(
-  page: Page,
-  { email, password }: { email: string; password: string },
-) {
-  await page.goto("/signin");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(password);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/home(\?|$)/);
-}
-
-async function setDates(page: Page, dates: Record<string, string>) {
-  await page.goto("/admin/settings");
-  for (const [label, value] of Object.entries(dates)) {
-    await page.getByLabel(label, { exact: true }).fill(value);
-  }
-  await page.getByRole("button", { name: "Save dates" }).click();
-  await expect(page.getByText("Dates saved.")).toBeVisible();
-}
-
 /** Registers in this browser, confirms the mail in it, signs in. */
 async function registerAndConfirm(page: Page, who: Neighbour) {
   await page.goto("/register");
@@ -166,7 +123,7 @@ async function registerAndConfirm(page: Page, who: Neighbour) {
   await page.getByRole("button", { name: "Sign up" }).click();
   await expect(page).toHaveURL(/\/check-email\?email=/);
 
-  const mail = await waitForMail(who.email);
+  const mail = await waitForMail(who.email, SUBJECT.verify);
   await page.goto(linkIn(mail, "/verify-email"));
   await expect(
     page.getByRole("heading", { name: "Email confirmed" }),
@@ -237,11 +194,7 @@ test.describe("the whole game", () => {
         neighbours.push({ who, page: await open(true) });
       }
       const alice = neighbours[0] as Browser;
-
-      await test.step("organiser opens sign-ups with fresh dates", async () => {
-        await signIn(organiser, ORGANISER);
-        await setDates(organiser, PHASES.collect);
-      });
+      await signIn(organiser, ORGANISER);
 
       await test.step("three neighbours register and confirm their email", async () => {
         for (const { who, page } of neighbours) {
@@ -268,8 +221,7 @@ test.describe("the whole game", () => {
 
       await test.step("everyone is emailed and sees the waiting cabinet", async () => {
         for (const { who } of neighbours) {
-          // 1st mail: the confirmation link; 2nd: the draw email.
-          await waitForMail(who.email, 2);
+          await waitForMail(who.email, SUBJECT.draw);
         }
         await alice.page.goto("/home");
         await expect(
@@ -322,9 +274,6 @@ test.describe("the whole game", () => {
       });
 
       await test.step("the giver marks the gift and the receiver is emailed", async () => {
-        const mailsBefore = (await readMails()).filter(
-          (m) => m.to === to.who.email,
-        ).length;
         await from.page.getByRole("link", { name: "Gift left" }).click();
         await from.page
           .getByLabel("Where was the gift left?")
@@ -335,7 +284,7 @@ test.describe("the whole game", () => {
         await expect(
           from.page.getByText("Saved, the email was sent to the recipient."),
         ).toBeVisible();
-        await waitForMail(to.who.email, mailsBefore + 1);
+        await waitForMail(to.who.email, SUBJECT.giftWaiting);
       });
 
       await test.step("the receiver sees «My gift» with the place", async () => {
