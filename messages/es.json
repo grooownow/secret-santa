@@ -42,7 +42,7 @@
     "title": "El juego ha terminado",
     "text": "Gracias por jugar. Esperamos que os hayáis acercado un poco más.",
     "cardTitle": "Datos eliminados",
-    "cardText": "Los perfiles, fotos, mensajes y parejas se eliminaron el {date}. El sitio ya no admite participantes.",
+    "cardText": "Las fichas, fotos, mensajes y parejas se eliminaron el {date}. El sitio ya no admite participantes.",
     "organizer": "Organiza el juego: Kate. Seguimos en contacto por <link>Telegram</link>."
   },
   "emails": {
@@ -93,15 +93,15 @@
       "cta": "Abrir mi cuenta"
     },
     "reassigned": {
-      "subject": "Ha cambiado tu destinatario",
-      "title": "Ha cambiado tu destinatario",
-      "body": "Tu destinatario anterior ha salido del juego y tienes uno nuevo. Los detalles están en tu cuenta.",
+      "subject": "Ha cambiado la persona a la que regalas",
+      "title": "Ha cambiado la persona a la que regalas",
+      "body": "La persona a la que regalabas ha salido del juego y ahora regalas a otra. Los detalles están en tu cuenta.",
       "cta": "Abrir mi cuenta"
     },
     "noReceiver": {
       "subject": "Ya no hay a quién regalar",
       "title": "Ya no hay a quién regalar",
-      "body": "Tu destinatario ha salido del juego y todavía no hay uno nuevo. Tranquilidad: tu regalo llegará igualmente.",
+      "body": "La persona a la que regalabas ha salido del juego y todavía no hay otra. Tranquilidad: tu regalo llegará igualmente.",
       "cta": "Abrir mi cuenta"
     },
     "reveal": {
@@ -385,7 +385,7 @@
       "giftsOpenMail": "Correo del {date}",
       "reminderMail": "Recordatorio del {date}",
       "revealMail": "Correo del {date}",
-      "purgeNote": "El {date} se borran automáticamente todos los perfiles, fotos, mensajes y parejas. El buzón de Gmail hay que vaciarlo a mano."
+      "purgeNote": "El {date} se borran automáticamente todas las fichas, fotos, mensajes y parejas. El buzón de Gmail hay que vaciarlo a mano."
     },
     "draw": {
       "start": "Hacer el sorteo",
@@ -428,7 +428,7 @@
       "verified": "Correo confirmado",
       "unverified": "Correo sin confirmar",
       "remove": "Eliminar solicitud",
-      "removeConfirm": "¿Eliminar la solicitud? Se borrarán el perfil, la foto y los datos de la persona y, si es adulta, toda la cuenta con sus hijos.",
+      "removeConfirm": "¿Eliminar la solicitud? Se borrarán la ficha, la foto y los datos de la persona y, si es adulta, toda la cuenta con sus hijos.",
       "removeFailed": "No se pudo eliminar. Inténtalo de nuevo.",
       "withdraw": "Baja"
     },
@@ -436,8 +436,8 @@
       "title": "Un participante sale del juego",
       "flat": "Edificio {building}, piso {apartment}",
       "boxTitle": "Disponible hasta el {lastExit}",
-      "boxText": "Quien hace de Santa de esta persona recibe a su persona asignada y un correo sobre el cambio. La persona desaparece del juego con su perfil y su foto.",
-      "backupNote": "Si la nueva persona asignada vive en el mismo piso que quien regala, pasa a la lista «Se necesita Santa de reserva» y quien regala recibe un correo avisando de que ya no tiene a quién regalar.",
+      "boxText": "Quien hace de Santa de esta persona pasa a regalar a quien le regalaba esta persona y recibe un correo sobre el cambio. La persona desaparece del juego con su ficha y su foto.",
+      "backupNote": "Si la nueva persona a la que regalar vive en el mismo piso que quien regala, pasa a la lista «Se necesita Santa de reserva» y quien regala recibe un correo avisando de que ya no tiene a quién regalar.",
       "accountNote": "Cuando sale una persona adulta, salen también todos los participantes de su cuenta y se borra la cuenta.",
       "confirm": "Confirmar la baja",
       "running": "Dando de baja…",
@@ -502,8 +502,8 @@
   "cabinet": {
     "switcher": {
       "title": "¿Quién es Santa hoy?",
-      "text": "Cada participante tiene su propio perfil, a quién regalar y su regalo. Elige qué espacio abrir.",
-      "owner": "tu perfil",
+      "text": "Cada participante tiene su propia ficha, a quién regalar y su regalo. Elige qué espacio abrir.",
+      "owner": "tu ficha",
       "address": "Edificio {building} · piso {apartment}",
       "open": "Abrir el espacio de {name}",
       "childAge": "{age, plural, one {# año} other {# años}}"
@@ -517,7 +517,7 @@
       "titleReveal": "Descubre quién es tu Santa",
       "switch": "Cambiar de participante (ahora: {name})",
       "daysTitle": "Faltan {days, plural, one {# día} other {# días}} para los regalos",
-      "daysText": "Podrás dejar el regalo desde el {date}. Mientras tanto, lee el perfil de la persona a la que regalas y adivina quién es tu Santa.",
+      "daysText": "Podrás dejar el regalo desde el {date}. Mientras tanto, lee la ficha de la persona a la que regalas y adivina quién es tu Santa.",
       "notLeftTitle": "Tu regalo aún no está dejado",
       "notLeftText": "{name} espera una sorpresa. Deja el regalo en una taquilla o buzón y márcalo aquí.",
       "leftTitle": "Tu regalo está dejado",
@@ -553,8 +553,8 @@
       "guessText": "Intenta adivinar hasta el final del {date}; la respuesta llegará con la revelación.",
       "guessLink": "Adivinar a tu Santa",
       "guessLinkUntil": "Adivina a tu Santa hasta el {date}",
-      "noProfileTitle": "No hay perfil",
-      "noProfileText": "El sorteo ya se hizo y esta cuenta no tiene perfil. Si es un error, escribe a la organización."
+      "noProfileTitle": "No hay ficha",
+      "noProfileText": "El sorteo ya se hizo y esta cuenta no tiene ficha. Si es un error, escribe a la organización."
     }
   },
   "gift": {
@@ -651,7 +651,7 @@
     },
     "notInDraw": {
       "title": "No estás en el sorteo",
-      "text": "El sorteo se hizo antes de que el perfil de esta persona entrara en el juego, así que no hay a quién regalar ni Santa. Escribe a la organización para ver qué se puede hacer."
+      "text": "El sorteo se hizo antes de que la ficha de esta persona entrara en el juego, así que no hay a quién regalar ni Santa. Escribe a la organización para ver qué se puede hacer."
     }
   },
   "organizer": {
@@ -666,18 +666,18 @@
       "searchPlaceholder": "Nombre o edificio",
       "noMatches": "No se encontró a nadie",
       "option": "{name} · edificio {building}",
-      "submit": "Guardar apuesta",
+      "submit": "Guardar suposición",
       "pending": "Guardando…",
       "hint": "La lista solo muestra nombres y edificios: las direcciones y fotos de otros participantes no se ven.",
       "savedTitle": "Apuesta por {name}",
       "savedBox": "Apuesta guardada",
       "savedHint": "El {reveal} sabremos si fue acertada.",
-      "change": "Cambiar apuesta",
+      "change": "Cambiar suposición",
       "changeUntil": "Puedes cambiar la elección hasta el final del {date}.",
       "errors": {
         "invalid": "Elige a un participante de la lista.",
         "notFound": "Participante no encontrado.",
-        "closed": "Ya no se aceptan apuestas.",
+        "closed": "Ya no se aceptan suposiciones.",
         "failed": "No se pudo guardar. Inténtalo de nuevo."
       }
     },
@@ -686,13 +686,13 @@
       "title": "Tu Santa es {name}",
       "text": "El regalo llegó del edificio {building}.",
       "rightTitle": "¡Apuesta acertada!",
-      "rightText": "La apuesta era {name}. Justo en el blanco.",
-      "wrongTitle": "La apuesta era otra",
-      "wrongText": "La apuesta era {guess}, pero el regalo vino de {santa}. Un misterio muy bonito.",
+      "rightText": "La suposición era {name}. Justo en el blanco.",
+      "wrongTitle": "La suposición era otra",
+      "wrongText": "La suposición era {guess}, pero el regalo vino de {santa}. Un misterio muy bonito.",
       "backupTitle": "Tu regalo es del Santa de reserva",
       "backupText": "Alguien del vecindario ayudó a que la fiesta fuera un poco más cálida. Su nombre sigue siendo un pequeño secreto.",
       "backupBoxTitle": "Gracias por el cariño",
-      "backupBoxText": "No mostramos el resultado de la apuesta: el regalo lo preparó el Santa de reserva.",
+      "backupBoxText": "No mostramos el resultado de la suposición: el regalo lo preparó el Santa de reserva.",
       "wall": "Al muro de gracias",
       "myGift": "Mi regalo"
     }
@@ -751,18 +751,18 @@
     "email": "Correo electrónico",
     "language": "Idioma de la interfaz",
     "dataTitle": "Participación y datos",
-    "dataCollect": "Antes del sorteo puedes eliminar tu cuenta por tu cuenta. Después, solo a través de la organización.",
+    "dataCollect": "Antes del sorteo puedes eliminar tu cuenta sin ayuda. Después, solo a través de la organización.",
     "dataLater": "Después del sorteo solo se puede salir del juego a través de la organización.",
     "delete": {
       "back": "Ajustes",
       "title": "¿Salir del juego?",
       "boxTitle": "Se eliminará toda la cuenta",
-      "boxText": "Se borrarán tu perfil y los de tus hijos, las fotos y los datos de la cuenta. No se puede deshacer.",
+      "boxText": "Se borrarán tu ficha y las de tus hijos, las fotos y los datos de la cuenta. No se puede deshacer.",
       "names": "Salen del sorteo: {names}.",
       "stay": "Seguir en el juego",
       "confirm": "Sí, eliminar la cuenta",
       "deleting": "Eliminando…",
-      "closed": "El sorteo ya se ha hecho: no puedes eliminar la cuenta por tu cuenta.",
+      "closed": "El sorteo ya se ha hecho: no puedes eliminar la cuenta sin ayuda.",
       "failed": "No se pudo eliminar la cuenta. Inténtalo de nuevo."
     },
     "leave": {
@@ -831,7 +831,7 @@
     },
     "key": {
       "title": "El juego depende de nosotros",
-      "text": "El servicio no puede garantizar que todos reciban un regalo: todo depende de nosotros, el vecindario. Si participas, por favor no olvides dejar tu regalo antes del {giftsEnd}. Tu persona asignada lo estará esperando, y el {reveal} se revelarán los nombres de todos los Santas."
+      "text": "El servicio no puede garantizar que todos reciban un regalo: todo depende de nosotros, el vecindario. Si participas, por favor no olvides dejar tu regalo antes del {giftsEnd}. La persona a la que regalas lo estará esperando, y el {reveal} se revelarán los nombres de todos los Santas."
     },
     "dates": {
       "title": "Fechas",
@@ -915,7 +915,7 @@
     "intro": "El juego es solo para quienes viven en Bialto. Participar es gratis y cada persona compra su propio regalo.",
     "gift": {
       "title": "Un regalo de vecino a vecino",
-      "text": "Las inscripciones están abiertas hasta el {close} y el sorteo se hace el {draw}. Precio orientativo: 10–15 €. El regalo se deja del {from} al {to} en una taquilla o buzón del edificio de la persona asignada. Los nombres de los Santas se revelan el {reveal}. El servicio no puede garantizar un regalo para todos: el juego depende de quienes participan."
+      "text": "Las inscripciones están abiertas hasta el {close} y el sorteo se hace el {draw}. Precio orientativo: 10–15 €. El regalo se deja del {from} al {to} en una taquilla o buzón del edificio de la persona a la que regalas. Los nombres de los Santas se revelan el {reveal}. El servicio no puede garantizar un regalo para todos: el juego depende de quienes participan."
     },
     "kids": {
       "title": "Los niños participan con adultos",
@@ -927,7 +927,7 @@
     },
     "purpose": {
       "title": "Para qué sirven los datos",
-      "text": "Solo para el juego: hacer el sorteo, mostrar a cada Santa qué le hará ilusión a su persona asignada y avisar de dónde buscar el regalo. No usamos los datos para publicidad ni los vendemos."
+      "text": "Solo para el juego: hacer el sorteo, mostrar a cada Santa qué le hará ilusión a la persona a la que regala y avisar de dónde buscar el regalo. No usamos los datos para publicidad ni los vendemos."
     },
     "stored": {
       "title": "Qué guardamos y quién lo ve",

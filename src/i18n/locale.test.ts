@@ -82,4 +82,33 @@ describe("message texts", () => {
       expect(offenders, locale).toEqual([]);
     }
   });
+
+  // Controller ruling: informal «ты» everywhere in ru and uk, mails included
+  // (plural «вы» addressing all players, as on /closed, is fine).
+  it("ru and uk address the reader informally", () => {
+    const formal = {
+      ru: /(?<![а-яё])(вас|вам|ваш[а-яё]*|забыли|попробуйте|проверьте|выберите|подтвердите|загляните|отметьте|оставьте)(?![а-яё])/i,
+      uk: /(?<![а-яіїєґ’])(вас|вам|ваш[а-яіїєґ]*|забули|спробуйте|перевірте|оберіть|підтвердьте|загляньте|позначте|залиште)(?![а-яіїєґ’])/i,
+    };
+    for (const locale of ["ru", "uk"] as const) {
+      const raw = readFileSync(
+        path.join(process.cwd(), "messages", `${locale}.json`),
+        "utf8",
+      );
+      const offenders = (raw.match(/"[^"]*"/g) ?? []).filter((v) =>
+        formal[locale].test(v),
+      );
+      expect(offenders, locale).toEqual([]);
+    }
+  });
+
+  it("uk uses one apostrophe (’) and no Russian-only letters", () => {
+    const raw = readFileSync(
+      path.join(process.cwd(), "messages", "uk.json"),
+      "utf8",
+    );
+    const values = (raw.match(/"[^"]*"/g) ?? []).join(" ");
+    expect(values).not.toMatch(/[\p{L}]['ʼ][\p{L}]/u);
+    expect(values).not.toMatch(/[ыэъё]/i);
+  });
 });

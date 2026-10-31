@@ -42,7 +42,7 @@
     "title": "Das Spiel ist vorbei",
     "text": "Danke fürs Mitspielen. Wir hoffen, ihr seid euch ein Stück nähergekommen.",
     "cardTitle": "Daten gelöscht",
-    "cardText": "Profile, Fotos, Beiträge und Paare wurden am {date} gelöscht. Die Seite nimmt keine Teilnehmenden mehr auf.",
+    "cardText": "Steckbriefe, Fotos, Beiträge und Paare wurden am {date} gelöscht. Die Seite nimmt keine Teilnehmenden mehr auf.",
     "organizer": "Organisation des Spiels: Kate. Wir bleiben in Kontakt über <link>Telegram</link>."
   },
   "emails": {
@@ -354,7 +354,7 @@
     "nav": {
       "label": "Bereiche der Verwaltung",
       "overview": "Übersicht",
-      "participants": "Bewohner",
+      "participants": "Bewohnende",
       "backup": "Hilfe",
       "settings": "Termine"
     },
@@ -374,7 +374,7 @@
       "backupLink": "Ersatz-Santa gesucht",
       "collectUntil": "Bis {date} · Madrid",
       "beforeTitle": "Vor der Auslosung",
-      "beforeText": "Prüfe die Bewohnerliste und entferne fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Profil teil.",
+      "beforeText": "Prüfe die Liste der Bewohnenden und entferne fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Steckbrief teil.",
       "giftsTitle": "Zeit der Geschenke",
       "revealTitle": "Santas aufgedeckt",
       "helpTitle": "Hilfe in der Nachbarschaft gesucht",
@@ -385,7 +385,7 @@
       "giftsOpenMail": "E-Mail vom {date}",
       "reminderMail": "Erinnerung vom {date}",
       "revealMail": "E-Mail vom {date}",
-      "purgeNote": "Am {date} werden alle Profile, Fotos, Beiträge und Paare automatisch gelöscht. Das Gmail-Postfach muss von Hand geleert werden."
+      "purgeNote": "Am {date} werden alle Steckbriefe, Fotos, Beiträge und Paare automatisch gelöscht. Das Gmail-Postfach muss von Hand geleert werden."
     },
     "draw": {
       "start": "Auslosung starten",
@@ -428,7 +428,7 @@
       "verified": "E-Mail bestätigt",
       "unverified": "E-Mail nicht bestätigt",
       "remove": "Anmeldung löschen",
-      "removeConfirm": "Anmeldung löschen? Profil, Foto und Daten der Person werden gelöscht, bei Erwachsenen auch das ganze Konto samt Kindern.",
+      "removeConfirm": "Anmeldung löschen? Steckbrief, Foto und Daten der Person werden gelöscht, bei Erwachsenen auch das ganze Konto samt Kindern.",
       "removeFailed": "Löschen hat nicht geklappt. Bitte versuche es noch einmal.",
       "withdraw": "Ausstieg"
     },
@@ -436,7 +436,7 @@
       "title": "Eine Person steigt aus dem Spiel aus",
       "flat": "Haus {building}, Wohnung {apartment}",
       "boxTitle": "Möglich bis zum {lastExit}",
-      "boxText": "Der Santa dieser Person bekommt deren Beschenkte oder Beschenkten und eine E-Mail über die Änderung. Die Person verschwindet samt Profil und Foto aus dem Spiel.",
+      "boxText": "Der Santa dieser Person bekommt deren beschenkte Person und eine E-Mail über die Änderung. Die Person verschwindet samt Steckbrief und Foto aus dem Spiel.",
       "backupNote": "Wohnt die neue beschenkte Person in derselben Wohnung wie die schenkende, landet sie auf der Liste „Ersatz-Santa gesucht“, und die schenkende Person bekommt eine E-Mail, dass sie niemanden mehr beschenken muss.",
       "accountNote": "Steigt eine erwachsene Person aus, steigen auch alle Teilnehmenden ihres Kontos aus.",
       "confirm": "Ausstieg bestätigen",
@@ -502,8 +502,8 @@
   "cabinet": {
     "switcher": {
       "title": "Wer ist heute Santa?",
-      "text": "Jede teilnehmende Person hat ein eigenes Profil, eine beschenkte Person und ein Geschenk. Wähle, welchen Bereich du öffnest.",
-      "owner": "dein Profil",
+      "text": "Jede teilnehmende Person hat einen eigenen Steckbrief, eine beschenkte Person und ein Geschenk. Wähle, welchen Bereich du öffnest.",
+      "owner": "dein Steckbrief",
       "address": "Haus {building} · Wohnung {apartment}",
       "open": "Bereich von {name} öffnen",
       "childAge": "{age, plural, one {# Jahr} other {# Jahre}}"
@@ -517,7 +517,7 @@
       "titleReveal": "Finde heraus, wer dein Santa ist",
       "switch": "Person wechseln (jetzt: {name})",
       "daysTitle": "Bis zu den Geschenken — {days, plural, one {# Tag} other {# Tage}}",
-      "daysText": "Das Geschenk kannst du ab {date} hinterlegen. Bis dahin kannst du das Profil lesen und deinen eigenen Santa erraten.",
+      "daysText": "Das Geschenk kannst du ab {date} hinterlegen. Bis dahin kannst du den Steckbrief lesen und deinen eigenen Santa erraten.",
       "notLeftTitle": "Dein Geschenk ist noch nicht hinterlegt",
       "notLeftText": "{name} wartet auf eine Überraschung. Lege das Geschenk in ein Schließfach oder einen Briefkasten und markiere es hier.",
       "leftTitle": "Dein Geschenk ist hinterlegt",
@@ -553,8 +553,8 @@
       "guessText": "Rate bis Ende {date}; die Antwort erfährst du bei der Enthüllung.",
       "guessLink": "Santa erraten",
       "guessLinkUntil": "Santa erraten bis {date}",
-      "noProfileTitle": "Kein Profil",
-      "noProfileText": "Die Auslosung ist vorbei und dieses Konto hat kein Profil. Falls das ein Fehler ist, schreib der Organisation."
+      "noProfileTitle": "Kein Steckbrief",
+      "noProfileText": "Die Auslosung ist vorbei und dieses Konto hat keinen Steckbrief. Falls das ein Fehler ist, schreib der Organisation."
     }
   },
   "gift": {
@@ -651,7 +651,7 @@
     },
     "notInDraw": {
       "title": "Du bist nicht in der Auslosung",
-      "text": "Die Auslosung fand statt, bevor das Profil dieser Person im Spiel war, daher gibt es weder eine beschenkte Person noch einen Santa. Schreib der Organisation, dann sucht ihr eine Lösung."
+      "text": "Die Auslosung fand statt, bevor der Steckbrief dieser Person im Spiel war, daher gibt es weder eine beschenkte Person noch einen Santa. Schreib der Organisation, dann sucht ihr eine Lösung."
     }
   },
   "organizer": {
@@ -757,7 +757,7 @@
       "back": "Einstellungen",
       "title": "Das Spiel verlassen?",
       "boxTitle": "Das ganze Konto wird gelöscht",
-      "boxText": "Dein Profil und die Profile deiner Kinder, Fotos und Kontodaten werden gelöscht. Das lässt sich nicht rückgängig machen.",
+      "boxText": "Dein Steckbrief und die Steckbriefe deiner Kinder, Fotos und Kontodaten werden gelöscht. Das lässt sich nicht rückgängig machen.",
       "names": "Aus der Auslosung gehen: {names}.",
       "stay": "Im Spiel bleiben",
       "confirm": "Ja, Konto löschen",
@@ -893,11 +893,11 @@
         },
         "8": {
           "q": "Und wenn ich es mir anders überlege?",
-          "a": "Lösche dein Profil bis {close} selbst. Später schreib der Organisation, das ist bis {lastExit} möglich."
+          "a": "Lösche deinen Steckbrief bis {close} selbst. Später schreib der Organisation, das ist bis {lastExit} möglich."
         },
         "9": {
           "q": "Was passiert nach dem Spiel mit meinen Daten?",
-          "a": "Am {closeDay} werden alle Profile und Fotos gelöscht, und die Seite wird geschlossen."
+          "a": "Am {closeDay} werden alle Steckbriefe und Fotos gelöscht, und die Seite wird geschlossen."
         }
       }
     },
@@ -939,9 +939,9 @@
     },
     "processors": {
       "title": "An wen wir Daten weitergeben",
-      "intro": "Das Spiel läuft auf kostenlosen Diensten. Jeder erhält nur das, was er für seine Aufgabe braucht.",
+      "intro": "Das Spiel läuft auf kostenlosen Diensten. Jeder Dienst erhält nur das, was er für seine Aufgabe braucht.",
       "vercel": "Vercel: Hosting der Seite.",
-      "neon": "Neon: Datenbank mit den Profilen.",
+      "neon": "Neon: Datenbank mit den Steckbriefen.",
       "blob": "Vercel Blob: Speicherung der Fotos.",
       "gmail": "Gmail: Versand der E-Mails; dorthin gelangen die E-Mail-Adresse und der Text der Nachricht.",
       "google": "Anmeldung mit Google: Wenn du sie wählst, teilt Google uns deine E-Mail und deinen Namen mit.",
@@ -949,11 +949,11 @@
     },
     "retention": {
       "title": "Wann die Daten gelöscht werden",
-      "text": "Am {closeLong} werden alle Profile, Fotos, Beiträge, Übersetzungen und Paare automatisch gelöscht, und die Seite wird geschlossen. Versendete E-Mails bleiben im Gmail-Postfach der Organisation, Kate löscht dieses Postfach von Hand."
+      "text": "Am {closeLong} werden alle Steckbriefe, Fotos, Beiträge, Übersetzungen und Paare automatisch gelöscht, und die Seite wird geschlossen. Versendete E-Mails bleiben im Gmail-Postfach der Organisation, Kate löscht dieses Postfach von Hand."
     },
     "rights": {
       "title": "Wie du aussteigst und Daten löschst",
-      "text": "Vor der Auslosung löschst du dein Konto oder Profil selbst in deinem Konto. Nach der Auslosung läuft das Löschen über die Organisation, wie ein Ausstieg aus dem Spiel: Schreibe Kate, das ist bis {lastExit} möglich. Ab dem {giftsStart} wird das Löschen am {closeDay} ausgeführt."
+      "text": "Vor der Auslosung löschst du dein Konto oder deinen Steckbrief selbst in deinem Konto. Nach der Auslosung läuft das Löschen über die Organisation, wie ein Ausstieg aus dem Spiel: Schreibe Kate, das ist bis {lastExit} möglich. Ab dem {giftsStart} wird das Löschen am {closeDay} ausgeführt."
     },
     "version": "Textversion: {version}"
   }

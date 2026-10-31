@@ -249,7 +249,7 @@
   },
   "profile": {
     "nav": {
-      "label": "Cabinet menu",
+      "label": "Account menu",
       "home": "Home",
       "gift": "Gift",
       "wall": "Wall",
@@ -412,7 +412,7 @@
       "retry": "Try again",
       "confirmReady": "Participants ready: {count}",
       "confirmExcluded": "Not confirmed and out of the draw: {count}. Check the list before you start.",
-      "confirmMail": "Participants get an email with only a link to their cabinet. The organiser will not see the pairs."
+      "confirmMail": "Participants get an email with only a link to their account. The organizer will not see the pairs."
     },
     "participants": {
       "title": "Our participants",
@@ -502,10 +502,10 @@
   "cabinet": {
     "switcher": {
       "title": "Who is Santa today?",
-      "text": "Each participant has their own profile, recipient and gift. Choose whose cabinet to open.",
+      "text": "Each participant has their own profile, recipient and gift. Choose whose page to open.",
       "owner": "your profile",
       "address": "Building {building} · flat {apartment}",
-      "open": "Open the cabinet of {name}",
+      "open": "Open the page of {name}",
       "childAge": "{age, plural, one {# year old} other {# years old}}"
     },
     "home": {
@@ -773,7 +773,7 @@
       "contact": "Organizer: {name}. You can reach them on Telegram.",
       "dataTitle": "Deleting data",
       "dataText": "From {from} there is no withdrawal. A request to delete the account is carried out on {until}, when the game ends.",
-      "toCabinet": "Back to the cabinet"
+      "toCabinet": "Back to your account"
     },
     "signOut": "Sign out",
     "author": {
