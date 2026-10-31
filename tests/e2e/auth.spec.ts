@@ -67,7 +67,9 @@ test.describe("credentials login", () => {
       (window as unknown as Record<string, boolean>)["__spaMarker"] = true;
     });
 
-    await page.getByRole("link", { name: "Sign in" }).click();
+    // The header link comes first; the hero also has an "Already playing?"
+    // sign-in link.
+    await page.getByRole("link", { name: "Sign in" }).first().click();
     await expect(page).toHaveURL(/\/signin$/);
 
     const markerSurvived = await page.evaluate(

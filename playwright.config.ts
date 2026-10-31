@@ -1,7 +1,13 @@
+import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 import { APP_PORT } from "./config/ports";
 
 const BASE_URL = `http://localhost:${APP_PORT}`;
+
+// Mail sink for the e2e server (see E2E_MAIL_OUTBOX in src/lib/env.ts): the
+// tests read confirmation links from it. Absolute, because the server and the
+// test workers must agree on the file.
+export const MAIL_OUTBOX = path.resolve(".e2e", "mail.jsonl");
 
 /**
  * E2E smoke suite (spec §5.6-1: SPA-navigation gate + core golden-path
@@ -24,6 +30,7 @@ export default defineConfig({
   projects: [
     {
       name: "desktop-chromium",
+      testIgnore: /game\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 720 },
@@ -31,11 +38,25 @@ export default defineConfig({
     },
     {
       name: "mobile-chromium",
+      testIgnore: /game\.spec\.ts/,
       use: { ...devices["Pixel 7"] },
+    },
+    {
+      // The whole game on one server: it draws, moves the dates and closes
+      // registration for everybody, so it runs once, after the other
+      // projects. It drives both viewports itself (organiser on desktop,
+      // neighbours on a Pixel 7), see tests/e2e/game.spec.ts.
+      name: "game-flow",
+      testMatch: /game\.spec\.ts/,
+      dependencies: ["desktop-chromium", "mobile-chromium"],
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 720 },
+      },
     },
   ],
   webServer: {
-    command: "pnpm db:reset && pnpm build && pnpm start",
+    command: `mkdir -p .e2e && : > ${MAIL_OUTBOX} && pnpm db:reset && pnpm build && pnpm start`,
     url: BASE_URL,
     reuseExistingServer: false,
     timeout: 5 * 60 * 1000,
@@ -51,6 +72,10 @@ export default defineConfig({
       // Exercise the real credentials login instead of the dev bypass, so
       // the e2e suite proves the auth flow actually authenticates.
       AUTH_DEV_BYPASS: "false",
+      // The seeded admin (verified, consented) is the organiser.
+      ADMIN_EMAIL: "admin@example.local",
+      // Mail goes to a file the tests read; refused on any real deployment.
+      E2E_MAIL_OUTBOX: MAIL_OUTBOX,
     },
   },
 });

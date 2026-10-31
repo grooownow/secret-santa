@@ -100,6 +100,47 @@ describe("parseEnv", () => {
     expect(env.AUTH_DEV_BYPASS).toBe(false);
   });
 
+  describe("E2E_MAIL_OUTBOX (test-only mail sink)", () => {
+    const outbox = "/tmp/outbox.jsonl";
+
+    it("is accepted for a local run", () => {
+      expect(parseEnv({ E2E_MAIL_OUTBOX: outbox }).E2E_MAIL_OUTBOX).toBe(
+        outbox,
+      );
+      expect(
+        parseEnv({
+          NODE_ENV: "production",
+          E2E_MAIL_OUTBOX: outbox,
+          NEXT_PUBLIC_APP_URL: "http://localhost:3210",
+        }).E2E_MAIL_OUTBOX,
+      ).toBe(outbox);
+    });
+
+    it("refuses to boot on Vercel", () => {
+      expect(() => parseEnv({ E2E_MAIL_OUTBOX: outbox, VERCEL: "1" })).toThrow(
+        /E2E_MAIL_OUTBOX/,
+      );
+    });
+
+    it("refuses to boot with Gmail credentials", () => {
+      expect(() =>
+        parseEnv({ E2E_MAIL_OUTBOX: outbox, GMAIL_USER: "santa@gmail.com" }),
+      ).toThrow(/E2E_MAIL_OUTBOX/);
+      expect(() =>
+        parseEnv({ E2E_MAIL_OUTBOX: outbox, GMAIL_APP_PASSWORD: "x" }),
+      ).toThrow(/E2E_MAIL_OUTBOX/);
+    });
+
+    it("refuses to boot with a public app URL", () => {
+      expect(() =>
+        parseEnv({
+          E2E_MAIL_OUTBOX: outbox,
+          NEXT_PUBLIC_APP_URL: "https://santa.vercel.app",
+        }),
+      ).toThrow(/E2E_MAIL_OUTBOX/);
+    });
+  });
+
   it("provides dev defaults for the seed admin credentials", () => {
     const env = parseEnv({});
     expect(env.SEED_ADMIN_EMAIL).toBe("admin@example.local");

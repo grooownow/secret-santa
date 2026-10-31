@@ -31,3 +31,4 @@ marketing/landing/dist/
 
 .superpowers/
 .DS_Store
+.e2e/

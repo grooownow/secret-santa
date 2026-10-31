@@ -1,3 +1,6 @@
+import { mkdtemp, readFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -5,6 +8,7 @@ const mocks = vi.hoisted(() => ({
     NODE_ENV: "test" as string,
     GMAIL_USER: undefined as string | undefined,
     GMAIL_APP_PASSWORD: undefined as string | undefined,
+    E2E_MAIL_OUTBOX: undefined as string | undefined,
   },
   info: vi.fn(),
   createTransport: vi.fn(),
@@ -28,6 +32,7 @@ afterEach(() => {
     NODE_ENV: "test",
     GMAIL_USER: undefined,
     GMAIL_APP_PASSWORD: undefined,
+    E2E_MAIL_OUTBOX: undefined,
   });
   vi.clearAllMocks();
 });
@@ -43,6 +48,17 @@ describe("sendMail", () => {
   it("logs instead of sending without credentials outside production", async () => {
     await sendMail(message);
     expect(mocks.info).toHaveBeenCalledTimes(1);
+    expect(mocks.createTransport).not.toHaveBeenCalled();
+  });
+
+  it("appends to the e2e outbox file instead of sending", async () => {
+    const file = join(await mkdtemp(join(tmpdir(), "outbox-")), "mail.jsonl");
+    mocks.env.E2E_MAIL_OUTBOX = file;
+    mocks.env.NODE_ENV = "production";
+    await sendMail(message);
+    await sendMail({ ...message, to: "c@d.dev" });
+    const lines = (await readFile(file, "utf8")).trim().split("\n");
+    expect(lines.map((l) => JSON.parse(l).to)).toEqual(["a@b.dev", "c@d.dev"]);
     expect(mocks.createTransport).not.toHaveBeenCalled();
   });
 

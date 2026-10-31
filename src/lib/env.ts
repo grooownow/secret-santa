@@ -54,6 +54,14 @@ const schema = z
     // Vercel Blob token for participant and wall photos.
     BLOB_READ_WRITE_TOKEN: z.string().optional(),
 
+    // E2E ONLY: when set, mail is appended to this file (JSON lines) instead
+    // of being sent, so the Playwright suite can read confirmation links. The
+    // refinement below makes it impossible to combine with anything that
+    // looks like a real deployment.
+    E2E_MAIL_OUTBOX: z.string().min(1).optional(),
+    // Set to "1" by Vercel on every deployment; read only for that guard.
+    VERCEL: z.string().optional(),
+
     // Groq (free tier) translates user texts on save. Without a key,
     // translation is a fake in dev/test and disabled in production.
     GROQ_API_KEY: z.string().optional(),
@@ -78,6 +86,18 @@ const schema = z
       });
     }
 
+    if (val.E2E_MAIL_OUTBOX) {
+      const host = new URL(val.NEXT_PUBLIC_APP_URL).hostname;
+      const local = host === "localhost" || host === "127.0.0.1";
+      if (val.VERCEL || val.GMAIL_USER || val.GMAIL_APP_PASSWORD || !local) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["E2E_MAIL_OUTBOX"],
+          message:
+            "E2E_MAIL_OUTBOX is for local e2e runs only: it cannot be set on Vercel, with Gmail credentials, or with a non-local NEXT_PUBLIC_APP_URL",
+        });
+      }
+    }
     if (val.NODE_ENV === "production" && val.AUTH_DEV_BYPASS) {
       ctx.addIssue({
         code: "custom",

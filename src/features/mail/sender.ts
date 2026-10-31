@@ -1,4 +1,5 @@
 import "server-only";
+import { appendFile } from "node:fs/promises";
 import { createTransport } from "nodemailer";
 import { getDb } from "@/db/client";
 import { sentEmails } from "@/db/schema";
@@ -41,6 +42,13 @@ function gmailTransport(user: string, pass: string): Transport {
 
 export async function sendMail(message: MailMessage): Promise<void> {
   if (override) return override(message);
+
+  // E2E only (env.ts refuses this variable on any real deployment): write the
+  // mail to a file the test reads, instead of sending it.
+  if (env.E2E_MAIL_OUTBOX) {
+    await appendFile(env.E2E_MAIL_OUTBOX, `${JSON.stringify(message)}\n`);
+    return;
+  }
 
   const { GMAIL_USER, GMAIL_APP_PASSWORD, NODE_ENV } = env;
   if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {

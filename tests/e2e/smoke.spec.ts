@@ -7,7 +7,7 @@ test.describe("golden path smoke", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: "Secret Santa Bialto" }),
+      page.getByRole("heading", { name: "Secret Santa for Bialto neighbours" }),
     ).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
@@ -26,7 +26,9 @@ test.describe("golden path smoke", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "de");
     await expect(
-      page.getByRole("heading", { name: "Wichteln Bialto" }),
+      page.getByRole("heading", {
+        name: "Wichteln für die Nachbarschaft in Bialto",
+      }),
     ).toBeVisible();
   });
 
