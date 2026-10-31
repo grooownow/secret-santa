@@ -35,7 +35,7 @@ describe("WithdrawConfirm", () => {
       unnotified: 1,
       retryToken: "opaque",
     });
-    render(<WithdrawConfirm id={ID} />);
+    render(<WithdrawConfirm id={ID} lastExit="24 December" />);
     await userEvent.click(
       screen.getByRole("button", { name: "Confirm withdrawal" }),
     );
@@ -59,7 +59,7 @@ describe("WithdrawConfirm", () => {
       left: 0,
       retryToken: null,
     });
-    render(<WithdrawConfirm id={ID} />);
+    render(<WithdrawConfirm id={ID} lastExit="24 December" />);
     await userEvent.click(
       screen.getByRole("button", { name: "Confirm withdrawal" }),
     );
@@ -77,7 +77,7 @@ describe("WithdrawConfirm", () => {
       retryToken: "opaque",
     });
     actions.retryNotify.mockResolvedValue({ ok: false });
-    render(<WithdrawConfirm id={ID} />);
+    render(<WithdrawConfirm id={ID} lastExit="24 December" />);
     await userEvent.click(
       screen.getByRole("button", { name: "Confirm withdrawal" }),
     );
@@ -90,7 +90,7 @@ describe("WithdrawConfirm", () => {
 
   it("a real server error is a generic failure, not 'closed'", async () => {
     actions.withdrawAction.mockRejectedValue(new Error("boom"));
-    render(<WithdrawConfirm id={ID} />);
+    render(<WithdrawConfirm id={ID} lastExit="24 December" />);
     await userEvent.click(
       screen.getByRole("button", { name: "Confirm withdrawal" }),
     );

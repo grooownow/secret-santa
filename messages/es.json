@@ -77,13 +77,13 @@
     "giftsOpen": {
       "subject": "Ya se pueden dejar regalos",
       "title": "Ya se pueden dejar regalos",
-      "body": "Desde hoy puedes dejar el regalo en el portal de tu destinatario: en una taquilla o en un buzón. Como referencia, entre 10 y 15 €. Marca el regalo en tu cuenta antes de que acabe el 31 de diciembre.",
+      "body": "Desde hoy puedes dejar el regalo en el portal de la persona a la que regalas: en una taquilla o en un buzón. Como referencia, entre 10 y 15 €. Marca el regalo en tu cuenta antes de que acabe el {giftsEnd}.",
       "cta": "Abrir mi cuenta"
     },
     "reminder": {
       "subject": "Recordatorio del regalo",
       "title": "Tu regalo aún no está marcado",
-      "body": "Si el regalo ya está listo, déjalo en el portal de tu destinatario y márcalo en tu cuenta antes de que acabe el 31 de diciembre.",
+      "body": "Si el regalo ya está listo, déjalo en el portal de la persona a la que regalas y márcalo en tu cuenta antes de que acabe el {giftsEnd}.",
       "cta": "Abrir mi cuenta"
     },
     "giftWaiting": {
@@ -107,7 +107,7 @@
     "reveal": {
       "subject": "Santas revelados",
       "title": "Santas revelados",
-      "body": "Es 1 de enero y ya se ven los nombres. Entra en tu cuenta para saber quién cuidó de ti y comprobar tu pista.",
+      "body": "Desde el {reveal} ya se ven los nombres de los Santas. Entra en tu cuenta para saber quién cuidó de ti y comprobar tu suposición.",
       "cta": "Abrir mi cuenta"
     },
     "gift": {
@@ -382,9 +382,9 @@
       "waitingBackup": "Esperan Santa de reserva",
       "backupNeeded": "En la lista de reserva",
       "backupOrganized": "De ellos, organizados",
-      "giftsOpenMail": "Correo del 25 de diciembre",
-      "reminderMail": "Recordatorio del 29 de diciembre",
-      "revealMail": "Correo del 1 de enero",
+      "giftsOpenMail": "Correo del {date}",
+      "reminderMail": "Recordatorio del {date}",
+      "revealMail": "Correo del {date}",
       "purgeNote": "El {date} se borran automáticamente todos los perfiles, fotos, mensajes y parejas. El buzón de Gmail hay que vaciarlo a mano."
     },
     "draw": {
@@ -418,8 +418,8 @@
       "title": "Nuestros participantes",
       "intro": {
         "collect": "Participantes: {count}. Quita las solicitudes ajenas antes del sorteo.",
-        "waiting": "Participantes: {count}. La baja está disponible hasta el 24 de diciembre.",
-        "later": "Participantes: {count}. Desde el 25 de diciembre no hay bajas."
+        "waiting": "Participantes: {count}. La baja está disponible hasta el {lastExit}.",
+        "later": "Participantes: {count}. Desde el {giftsStart} no hay bajas."
       },
       "search": "Buscar",
       "searchPlaceholder": "Nombre, edificio o piso",
@@ -435,14 +435,14 @@
     "withdraw": {
       "title": "Un participante sale del juego",
       "flat": "Edificio {building}, piso {apartment}",
-      "boxTitle": "Disponible hasta el 24 de diciembre",
+      "boxTitle": "Disponible hasta el {lastExit}",
       "boxText": "Quien hace de Santa de esta persona recibe a su persona asignada y un correo sobre el cambio. La persona desaparece del juego con su perfil y su foto.",
       "backupNote": "Si la nueva persona asignada vive en el mismo piso que quien regala, pasa a la lista «Se necesita Santa de reserva» y quien regala recibe un correo avisando de que ya no tiene a quién regalar.",
       "accountNote": "Cuando sale una persona adulta, salen también todos los participantes de su cuenta y se borra la cuenta.",
       "confirm": "Confirmar la baja",
       "running": "Dando de baja…",
       "cancel": "Cancelar",
-      "closed": "La baja ya no está disponible: funciona hasta el 24 de diciembre.",
+      "closed": "La baja ya no está disponible: funciona hasta el {lastExit}.",
       "notFound": "Este participante ya no está.",
       "done": "La persona ha salido.",
       "failed": "Algo ha fallado. Revisa la lista de participantes e inténtalo de nuevo.",
@@ -660,7 +660,7 @@
     "guess": {
       "chip": "Apuesta hasta el {date}",
       "title": "¿Quién es tu Santa?",
-      "intro": "Elige quién crees que es tu Santa. Puedes cambiar la apuesta hasta el final del {date}. El 1 de enero se sabrá si acertaste.",
+      "intro": "Elige quién crees que es tu Santa. Puedes cambiar la suposición hasta el final del {date}. El {reveal} se sabrá si acertaste.",
       "search": "Buscar participante",
       "searchPlaceholder": "Nombre o edificio",
       "noMatches": "No se encontró a nadie",
@@ -670,7 +670,7 @@
       "hint": "La lista solo muestra nombres y edificios: las direcciones y fotos de otros participantes no se ven.",
       "savedTitle": "Apuesta por {name}",
       "savedBox": "Apuesta guardada",
-      "savedHint": "El 1 de enero sabremos si fue acertada.",
+      "savedHint": "El {reveal} sabremos si fue acertada.",
       "change": "Cambiar apuesta",
       "changeUntil": "Puedes cambiar la elección hasta el final del {date}.",
       "errors": {

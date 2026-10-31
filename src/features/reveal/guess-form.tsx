@@ -10,19 +10,22 @@ import type { GuessOption } from "./queries";
 /**
  * "Кто же твой Санта?" (frame zY7JF) and the saved state (frame YMQby). The
  * list is already on the page, the search only filters it in the browser. The
- * page never learns whether the guess is right: that opens on 1 January.
+ * page never learns whether the guess is right: that opens on the reveal day.
  */
 export function GuessForm({
   participantId,
   options,
   savedId,
   until,
+  reveal,
 }: {
   participantId: string;
   options: GuessOption[];
   savedId: string | null;
   /** Already formatted last day to change the guess, e.g. "31 декабря". */
   until: string;
+  /** Already formatted reveal day, e.g. "1 января". */
+  reveal: string;
 }) {
   const t = useTranslations("reveal.guess");
   const [current, setCurrent] = useState(savedId);
@@ -72,7 +75,7 @@ export function GuessForm({
             })}
           </p>
           <p className="text-santa-muted text-sm leading-relaxed">
-            {t("savedHint")}
+            {t("savedHint", { reveal })}
           </p>
         </div>
         <button
@@ -103,7 +106,7 @@ export function GuessForm({
         {t("title")}
       </h1>
       <p className="text-santa-muted text-sm leading-relaxed">
-        {t("intro", { date: until })}
+        {t("intro", { date: until, reveal })}
       </p>
 
       <label className="flex flex-col gap-2">

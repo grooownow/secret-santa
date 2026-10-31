@@ -7,7 +7,14 @@ import { UnnotifiedNotice } from "./unnotified-notice";
 import { withdrawAction } from "./withdraw-action";
 
 /** "Подтвердить выбытие" (frame ksxL7). Redirects are not errors. */
-export function WithdrawConfirm({ id }: { id: string }) {
+export function WithdrawConfirm({
+  id,
+  lastExit,
+}: {
+  id: string;
+  /** Formatted last day of withdrawals, for the "closed" message. */
+  lastExit: string;
+}) {
   const t = useTranslations("admin.withdraw");
   const [error, setError] = useState<"closed" | "notFound" | "failed" | null>(
     null,
@@ -58,7 +65,7 @@ export function WithdrawConfirm({ id }: { id: string }) {
       </button>
       {error ? (
         <p role="alert" className="text-santa-danger text-sm">
-          {t(error)}
+          {t(error, { lastExit })}
         </p>
       ) : null}
     </div>

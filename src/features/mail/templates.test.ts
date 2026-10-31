@@ -97,6 +97,35 @@ describe("renderEmail", () => {
     expect(none.subject).toBe("No one left to give to");
   });
 
+  it("names the game dates from the settings, formatted per language", () => {
+    const dates = { giftsEndOn: "2027-01-02", revealOn: "2027-01-03" };
+    expect(renderEmail("giftsOpen", "ru", { dates }).text).toContain(
+      "до конца 2 января",
+    );
+    expect(renderEmail("reminder", "en", { dates }).text).toContain(
+      "by the end of January 2",
+    );
+    expect(renderEmail("reveal", "es", { dates }).text).toContain(
+      "Desde el 3 de enero",
+    );
+    expect(renderEmail("reveal", "de", { dates }).text).toContain(
+      "Seit dem 3. Januar",
+    );
+    for (const locale of LOCALES) {
+      for (const type of ["giftsOpen", "reminder", "reveal"] as const) {
+        const text = renderEmail(type, locale, { dates }).text;
+        expect(text, `${type}/${locale}`).not.toMatch(
+          /\b31\b|\b1 (января|січня|January)/,
+        );
+        expect(text).not.toMatch(/[{}]/);
+      }
+    }
+    // Without dates the defaults are used.
+    expect(renderEmail("giftsOpen", "ru").text).toContain(
+      "до конца 31 декабря",
+    );
+  });
+
   it("falls back to English for an unknown locale value", () => {
     const out = renderEmail("draw", "xx" as never, {});
     expect(out.subject).toBe("The draw is done");

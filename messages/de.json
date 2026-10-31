@@ -77,13 +77,13 @@
     "giftsOpen": {
       "subject": "Geschenke können abgelegt werden",
       "title": "Geschenke können abgelegt werden",
-      "body": "Ab heute kannst du das Geschenk im Haus deiner beschenkten Person ablegen: in einem Schließfach oder im Briefkasten. Als Richtwert gelten 10–15 €. Markiere das Geschenk bis Ende des 31. Dezember in deinem Konto.",
+      "body": "Ab heute kannst du das Geschenk im Haus deiner beschenkten Person ablegen: in einem Schließfach oder im Briefkasten. Als Richtwert gelten 10–15 €. Markiere das Geschenk bis Ende des {giftsEnd} in deinem Konto.",
       "cta": "Konto öffnen"
     },
     "reminder": {
       "subject": "Geschenk-Erinnerung",
       "title": "Dein Geschenk ist noch nicht markiert",
-      "body": "Wenn das Geschenk bereit ist, lege es im Haus deiner beschenkten Person ab und markiere es bis Ende des 31. Dezember in deinem Konto.",
+      "body": "Wenn das Geschenk bereit ist, lege es im Haus deiner beschenkten Person ab und markiere es bis Ende des {giftsEnd} in deinem Konto.",
       "cta": "Konto öffnen"
     },
     "giftWaiting": {
@@ -107,7 +107,7 @@
     "reveal": {
       "subject": "Santas enthüllt",
       "title": "Santas enthüllt",
-      "body": "Es ist der 1. Januar und die Namen der Santas sind offen. Schau in dein Konto, wer dich beschenkt hat, und prüfe deine Vermutung.",
+      "body": "Seit dem {reveal} sind die Namen der Santas offen. Schau in dein Konto, wer dich beschenkt hat, und prüfe deine Vermutung.",
       "cta": "Konto öffnen"
     },
     "gift": {
@@ -382,9 +382,9 @@
       "waitingBackup": "Warten auf einen Ersatz-Santa",
       "backupNeeded": "Auf der Ersatzliste",
       "backupOrganized": "Davon organisiert",
-      "giftsOpenMail": "E-Mail vom 25. Dezember",
-      "reminderMail": "Erinnerung vom 29. Dezember",
-      "revealMail": "E-Mail vom 1. Januar",
+      "giftsOpenMail": "E-Mail vom {date}",
+      "reminderMail": "Erinnerung vom {date}",
+      "revealMail": "E-Mail vom {date}",
       "purgeNote": "Am {date} werden alle Profile, Fotos, Beiträge und Paare automatisch gelöscht. Das Gmail-Postfach muss von Hand geleert werden."
     },
     "draw": {
@@ -418,8 +418,8 @@
       "title": "Unsere Teilnehmenden",
       "intro": {
         "collect": "Teilnehmende: {count}. Entferne fremde Anmeldungen vor der Auslosung.",
-        "waiting": "Teilnehmende: {count}. Der Ausstieg ist bis zum 24. Dezember möglich.",
-        "later": "Teilnehmende: {count}. Ab dem 25. Dezember gibt es keinen Ausstieg."
+        "waiting": "Teilnehmende: {count}. Der Ausstieg ist bis zum {lastExit} möglich.",
+        "later": "Teilnehmende: {count}. Ab dem {giftsStart} gibt es keinen Ausstieg."
       },
       "search": "Suchen",
       "searchPlaceholder": "Name, Haus oder Wohnung",
@@ -435,14 +435,14 @@
     "withdraw": {
       "title": "Eine Person steigt aus dem Spiel aus",
       "flat": "Haus {building}, Wohnung {apartment}",
-      "boxTitle": "Möglich bis zum 24. Dezember",
+      "boxTitle": "Möglich bis zum {lastExit}",
       "boxText": "Der Santa dieser Person bekommt deren Beschenkte oder Beschenkten und eine E-Mail über die Änderung. Die Person verschwindet samt Profil und Foto aus dem Spiel.",
       "backupNote": "Wohnt die neue beschenkte Person in derselben Wohnung wie die schenkende, landet sie auf der Liste „Ersatz-Santa gesucht“, und die schenkende Person bekommt eine E-Mail, dass sie niemanden mehr beschenken muss.",
       "accountNote": "Steigt eine erwachsene Person aus, steigen auch alle Teilnehmenden ihres Kontos aus.",
       "confirm": "Ausstieg bestätigen",
       "running": "Wird ausgetragen…",
       "cancel": "Abbrechen",
-      "closed": "Der Ausstieg ist nicht mehr möglich: er gilt bis zum 24. Dezember.",
+      "closed": "Der Ausstieg ist nicht mehr möglich: er gilt bis zum {lastExit}.",
       "notFound": "Diese Person ist schon weg.",
       "done": "Die Person ist ausgestiegen.",
       "failed": "Das hat nicht geklappt. Prüfe die Teilnehmendenliste und versuche es noch einmal.",
@@ -660,7 +660,7 @@
     "guess": {
       "chip": "Tipp bis {date}",
       "title": "Wer ist dein Santa?",
-      "intro": "Wähle, wer deiner Meinung nach dein Santa ist. Den Tipp kannst du bis Ende {date} ändern. Am 1. Januar zeigt sich, ob er stimmt.",
+      "intro": "Wähle, wer deiner Meinung nach dein Santa ist. Den Tipp kannst du bis Ende {date} ändern. Am {reveal} zeigt sich, ob er stimmt.",
       "search": "Person suchen",
       "searchPlaceholder": "Name oder Haus",
       "noMatches": "Niemand gefunden",
@@ -670,7 +670,7 @@
       "hint": "Die Liste zeigt nur Name und Haus: Adressen und Fotos anderer Teilnehmender bleiben verborgen.",
       "savedTitle": "Tipp auf {name}",
       "savedBox": "Tipp gespeichert",
-      "savedHint": "Am 1. Januar erfahren wir, ob er stimmt.",
+      "savedHint": "Am {reveal} erfahren wir, ob er stimmt.",
       "change": "Tipp ändern",
       "changeUntil": "Die Wahl kann bis Ende {date} geändert werden.",
       "errors": {

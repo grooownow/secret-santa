@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton, TextLink } from "@/components/form-ui";
 import { RunDrawForm } from "@/features/draw";
-import type { GameSettings } from "@/features/game";
+import { addDays, type GameSettings } from "@/features/game";
 import type { BroadcastEvent } from "@/features/mail";
 import { daysBetween, formatGameDay, todayInMadrid } from "@/lib/game-time";
 import type { Overview } from "./queries";
@@ -109,6 +109,13 @@ export async function OverviewView({
 
   const giftsOn = formatGameDay(settings.giftsStartOn, locale);
   const days = daysBetween(todayInMadrid(new Date()), settings.giftsStartOn);
+  // The reminder goes out giftsEndOn - 2 days, never before the gifts start.
+  const reminderFrom = addDays(settings.giftsEndOn, -2);
+  const reminderOn = formatGameDay(
+    reminderFrom > settings.giftsStartOn ? reminderFrom : settings.giftsStartOn,
+    locale,
+  );
+  const revealOn = formatGameDay(settings.revealOn, locale);
 
   const mailing = (event: BroadcastEvent, label: string) =>
     showMailing(event, settings) ? (
@@ -161,8 +168,8 @@ export async function OverviewView({
         </div>
         {helpBox}
         <Stat label={t("waitingBackup")} value={overview.backupNeeded} />
-        {mailing("gifts-open", t("giftsOpenMail"))}
-        {mailing("reminder", t("reminderMail"))}
+        {mailing("gifts-open", t("giftsOpenMail", { date: giftsOn }))}
+        {mailing("reminder", t("reminderMail", { date: reminderOn }))}
         <LinkButton href={ADMIN_BACKUP}>{t("backupLink")}</LinkButton>
         <LinkButton href={ADMIN_PARTICIPANTS}>
           {t("participantsLink")}
@@ -180,8 +187,8 @@ export async function OverviewView({
         <Stat label={t("backupOrganized")} value={overview.backupOrganized} />
       </div>
       {helpBox}
-      {mailing("reveal", t("revealMail"))}
-      {mailing("reminder", t("reminderMail"))}
+      {mailing("reveal", t("revealMail", { date: revealOn }))}
+      {mailing("reminder", t("reminderMail", { date: reminderOn }))}
       <p className="text-santa-muted text-sm leading-relaxed">
         {t("purgeNote", { date: formatGameDay(settings.closeOn, locale) })}
       </p>

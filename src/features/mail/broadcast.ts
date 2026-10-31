@@ -3,6 +3,7 @@ import { eq, isNotNull } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { assignments, participants, sentEmails, users } from "@/db/schema";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/locale";
+import { getSettings } from "@/lib/game-settings";
 import { logger } from "@/lib/logger";
 import { sendOnce } from "./sender";
 import { renderEmail, type EmailType } from "./templates";
@@ -92,6 +93,7 @@ export async function runBroadcast(
   event: BroadcastEvent,
 ): Promise<{ total: number; sent: number; failed: number }> {
   const recipients = await audience(event);
+  const { giftsEndOn, revealOn } = await getSettings();
   let sent = 0;
   let failed = 0;
   // Sequential on purpose: Gmail is rate limited and one failure must not
@@ -100,6 +102,7 @@ export async function runBroadcast(
     try {
       const rendered = renderEmail(EMAIL_FOR_EVENT[event], r.locale, {
         names: r.names,
+        dates: { giftsEndOn, revealOn },
       });
       if (
         await sendOnce(keyFor(event, r.userId), { to: r.email, ...rendered })

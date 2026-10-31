@@ -1,14 +1,15 @@
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton } from "@/components/form-ui";
 import { getDb } from "@/db/client";
 import { participants, users } from "@/db/schema";
 import { PageText, PageTitle } from "@/features/account";
 import { ADMIN_PARTICIPANTS, WithdrawConfirm } from "@/features/admin";
 import { requireOrganizer } from "@/features/auth";
-import { canExit, getSettings } from "@/features/game";
+import { addDays, canExit, getSettings } from "@/features/game";
 import { idSchema } from "@/features/profile";
+import { formatGameDay } from "@/lib/game-time";
 
 // Confirmation of a withdrawal (frame ksxL7). Only while waiting.
 export default async function WithdrawPage({
@@ -34,7 +35,11 @@ export default async function WithdrawPage({
   const settings = await getSettings();
   if (!person || !canExit(new Date(), settings)) notFound();
 
-  const t = await getTranslations("admin.withdraw");
+  const [t, locale] = await Promise.all([
+    getTranslations("admin.withdraw"),
+    getLocale(),
+  ]);
+  const lastExit = formatGameDay(addDays(settings.giftsStartOn, -1), locale);
   return (
     <>
       <PageTitle>{t("title")}</PageTitle>
@@ -48,12 +53,14 @@ export default async function WithdrawPage({
         </p>
       </div>
       <div className="bg-santa-yellow flex flex-col gap-2 rounded-2xl p-[18px]">
-        <p className="text-santa-ink text-base font-bold">{t("boxTitle")}</p>
+        <p className="text-santa-ink text-base font-bold">
+          {t("boxTitle", { lastExit })}
+        </p>
         <p className="text-santa-ink text-sm leading-relaxed">{t("boxText")}</p>
       </div>
       <PageText>{t("backupNote")}</PageText>
       {person.kind === "adult" ? <PageText>{t("accountNote")}</PageText> : null}
-      <WithdrawConfirm id={person.id} />
+      <WithdrawConfirm id={person.id} lastExit={lastExit} />
       <LinkButton href={ADMIN_PARTICIPANTS}>{t("cancel")}</LinkButton>
     </>
   );

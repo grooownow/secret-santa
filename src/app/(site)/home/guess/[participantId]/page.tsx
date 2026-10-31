@@ -42,6 +42,7 @@ export default async function GuessPage({
         options={result.options}
         savedId={result.guessedId}
         until={formatGameDay(settings.giftsEndOn, locale)}
+        reveal={formatGameDay(settings.revealOn, locale)}
       />
     </>
   );

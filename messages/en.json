@@ -77,13 +77,13 @@
     "giftsOpen": {
       "subject": "Gifts can be left now",
       "title": "Gifts can be left now",
-      "body": "From today you can leave a gift at your recipient's building: in a locker or a mailbox. A guide for the amount is 10–15 €. Mark the gift in your account by the end of 31 December.",
+      "body": "From today you can leave the gift at the building of the person you give to: in a locker or a mailbox. A guide for the amount is 10–15 €. Mark the gift in your account by the end of {giftsEnd}.",
       "cta": "Open your account"
     },
     "reminder": {
       "subject": "Gift reminder",
       "title": "Your gift is not marked yet",
-      "body": "If the gift is ready, leave it at your recipient's building and mark it in your account by the end of 31 December.",
+      "body": "If the gift is ready, leave it at the building of the person you give to and mark it in your account by the end of {giftsEnd}.",
       "cta": "Open your account"
     },
     "giftWaiting": {
@@ -107,7 +107,7 @@
     "reveal": {
       "subject": "Santas revealed",
       "title": "Santas revealed",
-      "body": "It is 1 January and the Santas' names are open. Visit your account to see who looked after you and to check your guess.",
+      "body": "Since {reveal} the Santas' names are open. Visit your account to see who looked after you and to check your guess.",
       "cta": "Open your account"
     },
     "gift": {
@@ -382,9 +382,9 @@
       "waitingBackup": "Waiting for a backup Santa",
       "backupNeeded": "On the backup list",
       "backupOrganized": "Of them arranged",
-      "giftsOpenMail": "Email of 25 December",
-      "reminderMail": "Reminder of 29 December",
-      "revealMail": "Email of 1 January",
+      "giftsOpenMail": "Email of {date}",
+      "reminderMail": "Reminder of {date}",
+      "revealMail": "Email of {date}",
       "purgeNote": "On {date} all profiles, photos, posts and pairs are deleted automatically. The Gmail mailbox has to be cleared by hand."
     },
     "draw": {
@@ -418,8 +418,8 @@
       "title": "Our participants",
       "intro": {
         "collect": "Participants: {count}. Remove strangers before the draw.",
-        "waiting": "Participants: {count}. Withdrawal is available until 24 December.",
-        "later": "Participants: {count}. There is no withdrawal from 25 December."
+        "waiting": "Participants: {count}. Withdrawal is available until {lastExit}.",
+        "later": "Participants: {count}. There is no withdrawal from {giftsStart}."
       },
       "search": "Search",
       "searchPlaceholder": "Name, building or flat",
@@ -435,14 +435,14 @@
     "withdraw": {
       "title": "A participant leaves the game",
       "flat": "Building {building}, flat {apartment}",
-      "boxTitle": "Available until 24 December",
+      "boxTitle": "Available until {lastExit}",
       "boxText": "This participant's Santa gets their recipient and an email about the change. The participant disappears from the game together with the profile and photo.",
       "backupNote": "If the new recipient lives in the same flat as the giver, they go to the “Backup Santa needed” list, and the giver gets an email that there is nobody left to give to.",
       "accountNote": "When an adult leaves, every participant of their account leaves too.",
       "confirm": "Confirm withdrawal",
       "running": "Withdrawing…",
       "cancel": "Cancel",
-      "closed": "Withdrawal is no longer available: it works until 24 December.",
+      "closed": "Withdrawal is no longer available: it works until {lastExit}.",
       "notFound": "This participant is already gone.",
       "done": "The participant has left.",
       "failed": "Something went wrong. Check the participants list and try again.",
@@ -660,7 +660,7 @@
     "guess": {
       "chip": "Guess until {date}",
       "title": "Who is your Santa?",
-      "intro": "Pick who you think your Santa is. You can change the guess until the end of {date}. On 1 January you will see whether it was right.",
+      "intro": "Pick who you think your Santa is. You can change the guess until the end of {date}. On {reveal} you will see whether it was right.",
       "search": "Find a participant",
       "searchPlaceholder": "Name or building",
       "noMatches": "No one found",
@@ -670,7 +670,7 @@
       "hint": "The list shows only names and buildings: other participants' addresses and photos stay hidden.",
       "savedTitle": "Betting on {name}",
       "savedBox": "Guess saved",
-      "savedHint": "We will find out on 1 January whether it was right.",
+      "savedHint": "We will find out on {reveal} whether it was right.",
       "change": "Change my guess",
       "changeUntil": "You can change the choice until the end of {date}.",
       "errors": {

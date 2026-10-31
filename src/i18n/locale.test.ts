@@ -65,3 +65,21 @@ describe("messages files", () => {
     }
   });
 });
+
+describe("message texts", () => {
+  // Game dates are editable in /admin/settings, so texts take them from
+  // placeholders (`{giftsEnd}`, `{reveal}`, `{lastExit}`…), never literally.
+  it("no message hard-codes a December or January day", () => {
+    const pattern =
+      /\d{1,2}\.?\s*(de\s+)?(декабря|января|грудня|січня|December|January|diciembre|enero|Dezember|Januar)/i;
+    for (const locale of LOCALES) {
+      const raw = readFileSync(
+        path.join(process.cwd(), "messages", `${locale}.json`),
+        "utf8",
+      );
+      const values = raw.match(/"[^"]*"/g) ?? [];
+      const offenders = values.filter((v) => pattern.test(v));
+      expect(offenders, locale).toEqual([]);
+    }
+  });
+});

@@ -1,5 +1,7 @@
 import { createTranslator } from "next-intl";
 import { env } from "@/lib/env";
+import { DEFAULT_DATES } from "@/lib/game-phase";
+import { formatGameDay } from "@/lib/game-time";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/locale";
 import de from "../../../messages/de.json";
 import en from "../../../messages/en.json";
@@ -31,6 +33,11 @@ export type EmailData = {
   note?: string | null;
   /** reassigned: true when there is nobody left to give to. */
   noReceiver?: boolean;
+  /**
+   * Game dates (`YYYY-MM-DD`) from the settings, for the texts that name
+   * them; the defaults are used when absent.
+   */
+  dates?: { giftsEndOn: string; revealOn: string };
 };
 
 export type RenderedEmail = { subject: string; text: string; html: string };
@@ -68,7 +75,11 @@ export function renderEmail(
     type === "reassigned" && data.noReceiver ? "noReceiver" : type;
   const subject = t(`${key}.subject` as "verify.subject");
   const title = t(`${key}.title` as "verify.title");
-  const body = t(`${key}.body` as "verify.body");
+  const dates = data.dates ?? DEFAULT_DATES;
+  const body = t(`${key}.body` as "verify.body", {
+    giftsEnd: formatGameDay(dates.giftsEndOn, safeLocale),
+    reveal: formatGameDay(dates.revealOn, safeLocale),
+  });
   const cta = t(`${key}.cta` as "verify.cta");
   const url = data.url ?? cabinetUrl();
 
