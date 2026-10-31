@@ -24,7 +24,10 @@ export function RegisterForm({ defaultLocale }: { defaultLocale: string }) {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <Field label={t("email")}>
+      <Field
+        label={t("email")}
+        error={state.error === "email" ? t("errors.email") : undefined}
+      >
         <TextInput
           name="email"
           type="email"
@@ -34,7 +37,11 @@ export function RegisterForm({ defaultLocale }: { defaultLocale: string }) {
           required
         />
       </Field>
-      <Field label={t("password")} hint={t("passwordHint")}>
+      <Field
+        label={t("password")}
+        hint={t("passwordHint")}
+        error={state.error === "password" ? t("errors.password") : undefined}
+      >
         <TextInput
           name="password"
           type="password"
@@ -48,7 +55,9 @@ export function RegisterForm({ defaultLocale }: { defaultLocale: string }) {
         defaultLocale={state.locale ?? defaultLocale}
         invalid={invalid}
       />
-      {state.error ? <FormAlert>{t(`errors.${state.error}`)}</FormAlert> : null}
+      {state.error && state.error !== "email" && state.error !== "password" ? (
+        <FormAlert>{t(`errors.${state.error}`)}</FormAlert>
+      ) : null}
       <SubmitButton pendingLabel={t("pending")}>{t("submit")}</SubmitButton>
       <p className="text-santa-muted text-[13px]">
         {t("haveAccount")} <TextLink href="/signin">{t("signIn")}</TextLink>

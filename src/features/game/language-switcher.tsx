@@ -30,7 +30,7 @@ export async function LanguageSwitcher() {
             aria-current={locale === active ? "true" : undefined}
             className="text-santa-ink hover:bg-santa-mint flex items-center justify-between rounded-lg px-3 py-2 text-left text-sm aria-[current=true]:font-semibold"
           >
-            <span>{LOCALE_NAMES[locale]}</span>
+            <span lang={locale}>{LOCALE_NAMES[locale]}</span>
             <span className="text-santa-muted text-xs">
               {LOCALE_SHORT[locale]}
             </span>

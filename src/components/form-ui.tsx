@@ -3,30 +3,62 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
+import { cloneElement, isValidElement, useId } from "react";
 import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 
 const controlClass =
-  "border-santa-line text-santa-ink placeholder:text-santa-muted focus-visible:border-santa-green h-[52px] w-full rounded-2xl border bg-santa-white px-4 text-base outline-none";
+  "border-santa-line text-santa-ink placeholder:text-santa-muted focus-visible:border-santa-green h-[52px] w-full rounded-2xl border bg-santa-white px-4 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-santa-green";
 
-/** Labelled text input or select in the style of component n0DZBW. */
+/**
+ * Labelled text input or select in the style of component n0DZBW. The hint
+ * and the error are tied to the control with `aria-describedby`, and an error
+ * marks it `aria-invalid`, so screen readers read them with the field.
+ */
 export function Field({
   label,
   hint,
+  error,
   children,
 }: {
   label: string;
   hint?: string;
+  /** Error about this field only; shown under it. */
+  error?: string;
   children: React.ReactNode;
 }) {
+  const id = useId();
+  const hintId = hint ? `${id}-hint` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
+  const describedBy = [errorId, hintId].filter(Boolean).join(" ") || undefined;
+  const control = isValidElement<{
+    "aria-describedby"?: string;
+    "aria-invalid"?: boolean;
+  }>(children)
+    ? cloneElement(children, {
+        "aria-describedby": describedBy,
+        "aria-invalid": error ? true : undefined,
+      })
+    : children;
   return (
-    <label className="flex flex-col gap-2">
-      <span className="text-santa-green text-xs font-semibold">{label}</span>
-      {children}
+    // Hint and error sit outside the <label>, so they are not read as part
+    // of the field's name, only as its description.
+    <div className="flex flex-col gap-2">
+      <label className="flex flex-col gap-2">
+        <span className="text-santa-green text-xs font-semibold">{label}</span>
+        {control}
+      </label>
       {hint ? (
-        <span className="text-santa-muted text-xs leading-relaxed">{hint}</span>
+        <span id={hintId} className="text-santa-muted text-xs leading-relaxed">
+          {hint}
+        </span>
       ) : null}
-    </label>
+      {error ? (
+        <span id={errorId} role="alert" className="text-santa-danger text-xs">
+          {error}
+        </span>
+      ) : null}
+    </div>
   );
 }
 

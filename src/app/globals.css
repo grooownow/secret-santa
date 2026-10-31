@@ -115,6 +115,11 @@
   html {
     @apply font-sans;
   }
+  /* Visible keyboard focus everywhere: santa-green on white is 8.1:1. */
+  :focus-visible {
+    outline: 2px solid var(--santa-green);
+    outline-offset: 2px;
+  }
   h1,
   h2,
   h3 {
