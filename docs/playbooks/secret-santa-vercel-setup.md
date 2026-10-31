@@ -12,7 +12,7 @@ Vercel → проект → **Settings → Environment Variables** → **Add Env
 2. **Key**: имя переменной ровно как в таблице.
 3. **Value**: значение.
 4. **Note** можно оставить пустым.
-5. **Environments**: выбери **Production** и **Preview**.
+5. **Environments**: только **Production**. Не добавляй их в Preview: иначе тестовые сборки будут слать настоящие письма и работать с боевой базой.
 6. **Save**.
 
 | Переменная           | Type                           |
