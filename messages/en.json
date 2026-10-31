@@ -444,7 +444,9 @@
       "unnotifiedText": "The withdrawal is saved, but {count, plural, one {# account has} other {# accounts have}} not got the email about the change. Send it again or write to them on Telegram.",
       "retry": "Send again",
       "retrying": "Sending…",
-      "telegramHint": "Write on Telegram"
+      "telegramHint": "Write on Telegram",
+      "retryFailed": "Could not send. Please try again.",
+      "toList": "Back to the participants"
     },
     "backup": {
       "title": "Backup Santa needed",

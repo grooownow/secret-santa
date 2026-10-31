@@ -367,7 +367,7 @@
       "backupLink": "Ersatz-Wichtel gesucht",
       "collectUntil": "Bis {date} · Madrid",
       "beforeTitle": "Vor der Auslosung",
-      "beforeText": "Prüfen Sie die Bewohnerliste und entfernen Sie fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Profil teil.",
+      "beforeText": "Prüfe die Bewohnerliste und entferne fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Profil teil.",
       "giftsTitle": "Zeit der Geschenke",
       "revealTitle": "Santas aufgedeckt",
       "helpTitle": "Nachbarn brauchen Hilfe",
@@ -404,7 +404,7 @@
       "check": "Teilnehmende prüfen",
       "retry": "Noch einmal versuchen",
       "confirmReady": "Bereite Teilnehmende: {count}",
-      "confirmExcluded": "Unbestätigt und nicht in der Auslosung: {count}. Prüfen Sie die Liste vor dem Start.",
+      "confirmExcluded": "Unbestätigt und nicht in der Auslosung: {count}. Prüfe die Liste vor dem Start.",
       "confirmMail": "Teilnehmende erhalten eine E-Mail nur mit dem Link zum Bereich. Die Organisation sieht die Paare nicht."
     },
     "participants": {
@@ -444,7 +444,9 @@
       "unnotifiedText": "Der Ausstieg ist gespeichert, aber {count, plural, one {# Konto hat} other {# Konten haben}} die E-Mail über die Änderung nicht bekommen. Sende sie erneut oder schreibe per Telegram.",
       "retry": "Erneut senden",
       "retrying": "Wird gesendet…",
-      "telegramHint": "Per Telegram schreiben"
+      "telegramHint": "Per Telegram schreiben",
+      "retryFailed": "Senden hat nicht geklappt. Bitte versuche es noch einmal.",
+      "toList": "Zurück zu den Teilnehmenden"
     },
     "backup": {
       "title": "Ersatz-Santa gesucht",

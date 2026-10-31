@@ -24,10 +24,9 @@ export async function withdrawAction(id: unknown): Promise<WithdrawResult> {
   const parsed = idSchema.safeParse(id);
   if (!parsed.success) return { ok: false, reason: "notFound" };
   const result = await withdrawParticipant(parsed.data);
-  if (!result.ok || result.unnotified.length > 0) {
-    revalidatePath("/admin", "layout");
-    return result;
-  }
+  // No revalidation on this branch: a refresh would unmount the page that
+  // shows the unsent-mail warning. The organizer leaves through the notice.
+  if (!result.ok || result.unnotified.length > 0) return result;
   revalidatePath("/admin", "layout");
   redirect(ADMIN_PARTICIPANTS);
 }
@@ -44,10 +43,12 @@ const retrySchema = z.array(
  * "Отправить ещё раз": retries the mails that failed after a withdrawal.
  * Safe to repeat, the mail key is claimed first. Returns what still failed.
  */
-export async function retryNotify(items: unknown): Promise<Unnotified[]> {
+export async function retryNotify(
+  items: unknown,
+): Promise<{ ok: true; failed: Unnotified[] } | { ok: false }> {
   await requireOrganizer();
   const parsed = retrySchema.safeParse(items);
-  if (!parsed.success) return [];
+  if (!parsed.success) return { ok: false };
   const failed: Unnotified[] = [];
   for (const item of parsed.data) {
     try {
@@ -57,5 +58,5 @@ export async function retryNotify(items: unknown): Promise<Unnotified[]> {
       failed.push(item);
     }
   }
-  return failed;
+  return { ok: true, failed };
 }

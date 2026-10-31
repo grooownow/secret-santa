@@ -18,6 +18,7 @@ function RemoveButton({ id }: { id: string }) {
   const [error, setError] = useState(false);
   const [unnotified, setUnnotified] = useState<Unnotified[] | null>(null);
   const [pending, startTransition] = useTransition();
+  if (unnotified) return <UnnotifiedNotice items={unnotified} />;
   return (
     <div className="flex flex-col gap-1">
       <button
@@ -41,7 +42,6 @@ function RemoveButton({ id }: { id: string }) {
       >
         {t("remove")}
       </button>
-      {unnotified ? <UnnotifiedNotice items={unnotified} /> : null}
       {error ? (
         <p role="alert" className="text-santa-danger text-sm">
           {t("removeFailed")}

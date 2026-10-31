@@ -9,6 +9,7 @@ import {
   it,
   vi,
 } from "vitest";
+import { revalidatePath } from "next/cache";
 import { makeParticipant, makeUser } from "@/db/factories";
 import {
   assignments,
@@ -407,13 +408,37 @@ describe("withdrawParticipant", () => {
     });
   });
 
+  it("a withdrawal with an unsent mail returns the warning and does not refresh the page", async () => {
+    await asOrganizer();
+    const [a, d, r] = [
+      await person("1"),
+      await person("2"),
+      await person("3"),
+    ] as const;
+    await link([a.id, d.id, r.id]);
+    setMailTransportForTests(async () => {
+      throw new Error("smtp down");
+    });
+    vi.mocked(revalidatePath).mockClear();
+
+    const { withdrawAction } = await import("@/features/admin");
+    const result = await withdrawAction(d.id);
+    expect(result).toMatchObject({ ok: true, removed: 1 });
+    if (!result?.ok) throw new Error("unreachable");
+    expect(result.unnotified).toHaveLength(1);
+    expect(revalidatePath).not.toHaveBeenCalled();
+    setMailTransportForTests(async (m) => {
+      sent.push(m);
+    });
+  });
+
   it("the retry action is organizer-only and validates input", async () => {
     const a = await person("1");
     signInAsUser(a.user);
     const { retryNotify } = await import("@/features/admin");
     await expect(retryNotify([])).rejects.toThrow("NEXT_NOT_FOUND");
     await asOrganizer();
-    expect(await retryNotify("nonsense")).toEqual([]);
+    expect(await retryNotify("nonsense")).toEqual({ ok: false });
   });
 
   it("collect: removing an application is plain deletion", async () => {
