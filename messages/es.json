@@ -340,5 +340,51 @@
       "consent": "Hay que marcar el consentimiento.",
       "failed": "No se pudo guardar. Inténtalo de nuevo."
     }
+  },
+  "admin": {
+    "title": "Organización",
+    "signOut": "Salir",
+    "nav": {
+      "label": "Secciones de administración",
+      "overview": "Resumen",
+      "participants": "Vecinos",
+      "backup": "Ayuda",
+      "settings": "Fechas"
+    },
+    "overview": {
+      "collectTitle": "Recogida de inscripciones",
+      "participants": "Participantes",
+      "unverifiedLabel": "Sin confirmar",
+      "unverified": "{count} sin confirmar: quedan fuera del sorteo hasta que confirmen el correo.",
+      "check": "Revisar participantes",
+      "drawnTitle": "El sorteo está hecho",
+      "inChain": "En la cadena",
+      "daysTo": "Días hasta el {date}",
+      "giftsMarked": "Regalos marcados",
+      "drawMail": "Correo del sorteo",
+      "sentOf": "Enviados {sent} de {total}",
+      "participantsLink": "Participantes",
+      "backupLink": "Hace falta un Santa de reserva"
+    },
+    "draw": {
+      "start": "Hacer el sorteo",
+      "confirmTitle": "¿Hacer el sorteo?",
+      "confirmText": "La cadena se crea al instante, las inscripciones se cierran y todos reciben un correo. No se puede deshacer.",
+      "confirm": "Sí, hacerlo",
+      "running": "Haciendo el sorteo…",
+      "cancel": "Cancelar",
+      "errorTitle": "El sorteo no se ha hecho",
+      "notSaved": "No se ha guardado nada. Las inscripciones siguen abiertas y no se ha enviado ningún correo.",
+      "reason": {
+        "too_few": "El sorteo necesita al menos tres participantes.",
+        "household_too_large": "El piso {flat} tiene más de la mitad de los participantes, así que sus convivientes no podrían evitar regalarse entre sí.",
+        "already_drawn": "El sorteo ya se ha hecho.",
+        "closed": "El juego ha terminado.",
+        "failed": "No se pudo contactar con el servidor."
+      },
+      "resend": "Enviar los que faltan",
+      "resending": "Enviando…",
+      "resendFailed": "Algunos correos no salieron. Inténtalo de nuevo un poco más tarde."
+    }
   }
 }

@@ -340,5 +340,51 @@
       "consent": "Die Zustimmung muss angekreuzt werden.",
       "failed": "Speichern fehlgeschlagen. Bitte versuche es erneut."
     }
+  },
+  "admin": {
+    "title": "Organisation",
+    "signOut": "Abmelden",
+    "nav": {
+      "label": "Bereiche der Verwaltung",
+      "overview": "Übersicht",
+      "participants": "Bewohner",
+      "backup": "Hilfe",
+      "settings": "Termine"
+    },
+    "overview": {
+      "collectTitle": "Anmeldungen werden gesammelt",
+      "participants": "Teilnehmende",
+      "unverifiedLabel": "Unbestätigt",
+      "unverified": "{count} unbestätigt: Sie sind nicht in der Auslosung, bis sie ihre E-Mail bestätigen.",
+      "check": "Teilnehmende prüfen",
+      "drawnTitle": "Die Auslosung ist erfolgt",
+      "inChain": "In der Kette",
+      "daysTo": "Tage bis {date}",
+      "giftsMarked": "Geschenke markiert",
+      "drawMail": "E-Mail zur Auslosung",
+      "sentOf": "{sent} von {total} gesendet",
+      "participantsLink": "Teilnehmende",
+      "backupLink": "Ersatz-Wichtel gesucht"
+    },
+    "draw": {
+      "start": "Auslosung starten",
+      "confirmTitle": "Auslosung starten?",
+      "confirmText": "Die Kette wird sofort erstellt, die Anmeldung schließt und alle bekommen eine E-Mail. Das lässt sich nicht rückgängig machen.",
+      "confirm": "Ja, starten",
+      "running": "Wird gestartet…",
+      "cancel": "Abbrechen",
+      "errorTitle": "Die Auslosung hat nicht stattgefunden",
+      "notSaved": "Nichts wurde gespeichert. Die Anmeldung bleibt offen, es wurden keine E-Mails gesendet.",
+      "reason": {
+        "too_few": "Für die Auslosung braucht es mindestens drei Teilnehmende.",
+        "household_too_large": "In Wohnung {flat} wohnt mehr als die Hälfte aller Teilnehmenden, deshalb könnten Mitbewohnende einander nicht vermeiden.",
+        "already_drawn": "Die Auslosung wurde schon durchgeführt.",
+        "closed": "Das Spiel ist beendet.",
+        "failed": "Der Server ist nicht erreichbar."
+      },
+      "resend": "Rest senden",
+      "resending": "Wird gesendet…",
+      "resendFailed": "Einige E-Mails sind nicht rausgegangen. Bitte später noch einmal versuchen."
+    }
   }
 }

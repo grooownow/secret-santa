@@ -340,5 +340,51 @@
       "consent": "The consent must be ticked.",
       "failed": "Could not save. Please try again."
     }
+  },
+  "admin": {
+    "title": "Organiser",
+    "signOut": "Sign out",
+    "nav": {
+      "label": "Admin sections",
+      "overview": "Overview",
+      "participants": "Residents",
+      "backup": "Help",
+      "settings": "Dates"
+    },
+    "overview": {
+      "collectTitle": "Collecting entries",
+      "participants": "Participants",
+      "unverifiedLabel": "Not confirmed",
+      "unverified": "{count} not confirmed: they stay out of the draw until they confirm their email.",
+      "check": "Check participants",
+      "drawnTitle": "The draw is done",
+      "inChain": "In the chain",
+      "daysTo": "Days until {date}",
+      "giftsMarked": "Gifts marked",
+      "drawMail": "Draw email",
+      "sentOf": "Sent {sent} of {total}",
+      "participantsLink": "Participants",
+      "backupLink": "Backup Santa needed"
+    },
+    "draw": {
+      "start": "Run the draw",
+      "confirmTitle": "Run the draw?",
+      "confirmText": "The chain is made at once, registration closes and everyone gets an email. This cannot be undone.",
+      "confirm": "Yes, run it",
+      "running": "Running…",
+      "cancel": "Cancel",
+      "errorTitle": "The draw did not happen",
+      "notSaved": "Nothing was saved. Registration stays open and no emails were sent.",
+      "reason": {
+        "too_few": "The draw needs at least three participants.",
+        "household_too_large": "Flat {flat} has more than half of all participants, so flatmates could not avoid giving to each other.",
+        "already_drawn": "The draw has already been run.",
+        "closed": "The game is over.",
+        "failed": "Could not reach the server."
+      },
+      "resend": "Send the rest",
+      "resending": "Sending…",
+      "resendFailed": "Some emails did not go out. Please try again a little later."
+    }
   }
 }
