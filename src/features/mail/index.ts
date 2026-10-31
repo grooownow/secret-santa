@@ -1,4 +1,9 @@
-export { sendMail, sendOnce, setMailTransportForTests } from "./sender";
+export {
+  sendMail,
+  sendOnce,
+  setMailTransportForTests,
+  withMailSession,
+} from "./sender";
 export type { MailMessage } from "./sender";
 export { renderEmail, cabinetUrl, EMAIL_TYPES } from "./templates";
 export type { EmailData, EmailType, RenderedEmail } from "./templates";

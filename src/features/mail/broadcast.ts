@@ -5,7 +5,7 @@ import { assignments, participants, sentEmails, users } from "@/db/schema";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/locale";
 import { getSettings } from "@/lib/game-settings";
 import { logger } from "@/lib/logger";
-import { sendOnce } from "./sender";
+import { sendOnce, withMailSession } from "./sender";
 import { renderEmail, type EmailType } from "./templates";
 
 export type BroadcastEvent = "draw" | "gifts-open" | "reminder" | "reveal";
@@ -96,28 +96,31 @@ export async function runBroadcast(
   const { giftsEndOn, revealOn } = await getSettings();
   let sent = 0;
   let failed = 0;
-  // Sequential on purpose: Gmail is rate limited and one failure must not
-  // stop the rest.
-  for (const r of recipients) {
-    try {
-      const rendered = renderEmail(EMAIL_FOR_EVENT[event], r.locale, {
-        names: r.names,
-        dates: { giftsEndOn, revealOn },
-      });
-      if (
-        await sendOnce(keyFor(event, r.userId), { to: r.email, ...rendered })
-      ) {
-        sent += 1;
+  // One Gmail connection for the whole run (see withMailSession).
+  await withMailSession(async () => {
+    // Sequential on purpose: Gmail is rate limited and one failure must not
+    // stop the rest.
+    for (const r of recipients) {
+      try {
+        const rendered = renderEmail(EMAIL_FOR_EVENT[event], r.locale, {
+          names: r.names,
+          dates: { giftsEndOn, revealOn },
+        });
+        if (
+          await sendOnce(keyFor(event, r.userId), { to: r.email, ...rendered })
+        ) {
+          sent += 1;
+        }
+      } catch (error) {
+        failed += 1;
+        // Never log the address or the pairing, only the account id.
+        logger.error(
+          { err: error, event, userId: r.userId },
+          "broadcast send failed",
+        );
       }
-    } catch (error) {
-      failed += 1;
-      // Never log the address or the pairing, only the account id.
-      logger.error(
-        { err: error, event, userId: r.userId },
-        "broadcast send failed",
-      );
     }
-  }
+  });
   return { total: recipients.length, sent, failed };
 }
 

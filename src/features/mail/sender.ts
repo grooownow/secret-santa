@@ -1,6 +1,7 @@
 import "server-only";
+import { AsyncLocalStorage } from "node:async_hooks";
 import { appendFile } from "node:fs/promises";
-import { createTransport } from "nodemailer";
+import { createTransport, type Transporter } from "nodemailer";
 import { getDb } from "@/db/client";
 import { sentEmails } from "@/db/schema";
 import { env } from "@/lib/env";
@@ -23,12 +24,53 @@ export function setMailTransportForTests(fn: Transport | null): void {
   override = fn;
 }
 
-// No `pool`: serverless functions do not keep connections between invocations.
-function gmailTransport(user: string, pass: string): Transport {
-  const transporter = createTransport({
+/**
+ * Without these a hung Gmail connection waits for nodemailer's defaults
+ * (socket: 10 minutes) and eats the whole function budget (300 s).
+ */
+export const SMTP_TIMEOUTS = {
+  connectionTimeout: 15_000,
+  greetingTimeout: 15_000,
+  socketTimeout: 30_000,
+} as const;
+
+function gmailTransporter(user: string, pass: string, pool: boolean) {
+  return createTransport({
     service: "gmail",
     auth: { user, pass },
+    ...SMTP_TIMEOUTS,
+    // A pool only inside one mail session (one invocation); never kept
+    // between serverless invocations.
+    ...(pool ? { pool: true, maxConnections: 1 } : {}),
   });
+}
+
+/** The pooled transporter of the running mail session, if any. */
+const session = new AsyncLocalStorage<{ transporter?: Transporter }>();
+
+/**
+ * Runs `work` with one Gmail connection reused for every mail it sends
+ * (one TLS + login instead of one per mail), and closes it at the end. Used
+ * by broadcasts, so 70 mails stay well inside the function's time limit.
+ */
+export async function withMailSession<T>(work: () => Promise<T>): Promise<T> {
+  const state: { transporter?: Transporter } = {};
+  try {
+    return await session.run(state, work);
+  } finally {
+    state.transporter?.close();
+  }
+}
+
+function gmailTransport(user: string, pass: string): Transport {
+  const state = session.getStore();
+  let transporter: Transporter;
+  if (state) {
+    state.transporter ??= gmailTransporter(user, pass, true);
+    transporter = state.transporter;
+  } else {
+    transporter = gmailTransporter(user, pass, false);
+  }
   return async (message) => {
     await transporter.sendMail({
       from: `Secret Santa <${user}>`,

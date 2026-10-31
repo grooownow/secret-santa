@@ -22,7 +22,12 @@ vi.mock("@/lib/logger", () => ({
 vi.mock("@/db/client", () => ({ getDb: () => ({}) }));
 vi.mock("nodemailer", () => ({ createTransport: mocks.createTransport }));
 
-import { sendMail, setMailTransportForTests } from "./sender";
+import {
+  sendMail,
+  setMailTransportForTests,
+  SMTP_TIMEOUTS,
+  withMailSession,
+} from "./sender";
 
 const message = { to: "a@b.dev", subject: "S", text: "T", html: "<p>T</p>" };
 
@@ -76,10 +81,44 @@ describe("sendMail", () => {
     expect(options).toMatchObject({
       service: "gmail",
       auth: { user: "santa@gmail.com", pass: "app-pass" },
+      connectionTimeout: SMTP_TIMEOUTS.connectionTimeout,
+      greetingTimeout: SMTP_TIMEOUTS.greetingTimeout,
+      socketTimeout: SMTP_TIMEOUTS.socketTimeout,
     });
+    expect(SMTP_TIMEOUTS.socketTimeout).toBeLessThanOrEqual(60_000);
     expect(options).not.toHaveProperty("pool");
     expect(mocks.sendMail).toHaveBeenCalledWith(
       expect.objectContaining({ to: "a@b.dev", subject: "S" }),
     );
+  });
+
+  describe("withMailSession", () => {
+    it("reuses one pooled Gmail connection for the run and closes it", async () => {
+      mocks.env.GMAIL_USER = "santa@gmail.com";
+      mocks.env.GMAIL_APP_PASSWORD = "app-pass";
+      const close = vi.fn();
+      mocks.createTransport.mockReturnValue({
+        sendMail: mocks.sendMail,
+        close,
+      });
+      await withMailSession(async () => {
+        for (const to of ["a@b.dev", "c@d.dev", "e@f.dev"]) {
+          // oxlint-disable-next-line no-await-in-loop
+          await sendMail({ ...message, to });
+        }
+        expect(close).not.toHaveBeenCalled();
+      });
+      expect(mocks.createTransport).toHaveBeenCalledTimes(1);
+      expect(mocks.createTransport.mock.calls[0]?.[0]).toMatchObject({
+        pool: true,
+        maxConnections: 1,
+      });
+      expect(mocks.sendMail).toHaveBeenCalledTimes(3);
+      expect(close).toHaveBeenCalledTimes(1);
+
+      // Outside a session every mail opens its own, unpooled transport.
+      await sendMail(message);
+      expect(mocks.createTransport).toHaveBeenCalledTimes(2);
+    });
   });
 });
