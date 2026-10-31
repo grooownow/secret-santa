@@ -6,6 +6,7 @@ import { isLocale } from "@/i18n/locale";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
 import { runAfterResponse } from "@/lib/run-after-response";
+import { takeAccountMailQuota } from "./mail-quota";
 import {
   issueToken,
   latestPendingRegistration,
@@ -25,6 +26,10 @@ async function issueAndSend(
   path: string,
   pending?: PendingRegistration,
 ): Promise<void> {
+  if (!(await takeAccountMailQuota())) {
+    logger.warn({ type }, "account mail skipped: daily cap reached");
+    return;
+  }
   const token = await issueToken(user.id, type, pending);
   const mail = renderEmail(type, isLocale(user.locale) ? user.locale : "en", {
     url: link(path, token),

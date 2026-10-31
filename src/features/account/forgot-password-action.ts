@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
-import { underFormLimit } from "./cooldown";
+import { claimResetSlot, underFormLimit, underIpLimit } from "./cooldown";
 import { emailSchema } from "./schemas";
 import { queueResetEmail } from "./send-token-mail";
 
@@ -29,7 +29,11 @@ export async function forgotPasswordAction(
   if (!parsed.success) return { status: "invalid", email: echo };
   const { email } = parsed.data;
 
-  if (!underFormLimit("forgot", email)) return { status: "rate", email };
+  if (!underFormLimit("forgot", email) || !(await underIpLimit("forgot"))) {
+    return { status: "rate", email };
+  }
+  // One reset mail per address per 60 seconds; a repeat answers the same.
+  if (claimResetSlot(email) > 0) return { status: "sent", email };
 
   const [user] = await getDb()
     .select({ id: users.id, email: users.email, locale: users.locale })

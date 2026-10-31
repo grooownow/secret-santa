@@ -8,7 +8,7 @@ import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
 import { getSettings, registrationOpen } from "@/features/game";
 import { hashPassword } from "@/lib/password";
-import { claimVerifySlot, underFormLimit } from "./cooldown";
+import { claimVerifySlot, underFormLimit, underIpLimit } from "./cooldown";
 import { setLocaleCookie } from "./locale-cookie";
 import {
   checkedSchema,
@@ -75,7 +75,9 @@ export async function registerAction(
   }
   const { email, password, locale } = parsed.data;
 
-  if (!underFormLimit("register", email)) return { error: "rate", ...echo };
+  if (!underFormLimit("register", email) || !(await underIpLimit("register"))) {
+    return { error: "rate", ...echo };
+  }
   if (!registrationOpen(new Date(), await getSettings())) {
     return { error: "closed", ...echo };
   }
@@ -91,10 +93,14 @@ export async function registerAction(
   // The password and consent are NOT written to the user row. They travel
   // with the verify token and are applied when that token is used, so the
   // owner of the mailbox, not whoever registered first, decides the password.
-  // A later registration of an unverified address replaces the earlier token.
   // The browser nonce is set for every branch, so the response is the same.
   const nonce = await startRegistrationNonce();
-  if (!existing?.emailVerified) {
+  // One verification mail per address per 60 seconds, shared with "send
+  // again" on /check-email. A repeat within that time sends nothing and
+  // answers the same; after it, "send again" or a new registration works,
+  // and the newest registration replaces the earlier token.
+  const slotFree = claimVerifySlot(email) === 0;
+  if (slotFree && !existing?.emailVerified) {
     queueRegistration(email, existing?.id ?? null, {
       nonceHash: hashNonce(nonce),
       passwordHash,
@@ -103,9 +109,6 @@ export async function registerAction(
       consentAt: new Date(),
     });
   }
-  // Starts the 60 second "send again" countdown shown on /check-email. Not a
-  // gate here: a second registrant must still get their own link.
-  claimVerifySlot(email);
 
   await setLocaleCookie(locale);
   redirect(`/check-email?email=${encodeURIComponent(email)}` as Route);

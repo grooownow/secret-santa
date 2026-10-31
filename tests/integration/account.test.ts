@@ -11,7 +11,7 @@ import {
   it,
   vi,
 } from "vitest";
-import { accounts, authTokens, settings, users } from "@/db/schema";
+import { accounts, authTokens, sentEmails, settings, users } from "@/db/schema";
 import { makeUser } from "@/db/factories";
 import { setMailTransportForTests, type MailMessage } from "@/features/mail";
 import { setRunAfterResponseForTests } from "@/lib/run-after-response";
@@ -26,6 +26,7 @@ const cookieStore = new Map<string, string>();
 const cookieSet = vi.fn((name: string, value: string) => {
   cookieStore.set(name, value);
 });
+let requestHeaders = new Headers({ "accept-language": "es" });
 const authMock = vi.fn();
 const signInMock = vi.fn();
 
@@ -36,7 +37,7 @@ vi.mock("next/headers", () => ({
     get: (name: string) =>
       cookieStore.has(name) ? { value: cookieStore.get(name) } : undefined,
   }),
-  headers: async () => new Headers({ "accept-language": "es" }),
+  headers: async () => requestHeaders,
 }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/auth", () => ({
@@ -77,6 +78,8 @@ beforeEach(async () => {
   authMock.mockReset();
   signInMock.mockReset();
   resetRateLimitStoreForTests();
+  requestHeaders = new Headers({ "accept-language": "es" });
+  await db.delete(sentEmails);
   await db.delete(authTokens);
   await db.delete(accounts);
   await db.delete(users);
@@ -262,11 +265,15 @@ describe("registration", () => {
   it("owner registers, attacker re-registers, owner clicks the newest link in their own browser: the attacker's password is not applied", async () => {
     const owner = new Map<string, string>();
     const attacker = new Map<string, string>();
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-12-01T12:00:00+01:00"));
     await inBrowser(owner, () =>
       redirectTarget(() =>
         register({ ...validRegistration, password: "owner-password" }),
       ),
     );
+    // After the 60 second slot, a new registration mails again.
+    vi.setSystemTime(new Date("2026-12-01T12:01:01+01:00"));
     await inBrowser(attacker, () =>
       redirectTarget(() =>
         register({ ...validRegistration, password: "attacker-password" }),
@@ -456,6 +463,82 @@ describe("registration", () => {
     await redirectTarget(() => register());
     await flush();
     expect(await allUsers()).toHaveLength(1);
+  });
+
+  it("two registrations of one address within 60 seconds send one mail, and the first link still applies the password", async () => {
+    await redirectTarget(() =>
+      register({ ...validRegistration, password: "owner-password" }),
+    );
+    const again = await redirectTarget(() =>
+      register({ ...validRegistration, password: "attacker-password" }),
+    );
+    await flush();
+    expect(again).toBe("/check-email?email=neighbour%40example.com");
+    expect(sent).toHaveLength(1);
+    expect(await verifyResult(tokenFrom(sent[0]))).toEqual({
+      status: "verified",
+    });
+    const row = await userByEmail("neighbour@example.com");
+    expect(
+      await verifyPassword("owner-password", row?.passwordHash ?? ""),
+    ).toBe(true);
+  });
+
+  it("the 6th registration from one IP within a minute is refused and sends nothing", async () => {
+    requestHeaders = new Headers({ "x-real-ip": "203.0.113.7" });
+    for (let i = 0; i < 5; i++) {
+      // oxlint-disable-next-line no-await-in-loop
+      await redirectTarget(() =>
+        register({ ...validRegistration, email: `n${i}@example.com` }),
+      );
+    }
+    await flush();
+    expect(sent).toHaveLength(5);
+    const state = await register({
+      ...validRegistration,
+      email: "n5@example.com",
+    });
+    await flush();
+    expect(state.error).toBe("rate");
+    expect(sent).toHaveLength(5);
+    // Another IP is not affected.
+    requestHeaders = new Headers({ "x-real-ip": "203.0.113.8" });
+    await redirectTarget(() =>
+      register({ ...validRegistration, email: "n6@example.com" }),
+    );
+    await flush();
+    expect(sent).toHaveLength(6);
+  });
+
+  it("stops account mails for the day once the daily cap is reached", async () => {
+    const { ACCOUNT_MAIL_DAILY_CAP } =
+      await import("@/features/account/mail-quota");
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-12-01T12:00:00+01:00"));
+    await db.insert(sentEmails).values(
+      Array.from({ length: ACCOUNT_MAIL_DAILY_CAP - 1 }, (_, i) => ({
+        key: `account-mail:2026-12-01:seed-${i}`,
+        sentAt: new Date(),
+      })),
+    );
+    await redirectTarget(() =>
+      register({ ...validRegistration, email: "last@example.com" }),
+    );
+    await flush();
+    expect(sent).toHaveLength(1);
+    const target = await redirectTarget(() =>
+      register({ ...validRegistration, email: "over@example.com" }),
+    );
+    await flush();
+    expect(target).toBe("/check-email?email=over%40example.com");
+    expect(sent).toHaveLength(1);
+    // A new Madrid day has a fresh quota.
+    vi.setSystemTime(new Date("2026-12-02T00:05:00+01:00"));
+    await redirectTarget(() =>
+      register({ ...validRegistration, email: "next@example.com" }),
+    );
+    await flush();
+    expect(sent).toHaveLength(2);
   });
 
   it("limits registration to 5 per minute per email", async () => {
@@ -905,6 +988,46 @@ describe("password reset", () => {
 
     expect(known).toEqual({ status: "sent", email: "r@example.com" });
     expect(unknown).toEqual({ status: "sent", email: "nobody@example.com" });
+  });
+
+  it("forgot password sends one mail per address per 60 seconds and answers the same", async () => {
+    const { forgotPasswordAction } =
+      await import("@/features/account/forgot-password-action");
+    await userWithPassword();
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-12-01T12:00:00+01:00"));
+    const first = await forgotPasswordAction(
+      {},
+      form({ email: "r@example.com" }),
+    );
+    const second = await forgotPasswordAction(
+      {},
+      form({ email: "r@example.com" }),
+    );
+    await flush();
+    expect(second).toEqual(first);
+    expect(sent).toHaveLength(1);
+    vi.setSystemTime(new Date("2026-12-01T12:01:01+01:00"));
+    await forgotPasswordAction({}, form({ email: "r@example.com" }));
+    await flush();
+    expect(sent).toHaveLength(2);
+  });
+
+  it("limits forgot password to 5 per minute per IP", async () => {
+    const { forgotPasswordAction } =
+      await import("@/features/account/forgot-password-action");
+    requestHeaders = new Headers({
+      "x-forwarded-for": "198.51.100.4, 10.0.0.1",
+    });
+    for (let i = 0; i < 5; i++) {
+      // oxlint-disable-next-line no-await-in-loop
+      await forgotPasswordAction({}, form({ email: `f${i}@example.com` }));
+    }
+    const sixth = await forgotPasswordAction(
+      {},
+      form({ email: "f5@example.com" }),
+    );
+    expect(sixth.status).toBe("rate");
   });
 
   it("limits forgot password to 5 per minute per email", async () => {

@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
-import { claimVerifySlot, RESEND_SECONDS } from "./cooldown";
+import { claimVerifySlot, RESEND_SECONDS, underIpLimit } from "./cooldown";
 import { emailSchema } from "./schemas";
 import { readRegistrationNonce } from "./registration-nonce";
 import { queueVerifyEmail } from "./send-token-mail";
@@ -34,6 +34,9 @@ export async function resendVerificationAction(
   }
   const { email } = parsed.data;
 
+  if (!(await underIpLimit("resend"))) {
+    return { status: "wait", retryAfter: RESEND_SECONDS, email };
+  }
   const wait = claimVerifySlot(email);
   if (wait > 0) return { status: "wait", retryAfter: wait, email };
 

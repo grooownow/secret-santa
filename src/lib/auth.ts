@@ -8,7 +8,10 @@ import { getDb } from "@/db/client";
 import { accounts, users } from "@/db/schema";
 import { verifyPassword } from "@/lib/password";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "./client-ip";
 import { authConfig } from "./auth.config";
+
+export { clientIp } from "./client-ip";
 import {
   currentSessionVersion,
   onGoogleUserCreated,
@@ -44,20 +47,6 @@ export const DUMMY_PASSWORD_HASH =
 
 const EMAIL_ATTEMPTS_PER_MINUTE = 10;
 const IP_ATTEMPTS_PER_MINUTE = 30;
-
-/**
- * The caller's IP, or null when the request carries none. `x-real-ip` is set
- * by the platform (Vercel sets it and overwrites client values); the first
- * `x-forwarded-for` entry is the fallback. With no IP the per-IP bucket is
- * skipped rather than shared, so one anonymous request cannot lock out all
- * the others; the per-email limit still applies.
- */
-export function clientIp(request: Request | undefined): string | null {
-  const real = request?.headers.get("x-real-ip")?.trim();
-  if (real) return real;
-  const forwarded = request?.headers.get("x-forwarded-for");
-  return forwarded?.split(",")[0]?.trim() || null;
-}
 
 /**
  * Credentials authorize logic, exported for unit testing. Returns the user

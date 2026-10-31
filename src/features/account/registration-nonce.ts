@@ -11,10 +11,17 @@ const SEVEN_DAYS_SECONDS = 7 * 24 * 60 * 60;
  * registration is applied only when the link is opened in a browser holding
  * the same value, so someone who registers another person's address cannot
  * make that person's click set the attacker's password.
+ *
+ * A browser that already holds a nonce keeps it, so submitting the form twice
+ * (the second time sends no new mail, see `claimVerifySlot`) does not orphan
+ * the link from the first submission.
  */
 export async function startRegistrationNonce(): Promise<string> {
-  const nonce = randomBytes(32).toString("base64url");
-  (await cookies()).set(REGISTRATION_NONCE_COOKIE, nonce, {
+  const store = await cookies();
+  const nonce =
+    store.get(REGISTRATION_NONCE_COOKIE)?.value ??
+    randomBytes(32).toString("base64url");
+  store.set(REGISTRATION_NONCE_COOKIE, nonce, {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
     sameSite: "lax",
