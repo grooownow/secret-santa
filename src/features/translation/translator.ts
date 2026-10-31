@@ -23,7 +23,7 @@ const disabled: Translator = { translate: async () => ({}) };
 
 /** True when a real or fake translator will actually produce translations. */
 export function translationEnabled(): boolean {
-  if (override) return true;
+  if (override || env.NODE_ENV === "test") return true;
   return Boolean(env.GROQ_API_KEY) || env.NODE_ENV !== "production";
 }
 
@@ -34,6 +34,8 @@ export function translationEnabled(): boolean {
  */
 export function getTranslator(): Translator {
   if (override) return override;
+  // Tests never reach Groq, whatever the environment holds.
+  if (env.NODE_ENV === "test") return createFakeTranslator();
   if (env.GROQ_API_KEY) {
     return createGroqTranslator(env.GROQ_API_KEY, env.GROQ_MODEL);
   }

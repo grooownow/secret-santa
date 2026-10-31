@@ -4,6 +4,7 @@ export {
   deleteAllTranslations,
   deleteTranslations,
   getLocalized,
+  type LocalizedSource,
   participantKey,
   participantKeys,
   postKey,

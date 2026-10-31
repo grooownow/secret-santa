@@ -1,7 +1,13 @@
 import { createHash } from "node:crypto";
 import { and, eq, inArray, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { participants, translations, users, wallPosts } from "@/db/schema";
+import {
+  participants,
+  translationAttempts,
+  translations,
+  users,
+  wallPosts,
+} from "@/db/schema";
 import { LOCALES, isLocale, type Locale } from "@/i18n/locale";
 import { logger } from "@/lib/logger";
 import { runAfterResponse } from "@/lib/run-after-response";
@@ -9,6 +15,9 @@ import { getTranslator, translationEnabled } from "./translator";
 
 /** At most this many sources are retried per daily run. */
 export const RETRY_LIMIT = 40;
+/** The daily job is shared: stop well before the function limit. */
+export const RETRY_BUDGET_MS = 40_000;
+const MAX_CONSECUTIVE_FAILURES = 3;
 
 export type TextField = "wishes" | "avoid";
 
@@ -167,41 +176,63 @@ export async function scheduleTranslation(
   });
 }
 
+export interface LocalizedSource {
+  key: string;
+  /** The current original text; a translation of any other text is ignored. */
+  original: string;
+}
+
 /**
- * Translations into `locale` for many sources in one query. A key without a
- * translation maps to `null`. Stale translations are removed when the text is
- * saved, so rows found here match the current original.
+ * Translations into `locale` for many sources in one query. A key maps to
+ * `null` when there is no translation of the *current* original: a row whose
+ * hash differs from the original's is stale and counts as missing.
  */
 export async function getLocalized(
-  sourceKeys: string[],
+  sources: LocalizedSource[],
   locale: Locale,
 ): Promise<Map<string, string | null>> {
-  const out = new Map<string, string | null>(sourceKeys.map((k) => [k, null]));
-  if (sourceKeys.length === 0) return out;
+  const out = new Map<string, string | null>(sources.map((s) => [s.key, null]));
+  if (sources.length === 0) return out;
+  const hashes = new Map(
+    sources.map((s) => [s.key, hashOf(s.original.trim())]),
+  );
   const rows = await getDb()
-    .select({ sourceKey: translations.sourceKey, text: translations.text })
+    .select({
+      sourceKey: translations.sourceKey,
+      text: translations.text,
+      sourceHash: translations.sourceHash,
+    })
     .from(translations)
     .where(
       and(
-        inArray(translations.sourceKey, sourceKeys),
+        inArray(translations.sourceKey, [...hashes.keys()]),
         eq(translations.locale, locale),
       ),
     );
-  for (const row of rows) out.set(row.sourceKey, row.text);
+  for (const row of rows) {
+    if (hashes.get(row.sourceKey) === row.sourceHash) {
+      out.set(row.sourceKey, row.text);
+    }
+  }
   return out;
 }
 
 /** Deletes all translations of the given sources (participant or post removed). */
 export async function deleteTranslations(sourceKeys: string[]): Promise<void> {
   if (sourceKeys.length === 0) return;
-  await getDb()
+  const db = getDb();
+  await db
     .delete(translations)
     .where(inArray(translations.sourceKey, sourceKeys));
+  await db
+    .delete(translationAttempts)
+    .where(inArray(translationAttempts.sourceKey, sourceKeys));
 }
 
 /** Deletes every translation (the January 10 purge). */
 export async function deleteAllTranslations(): Promise<void> {
   await getDb().delete(translations);
+  await getDb().delete(translationAttempts);
 }
 
 interface Source {
@@ -251,12 +282,14 @@ async function listSources(): Promise<Source[]> {
  */
 export async function retryMissingTranslations(
   limit: number = RETRY_LIMIT,
+  budgetMs: number = RETRY_BUDGET_MS,
 ): Promise<{ done: number; failed: number }> {
   if (!translationEnabled()) return { done: 0, failed: 0 };
+  const db = getDb();
   const sources = await listSources();
   if (sources.length === 0) return { done: 0, failed: 0 };
 
-  const existing = await getDb()
+  const existing = await db
     .select({
       sourceKey: translations.sourceKey,
       locale: translations.locale,
@@ -276,24 +309,61 @@ export async function retryMissingTranslations(
     valid.set(row.sourceKey, set);
   }
 
-  const pending = sources
-    .filter((s) => {
-      const hash = hashOf(s.text.trim());
-      const have = valid.get(s.key);
-      return LOCALES.some((l) => l !== s.locale && !have?.has(`${l}:${hash}`));
-    })
+  const missing = sources.filter((s) => {
+    const hash = hashOf(s.text.trim());
+    const have = valid.get(s.key);
+    return LOCALES.some((l) => l !== s.locale && !have?.has(`${l}:${hash}`));
+  });
+  if (missing.length === 0) return { done: 0, failed: 0 };
+
+  // Never-tried sources first, then the least recently failed.
+  const tried = new Map(
+    (
+      await db
+        .select()
+        .from(translationAttempts)
+        .where(
+          inArray(
+            translationAttempts.sourceKey,
+            missing.map((s) => s.key),
+          ),
+        )
+    ).map((r) => [r.sourceKey, r.lastAttemptAt.getTime()]),
+  );
+  const pending = missing
+    .toSorted((a, b) => (tried.get(a.key) ?? 0) - (tried.get(b.key) ?? 0))
     .slice(0, limit);
 
+  const deadline = Date.now() + budgetMs;
   let done = 0;
   let failed = 0;
+  let streak = 0;
   for (const source of pending) {
+    if (Date.now() >= deadline || streak >= MAX_CONSECUTIVE_FAILURES) break;
     try {
       // oxlint-disable-next-line no-await-in-loop
       await translateAndStore(source.key, source.text, source.locale);
       done += 1;
+      streak = 0;
+      // oxlint-disable-next-line no-await-in-loop
+      await db
+        .delete(translationAttempts)
+        .where(eq(translationAttempts.sourceKey, source.key));
     } catch (error) {
       failed += 1;
+      streak += 1;
       logger.warn({ err: error, sourceKey: source.key }, "retry failed");
+      // oxlint-disable-next-line no-await-in-loop
+      await db
+        .insert(translationAttempts)
+        .values({ sourceKey: source.key })
+        .onConflictDoUpdate({
+          target: translationAttempts.sourceKey,
+          set: {
+            attempts: sql`${translationAttempts.attempts} + 1`,
+            lastAttemptAt: new Date(),
+          },
+        });
     }
   }
   return { done, failed };

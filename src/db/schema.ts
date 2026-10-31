@@ -207,3 +207,13 @@ export const translations = pgTable(
     primaryKey({ columns: [translation.sourceKey, translation.locale] }),
   ],
 );
+
+// Failed translation attempts, so the daily retry puts recently failed
+// sources last and one poisonous text cannot starve the others.
+export const translationAttempts = pgTable("translation_attempts", {
+  sourceKey: text("source_key").primaryKey(),
+  attempts: integer("attempts").notNull().default(1),
+  lastAttemptAt: timestamp("last_attempt_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});

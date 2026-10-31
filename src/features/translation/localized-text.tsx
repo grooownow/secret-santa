@@ -1,5 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import { TranslateLink } from "@/features/game";
+import { TranslateLink } from "@/components/translate-link";
 import { isLocale, type Locale } from "@/i18n/locale";
 import { TranslationToggle } from "./translation-toggle";
 

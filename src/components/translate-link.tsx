@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { isLocale } from "@/i18n/locale";
-import { translateUrl } from "./translate-url";
+import { translateUrl } from "@/lib/translate-url";
 
 /**
  * Fallback when auto-translation failed: opens Google Translate with the

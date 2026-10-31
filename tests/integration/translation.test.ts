@@ -10,7 +10,13 @@ import {
   vi,
 } from "vitest";
 import { makeParticipant, makeUser } from "@/db/factories";
-import { participants, translations, users, wallPosts } from "@/db/schema";
+import {
+  participants,
+  translationAttempts,
+  translations,
+  users,
+  wallPosts,
+} from "@/db/schema";
 import {
   deleteAllTranslations,
   getLocalized,
@@ -72,6 +78,7 @@ beforeEach(async () => {
   setTranslatorForTests(translator);
   authMock.mockReset();
   await db.delete(translations);
+  await db.delete(translationAttempts);
   await db.delete(wallPosts);
   await db.delete(participants);
   await db.delete(users);
@@ -140,7 +147,10 @@ describe("auto-translation", () => {
     await saveAdult();
     const p = await ownParticipant(user.id);
 
-    const map = await getLocalized([`participant:${p.id}:wishes`], "de");
+    const map = await getLocalized(
+      [{ key: `participant:${p.id}:wishes`, original: "books" }],
+      "de",
+    );
     expect(map.get(`participant:${p.id}:wishes`)).toBe("[de] books");
     const rows = await db
       .select()
@@ -155,7 +165,10 @@ describe("auto-translation", () => {
     const user = await signedInUser("ru");
     await saveAdult();
     const p = await ownParticipant(user.id);
-    const map = await getLocalized([`participant:${p.id}:wishes`], "ru");
+    const map = await getLocalized(
+      [{ key: `participant:${p.id}:wishes`, original: "books" }],
+      "ru",
+    );
     expect(map.get(`participant:${p.id}:wishes`)).toBeNull();
   });
 
@@ -165,7 +178,10 @@ describe("auto-translation", () => {
     const p = await ownParticipant(user.id);
     await saveAdult({ wishes: "tea" });
 
-    const map = await getLocalized([`participant:${p.id}:wishes`], "en");
+    const map = await getLocalized(
+      [{ key: `participant:${p.id}:wishes`, original: "tea" }],
+      "en",
+    );
     expect(map.get(`participant:${p.id}:wishes`)).toBe("[en] tea");
     // the unchanged field was not translated again
     expect(calls.filter((c) => c.text === "nuts")).toHaveLength(1);
@@ -176,7 +192,10 @@ describe("auto-translation", () => {
     await saveAdult();
     const p = await ownParticipant(user.id);
     await saveAdult({ wishes: "" });
-    const map = await getLocalized([`participant:${p.id}:wishes`], "en");
+    const map = await getLocalized(
+      [{ key: `participant:${p.id}:wishes`, original: "" }],
+      "en",
+    );
     expect(map.get(`participant:${p.id}:wishes`)).toBeNull();
   });
 
@@ -186,7 +205,10 @@ describe("auto-translation", () => {
     await saveAdult();
     const p = await ownParticipant(user.id);
     expect(p.wishes).toBe("books");
-    const map = await getLocalized([`participant:${p.id}:wishes`], "en");
+    const map = await getLocalized(
+      [{ key: `participant:${p.id}:wishes`, original: "books" }],
+      "en",
+    );
     expect(map.get(`participant:${p.id}:wishes`)).toBeNull();
   });
 
@@ -200,7 +222,9 @@ describe("auto-translation", () => {
 
     expect(await retryMissingTranslations()).toEqual({ done: 2, failed: 0 });
     const key = `participant:${p.id}:wishes`;
-    expect((await getLocalized([key], "es")).get(key)).toBe("[es] books");
+    expect(
+      (await getLocalized([{ key: key, original: "books" }], "es")).get(key),
+    ).toBe("[es] books");
     const callsAfterFirst = calls.length;
 
     expect(await retryMissingTranslations()).toEqual({ done: 0, failed: 0 });
@@ -237,7 +261,10 @@ describe("auto-translation", () => {
     expect(calls).toHaveLength(1);
     expect(calls[0]?.text).toBe("Happy holidays");
     expect(calls[0]?.to.sort()).toEqual(["de", "en", "es", "ru"]);
-    const map = await getLocalized([`post:${post?.id}`], "ru");
+    const map = await getLocalized(
+      [{ key: `post:${post?.id}`, original: "Happy holidays" }],
+      "ru",
+    );
     expect(map.get(`post:${post?.id}`)).toBe("[ru] Happy holidays");
   });
 
@@ -268,7 +295,9 @@ describe("auto-translation", () => {
     });
     await db.delete(translations);
     await translateAndStore(key, "books", "ru");
-    expect((await getLocalized([key], "en")).get(key)).toBeNull();
+    expect(
+      (await getLocalized([{ key: key, original: "books" }], "en")).get(key),
+    ).toBeNull();
   });
 
   it("deleting a participant removes their translations", async () => {
@@ -286,6 +315,67 @@ describe("auto-translation", () => {
       await import("@/features/profile/delete-participant-action");
     await deleteParticipantAction({}, form({ id: p.id })).catch(() => {});
     expect(await db.select().from(translations)).toHaveLength(0);
+  });
+
+  it("a translation of an older text is never shown", async () => {
+    const user = await signedInUser("ru");
+    await saveAdult();
+    const p = await ownParticipant(user.id);
+    const key = `participant:${p.id}:wishes`;
+    // The stored row belongs to "books"; the text has since become "tea".
+    const stale = { key, original: "tea" };
+    expect((await getLocalized([stale], "en")).get(key)).toBeNull();
+    expect(
+      (await getLocalized([{ key, original: "books" }], "en")).get(key),
+    ).toBe("[en] books");
+  });
+
+  it("retry puts recently failed sources last and honours the time budget", async () => {
+    const user = await signedInUser("en");
+    await db.insert(participants).values(
+      ["a", "b", "c"].map((n) =>
+        makeParticipant(user.id, {
+          kind: "child",
+          name: n,
+          wishes: `w-${n}`,
+        }),
+      ),
+    );
+    // "w-a" always fails; it must not block the others on the next run.
+    const bad: Translator = {
+      async translate(text, _f, to) {
+        if (text === "w-a") throw new Error("poison");
+        return Object.fromEntries(to.map((l) => [l, `[${l}] ${text}`]));
+      },
+    };
+    setTranslatorForTests(bad);
+    expect(await retryMissingTranslations(10)).toEqual({ done: 2, failed: 1 });
+    expect(await retryMissingTranslations(1)).toEqual({ done: 0, failed: 1 });
+
+    // A slow translator exhausts a tiny budget after the first item.
+    setTranslatorForTests({
+      async translate(text, _f, to) {
+        await new Promise((r) => setTimeout(r, 30));
+        return Object.fromEntries(to.map((l) => [l, `[${l}] ${text}`]));
+      },
+    });
+    const result = await retryMissingTranslations(10, 10);
+    expect(result).toEqual({ done: 1, failed: 0 });
+  });
+
+  it("retry stops after consecutive failures", async () => {
+    const user = await signedInUser("en");
+    await db.insert(participants).values(
+      [1, 2, 3, 4, 5].map((n) =>
+        makeParticipant(user.id, {
+          kind: "child",
+          name: `k${n}`,
+          wishes: `w${n}`,
+        }),
+      ),
+    );
+    failing = true;
+    expect(await retryMissingTranslations(10)).toEqual({ done: 0, failed: 3 });
   });
 
   it("deleteAllTranslations purges everything", async () => {

@@ -11,13 +11,6 @@ vi.mock("next-intl/server", () => ({
   getLocale: async () => "en",
 }));
 
-// The real link is covered by the game feature's own tests.
-vi.mock("@/features/game", () => ({
-  TranslateLink: ({ text }: { text: string }) => (
-    <a href={`https://translate.google.com/?text=${text}`}>translate.button</a>
-  ),
-}));
-
 describe("LocalizedText", () => {
   it("shows the translation with a toggle to the original", async () => {
     const element = (await LocalizedText({
