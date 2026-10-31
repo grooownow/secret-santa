@@ -8,8 +8,8 @@ import {
 } from "@playwright/test";
 import en from "../../messages/en.json";
 import es from "../../messages/es.json";
-import { ORGANISER, PHASES, setDates, signIn } from "./helpers";
-import { MAIL_OUTBOX } from "./paths";
+import { PHASES, setDates, signIn } from "./helpers";
+import { MAIL_OUTBOX, ORGANISER_STATE } from "./paths";
 
 /**
  * The whole game on one server, end to end: three accounts (one with a child)
@@ -177,25 +177,29 @@ test.describe("the whole game", () => {
     baseURL,
   }) => {
     const contexts: BrowserContext[] = [];
-    const open = async (mobile: boolean): Promise<Page> => {
+    const open = async (
+      mobile: boolean,
+      storageState?: string,
+    ): Promise<Page> => {
       const context = await browser.newContext({
         ...(mobile
           ? devices["Pixel 7"]
           : { viewport: { width: 1280, height: 720 } }),
         baseURL,
+        storageState,
       });
       contexts.push(context);
       return context.newPage();
     };
 
     try {
-      const organiser = await open(false);
+      // Signed in by the setup project (no extra admin sign-in here).
+      const organiser = await open(false, ORGANISER_STATE);
       const neighbours: Browser[] = [];
       for (const who of NEIGHBOURS) {
         neighbours.push({ who, page: await open(true) });
       }
       const alice = neighbours[0] as Browser;
-      await signIn(organiser, ORGANISER);
 
       await test.step("three neighbours register and confirm their email", async () => {
         for (const { who, page } of neighbours) {

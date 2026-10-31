@@ -27,10 +27,14 @@ export default defineConfig({
       name: "setup",
       testMatch: /.*\.setup\.ts/,
     },
+    // Auth specs need sign-ups open, so they run before the game (which
+    // closes them). Smoke specs do not depend on the game's state and are
+    // kept out of the game's dependencies: a flaky smoke test must not skip
+    // the whole game flow.
     {
       name: "desktop-chromium",
       dependencies: ["setup"],
-      testIgnore: /game\.spec\.ts|\.setup\.ts/,
+      testMatch: /auth\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 720 },
@@ -39,7 +43,20 @@ export default defineConfig({
     {
       name: "mobile-chromium",
       dependencies: ["setup"],
-      testIgnore: /game\.spec\.ts|\.setup\.ts/,
+      testMatch: /auth\.spec\.ts/,
+      use: { ...devices["Pixel 7"] },
+    },
+    {
+      name: "smoke-desktop",
+      testMatch: /smoke\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 720 },
+      },
+    },
+    {
+      name: "smoke-mobile",
+      testMatch: /smoke\.spec\.ts/,
       use: { ...devices["Pixel 7"] },
     },
     {
