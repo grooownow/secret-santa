@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSessionUser } from "@/lib/session";
 import { AuthShell, PageText, PageTitle } from "./auth-shell";
 import { AuthMethodsWithGoogle } from "./google-button";
 import { HOME } from "./routes";
@@ -10,9 +10,9 @@ export async function RegisterPage() {
   const [t, locale, session] = await Promise.all([
     getTranslations("account.register"),
     getLocale(),
-    auth(),
+    getSessionUser(),
   ]);
-  if (session?.user) redirect(HOME);
+  if (session) redirect(HOME);
 
   return (
     <AuthShell>

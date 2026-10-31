@@ -156,6 +156,10 @@ export const authTokens = pgTable("auth_tokens", {
   pendingLocale: text("pending_locale"),
   pendingConsentVersion: text("pending_consent_version"),
   pendingConsentAt: timestamp("pending_consent_at", { withTimezone: true }),
+  // SHA-256 of the nonce cookie set in the registrant's browser. The pending
+  // data above is applied only when the browser that opens the link presents
+  // the same nonce (see src/features/account/verify-email-action.ts).
+  pendingNonceHash: text("pending_nonce_hash"),
 });
 
 // Idempotency ledger for mass mailings. A row is a claim made before sending

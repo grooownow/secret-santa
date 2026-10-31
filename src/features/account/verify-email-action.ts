@@ -1,29 +1,44 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
-import { consumeTokenRow, revokeTokens } from "./tokens";
+import { consumeTokenRow, hashNonce, issueToken, revokeTokens } from "./tokens";
+
+export type VerifyResult =
+  | { status: "invalid" }
+  | { status: "verified" }
+  /** Mailbox confirmed, but the owner must choose a password themselves. */
+  | { status: "choose-password"; resetToken: string };
 
 /**
- * Confirms the email behind a verification link and applies the registration
- * data bound to that very token (password, language, consent). Returns false
- * when the link is unknown, already used or older than 7 days. Called by the
- * page, not by the browser, so it is not a server action.
+ * Confirms the email behind a verification link. Called by the page, not by
+ * the browser, so it is not a server action.
  *
- * The password comes from the token, never from the user row: whoever
- * registered an address first cannot keep a password on it once the owner of
- * the mailbox verifies through a later registration.
+ * The password and consent chosen at registration are applied only when the
+ * browser opening the link holds the registration nonce stored on this very
+ * token. Otherwise (another device, or a link triggered by somebody who
+ * registered this address) the mailbox is still marked verified, but nothing
+ * from the registration is applied: the owner gets a fresh reset link and
+ * chooses their own password, and consent comes through /welcome.
  */
-export async function verifyEmailToken(token: string): Promise<boolean> {
+export async function verifyEmailToken(
+  token: string,
+  browserNonce: string | undefined,
+): Promise<VerifyResult> {
   const row = await consumeTokenRow(token, "verify");
-  if (!row) return false;
+  if (!row) return { status: "invalid" };
   const { userId, pending } = row;
 
-  await getDb()
+  const sameBrowser =
+    !!pending &&
+    !!browserNonce &&
+    hashNonce(browserNonce) === pending.nonceHash;
+
+  const [updated] = await getDb()
     .update(users)
     .set({
       emailVerified: new Date(),
       sessionVersion: sql`${users.sessionVersion} + 1`,
-      ...(pending
+      ...(sameBrowser
         ? {
             passwordHash: pending.passwordHash,
             locale: pending.locale,
@@ -32,9 +47,15 @@ export async function verifyEmailToken(token: string): Promise<boolean> {
           }
         : {}),
     })
-    // Already verified (e.g. by a reset link): do not touch the password.
-    .where(and(eq(users.id, userId), isNull(users.emailVerified)));
+    // Already verified (e.g. by a reset link): do not touch the account.
+    .where(and(eq(users.id, userId), isNull(users.emailVerified)))
+    .returning();
   // Other pending links of this account must not apply their data later.
   await revokeTokens(userId, "verify");
-  return true;
+
+  if (!updated || sameBrowser) return { status: "verified" };
+  return {
+    status: "choose-password",
+    resetToken: await issueToken(userId, "reset"),
+  };
 }

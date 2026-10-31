@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { getSessionUser } from "@/lib/session";
 import { LOCALE_COOKIE, LOCALES } from "@/i18n/locale";
 
 const schema = z.object({ locale: z.enum(LOCALES) });
@@ -28,12 +28,10 @@ export async function setLocaleAction(formData: FormData): Promise<void> {
     sameSite: "lax",
   });
 
-  const session = await auth();
-  if (session?.user?.id) {
-    await getDb()
-      .update(users)
-      .set({ locale })
-      .where(eq(users.id, session.user.id));
+  // A stale session (see getSessionUser) counts as a guest: cookie only.
+  const user = await getSessionUser();
+  if (user) {
+    await getDb().update(users).set({ locale }).where(eq(users.id, user.id));
   }
 
   revalidatePath("/", "layout");

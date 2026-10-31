@@ -38,6 +38,7 @@ vi.mock("next/headers", () => ({
   }),
   headers: async () => new Headers({ "accept-language": "es" }),
 }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/auth", () => ({
   auth: () => authMock(),
   signIn: (...args: unknown[]) => signInMock(...args),
@@ -138,10 +139,37 @@ async function allUsers() {
   return db.select().from(users);
 }
 
-async function verifyWith(token: string) {
+/** Opens a verify link in the browser whose cookies are in `cookieStore`. */
+async function verifyResult(token: string) {
   const { verifyEmailToken } =
     await import("@/features/account/verify-email-action");
-  return verifyEmailToken(token);
+  return verifyEmailToken(token, cookieStore.get("reg_nonce"));
+}
+
+async function verifyWith(token: string) {
+  return (await verifyResult(token)).status !== "invalid";
+}
+
+/** Runs `fn` as another browser (its own cookie jar), then switches back. */
+async function inBrowser<T>(jar: Map<string, string>, fn: () => Promise<T>) {
+  const previous = new Map(cookieStore);
+  cookieStore.clear();
+  for (const [k, v] of jar) cookieStore.set(k, v);
+  try {
+    return await fn();
+  } finally {
+    jar.clear();
+    for (const [k, v] of cookieStore) jar.set(k, v);
+    cookieStore.clear();
+    for (const [k, v] of previous) cookieStore.set(k, v);
+  }
+}
+
+/** The owner picks a password from the reset link they were sent to. */
+async function chooseOwnPassword(token: string, password: string) {
+  const { resetPasswordAction } =
+    await import("@/features/account/reset-password-action");
+  return resetPasswordAction({}, form({ token, password, confirm: password }));
 }
 
 async function userByEmail(email: string) {
@@ -231,37 +259,154 @@ describe("registration", () => {
     expect(second).toBe(fresh);
   });
 
-  it("pre-registration takeover (email path): the mailbox owner's password wins", async () => {
-    // The attacker registers the victim's address with their own password.
-    await redirectTarget(() =>
-      register({ ...validRegistration, password: "attacker-password" }),
+  it("owner registers, attacker re-registers, owner clicks the newest link in their own browser: the attacker's password is not applied", async () => {
+    const owner = new Map<string, string>();
+    const attacker = new Map<string, string>();
+    await inBrowser(owner, () =>
+      redirectTarget(() =>
+        register({ ...validRegistration, password: "owner-password" }),
+      ),
     );
-    await flush();
-    const attackerMail = sent[0];
-    expect(
-      (await userByEmail("neighbour@example.com"))?.passwordHash,
-    ).toBeNull();
-
-    // The victim registers the same address; the attacker's link is dead.
-    await redirectTarget(() =>
-      register({ ...validRegistration, password: "victim-password" }),
+    await inBrowser(attacker, () =>
+      redirectTarget(() =>
+        register({ ...validRegistration, password: "attacker-password" }),
+      ),
     );
     await flush();
     expect(sent).toHaveLength(2);
-    expect(await verifyWith(tokenFrom(attackerMail))).toBe(false);
+    // The attacker's registration killed the owner's own link...
+    const ownerMail = sent[0];
+    const newestMail = sent[1];
     expect(
-      (await userByEmail("neighbour@example.com"))?.emailVerified,
-    ).toBeNull();
+      await inBrowser(owner, () => verifyResult(tokenFrom(ownerMail))),
+    ).toEqual({ status: "invalid" });
+    // ...and the owner opens the newest one (the one carrying the attacker's data).
+    const result = await inBrowser(owner, () =>
+      verifyResult(tokenFrom(newestMail)),
+    );
+    expect(result.status).toBe("choose-password");
 
-    // The victim verifies: the account has the victim's password only.
-    expect(await verifyWith(tokenFrom(sent[1]))).toBe(true);
     const row = await userByEmail("neighbour@example.com");
+    expect(row?.emailVerified).toBeInstanceOf(Date);
+    expect(row?.passwordHash).toBeNull();
+    expect(row?.consentAt).toBeNull();
+    expect(row?.sessionVersion).toBe(1);
+
+    // The owner picks their own password on the reset page.
+    if (result.status !== "choose-password") throw new Error("unreachable");
+    await chooseOwnPassword(result.resetToken, "owner-own-password");
+    const after = await userByEmail("neighbour@example.com");
     expect(
-      await verifyPassword("victim-password", row?.passwordHash ?? ""),
+      await verifyPassword("owner-own-password", after?.passwordHash ?? ""),
     ).toBe(true);
+    expect(
+      await verifyPassword("attacker-password", after?.passwordHash ?? ""),
+    ).toBe(false);
+  });
+
+  it("attacker registers first, the owner opens the mail in their browser: the owner chooses the password", async () => {
+    const attacker = new Map<string, string>();
+    const owner = new Map<string, string>();
+    await inBrowser(attacker, () =>
+      redirectTarget(() =>
+        register({ ...validRegistration, password: "attacker-password" }),
+      ),
+    );
+    await flush();
+
+    const result = await inBrowser(owner, () =>
+      verifyResult(tokenFrom(sent[0])),
+    );
+    expect(result.status).toBe("choose-password");
+    expect(
+      (await userByEmail("neighbour@example.com"))?.passwordHash,
+    ).toBeNull();
+    if (result.status !== "choose-password") throw new Error("unreachable");
+    await chooseOwnPassword(result.resetToken, "owner-own-password");
+    const row = await userByEmail("neighbour@example.com");
     expect(
       await verifyPassword("attacker-password", row?.passwordHash ?? ""),
     ).toBe(false);
+    expect(
+      await verifyPassword("owner-own-password", row?.passwordHash ?? ""),
+    ).toBe(true);
+  });
+
+  it("same browser: opening the link applies the password and consent, no reset step", async () => {
+    await redirectTarget(() =>
+      register({ ...validRegistration, password: "owner-password" }),
+    );
+    await flush();
+    const result = await verifyResult(tokenFrom(sent[0]));
+    expect(result).toEqual({ status: "verified" });
+    const row = await userByEmail("neighbour@example.com");
+    expect(
+      await verifyPassword("owner-password", row?.passwordHash ?? ""),
+    ).toBe(true);
+    expect(row?.consentAt).toBeInstanceOf(Date);
+    const reset = (await db.select().from(authTokens)).filter(
+      (t) => t.purpose === "reset",
+    );
+    expect(reset).toHaveLength(0);
+  });
+
+  it("other device: the real owner opening the link elsewhere still ends up choosing a password", async () => {
+    const phone = new Map<string, string>();
+    await redirectTarget(() => register());
+    await flush();
+    const result = await inBrowser(phone, () =>
+      verifyResult(tokenFrom(sent[0])),
+    );
+    expect(result.status).toBe("choose-password");
+    const row = await userByEmail("neighbour@example.com");
+    expect(row?.emailVerified).toBeInstanceOf(Date);
+    expect(row?.passwordHash).toBeNull();
+    expect(row?.consentAt).toBeNull();
+  });
+
+  it("resend from a browser without the matching nonce carries no registration data", async () => {
+    const { resendVerificationAction } =
+      await import("@/features/account/resend-action");
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-12-01T12:00:00+01:00"));
+    await redirectTarget(() =>
+      register({ ...validRegistration, password: "owner-password" }),
+    );
+    await flush();
+    vi.setSystemTime(new Date("2026-12-01T12:02:00+01:00"));
+
+    // The attacker, from their browser, asks for a resend of the owner's address.
+    // (They hold a nonce of their own, from registering another address.)
+    const attacker = new Map<string, string>();
+    await inBrowser(attacker, async () => {
+      await redirectTarget(() =>
+        register({ ...validRegistration, email: "attacker@example.com" }),
+      );
+      await resendVerificationAction(
+        {},
+        form({ email: "neighbour@example.com" }),
+      );
+    });
+    await flush();
+    const ownerMails = sent.filter((m) => m.to === "neighbour@example.com");
+    expect(ownerMails).toHaveLength(2);
+    const [ownerUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, "neighbour@example.com"));
+    const [token] = await db
+      .select()
+      .from(authTokens)
+      .where(eq(authTokens.userId, ownerUser?.id ?? ""));
+    expect(token?.pendingPasswordHash).toBeNull();
+    expect(token?.pendingNonceHash).toBeNull();
+
+    // So the owner opening it, even in their own browser, chooses a password.
+    const result = await verifyResult(tokenFrom(ownerMails[1]));
+    expect(result.status).toBe("choose-password");
+    expect(
+      (await userByEmail("neighbour@example.com"))?.passwordHash,
+    ).toBeNull();
   });
 
   it("registering an already verified address changes nothing and sends nothing", async () => {
@@ -550,6 +695,48 @@ describe("sessions after a takeover-sensitive change", () => {
     expect(await verifyWith(tokenFrom(sent[0]))).toBe(false);
     const row = await userByEmail("neighbour@example.com");
     expect(row?.passwordHash).toBeNull();
+  });
+
+  it("a stale JWT cannot give consent: acceptConsentAction sends it to /signin and writes nothing", async () => {
+    const { acceptConsentAction } =
+      await import("@/features/account/accept-consent-action");
+    const [u] = await db
+      .insert(users)
+      .values({
+        ...makeUser({ email: "stale@example.com" }),
+        sessionVersion: 2,
+      })
+      .returning();
+    authMock.mockResolvedValue({ user: { id: u?.id }, sessionVersion: 1 });
+
+    expect(
+      await redirectTarget(() =>
+        acceptConsentAction(
+          {},
+          form({ locale: "es", consent: "on", age14: "on" }),
+        ),
+      ),
+    ).toBe("/signin");
+    const row = await userByEmail("stale@example.com");
+    expect(row?.consentAt).toBeNull();
+    expect(row?.locale).toBe("en");
+  });
+
+  it("a stale JWT is a guest for setLocaleAction: cookie only, users.locale untouched", async () => {
+    const { setLocaleAction } =
+      await import("@/features/game/set-locale-action");
+    const [u] = await db
+      .insert(users)
+      .values({
+        ...makeUser({ email: "stale2@example.com" }),
+        sessionVersion: 2,
+      })
+      .returning();
+    authMock.mockResolvedValue({ user: { id: u?.id }, sessionVersion: 1 });
+
+    await setLocaleAction(form({ locale: "de" }));
+    expect(cookieStore.get("locale")).toBe("de");
+    expect((await userByEmail("stale2@example.com"))?.locale).toBe("en");
   });
 
   it("stamps the session version on the JWT at sign-in", async () => {

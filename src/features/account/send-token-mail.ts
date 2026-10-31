@@ -47,14 +47,18 @@ function queue(work: () => Promise<void>, type: string): void {
   });
 }
 
-/** `"latest"` re-sends with the data of the newest unused verify token. */
+/**
+ * Re-sends the verification link. Registration data is carried over only from
+ * a token created by the requesting browser (`resendFrom.nonce` matches the
+ * nonce stored on it); otherwise the new token has none, and opening it ends
+ * at "choose a password".
+ */
 export function queueVerifyEmail(
   user: Recipient,
-  pending: PendingRegistration | "latest" | undefined,
+  resendFrom: { nonce: string | undefined },
 ): void {
   queue(async () => {
-    const data =
-      pending === "latest" ? await latestPendingRegistration(user.id) : pending;
+    const data = await latestPendingRegistration(user.id, resendFrom.nonce);
     await issueAndSend(user, "verify", "/verify-email", data);
   }, "verify");
 }

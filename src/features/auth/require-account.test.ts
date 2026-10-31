@@ -35,7 +35,6 @@ const row = {
   apartment: "2b",
   consentVersion: "2026-10-31",
   consentAt: new Date("2026-11-01T00:00:00Z"),
-  sessionVersion: 2,
   image: null,
   createdAt: new Date("2026-11-01T00:00:00Z"),
 };
@@ -60,42 +59,6 @@ describe("account guards", () => {
       expect(account.id).toBe("u1");
       expect(account.locale).toBe("ru");
       expect(account).not.toHaveProperty("passwordHash");
-    });
-
-    it("rejects a session issued before the account's session version", async () => {
-      requireUserMock.mockResolvedValue({
-        id: "u1",
-        email: row.email,
-        sessionVersion: 1,
-      });
-      selectMock.mockResolvedValue([row]);
-      const { requireAccount } = await import("./require-account");
-
-      await expect(requireAccount()).rejects.toThrow("NEXT_REDIRECT:/signin");
-    });
-
-    it("rejects a token that carries no session version at all", async () => {
-      requireUserMock.mockResolvedValue({
-        id: "u1",
-        email: row.email,
-        sessionVersion: -1,
-      });
-      selectMock.mockResolvedValue([row]);
-      const { requireAccount } = await import("./require-account");
-
-      await expect(requireAccount()).rejects.toThrow("NEXT_REDIRECT:/signin");
-    });
-
-    it("accepts a session with the current version", async () => {
-      requireUserMock.mockResolvedValue({
-        id: "u1",
-        email: row.email,
-        sessionVersion: 2,
-      });
-      selectMock.mockResolvedValue([row]);
-      const { requireAccount } = await import("./require-account");
-
-      await expect(requireAccount()).resolves.toMatchObject({ id: "u1" });
     });
 
     it("sends an account without consent to /welcome", async () => {

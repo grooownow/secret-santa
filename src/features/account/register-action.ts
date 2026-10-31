@@ -17,7 +17,8 @@ import {
   passwordSchema,
 } from "./schemas";
 import { queueRegistration } from "./send-token-mail";
-import { CONSENT_VERSION } from "./tokens";
+import { startRegistrationNonce } from "./registration-nonce";
+import { CONSENT_VERSION, hashNonce } from "./tokens";
 
 export type RegisterError =
   "email" | "password" | "consent" | "age" | "closed" | "rate" | "invalid";
@@ -91,8 +92,11 @@ export async function registerAction(
   // with the verify token and are applied when that token is used, so the
   // owner of the mailbox, not whoever registered first, decides the password.
   // A later registration of an unverified address replaces the earlier token.
+  // The browser nonce is set for every branch, so the response is the same.
+  const nonce = await startRegistrationNonce();
   if (!existing?.emailVerified) {
     queueRegistration(email, existing?.id ?? null, {
+      nonceHash: hashNonce(nonce),
       passwordHash,
       locale,
       consentVersion: CONSENT_VERSION,

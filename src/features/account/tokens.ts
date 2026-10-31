@@ -15,6 +15,11 @@ export const TOKEN_TTL_MS: Record<TokenPurpose, number> = {
   reset: HOUR_MS,
 };
 
+/** SHA-256 hex of a nonce, the form in which it is stored. */
+export function hashNonce(nonce: string): string {
+  return createHash("sha256").update(nonce).digest("hex");
+}
+
 /** Only the SHA-256 of a token is stored, so a database leak yields no links. */
 function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
@@ -26,6 +31,8 @@ export type PendingRegistration = {
   locale: string;
   consentVersion: string;
   consentAt: Date;
+  /** SHA-256 of the registrant's browser nonce; see registration-nonce.ts. */
+  nonceHash: string;
 };
 
 /**
@@ -59,6 +66,7 @@ export async function issueToken(
     pendingLocale: pending?.locale ?? null,
     pendingConsentVersion: pending?.consentVersion ?? null,
     pendingConsentAt: pending?.consentAt ?? null,
+    pendingNonceHash: pending?.nonceHash ?? null,
   });
   return token;
 }
@@ -94,12 +102,16 @@ export async function consumeTokenRow(
     .returning();
   if (!row) return null;
   const pending =
-    row.pendingPasswordHash && row.pendingConsentVersion && row.pendingConsentAt
+    row.pendingPasswordHash &&
+    row.pendingConsentVersion &&
+    row.pendingConsentAt &&
+    row.pendingNonceHash
       ? {
           passwordHash: row.pendingPasswordHash,
           locale: row.pendingLocale ?? "en",
           consentVersion: row.pendingConsentVersion,
           consentAt: row.pendingConsentAt,
+          nonceHash: row.pendingNonceHash,
         }
       : null;
   return { userId: row.userId, pending };
@@ -122,13 +134,16 @@ export async function revokeTokens(
 }
 
 /**
- * Registration data of the newest unused verify token, so "send again" keeps
- * what the last registration chose instead of verifying a passwordless
- * account.
+ * Registration data of the newest unused verify token, for "send again", but
+ * only if it was created by the browser asking now (its nonce matches).
+ * Anyone else gets nothing, so a resend can never carry over a password that
+ * another browser chose.
  */
 export async function latestPendingRegistration(
   userId: string,
+  nonce: string | undefined,
 ): Promise<PendingRegistration | undefined> {
+  if (!nonce) return undefined;
   const [row] = await getDb()
     .select()
     .from(authTokens)
@@ -144,7 +159,8 @@ export async function latestPendingRegistration(
   if (
     !row?.pendingPasswordHash ||
     !row.pendingConsentVersion ||
-    !row.pendingConsentAt
+    !row.pendingConsentAt ||
+    row.pendingNonceHash !== hashNonce(nonce)
   ) {
     return undefined;
   }
@@ -153,6 +169,7 @@ export async function latestPendingRegistration(
     locale: row.pendingLocale ?? "en",
     consentVersion: row.pendingConsentVersion,
     consentAt: row.pendingConsentAt,
+    nonceHash: row.pendingNonceHash,
   };
 }
 

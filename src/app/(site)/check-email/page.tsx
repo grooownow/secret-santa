@@ -13,7 +13,7 @@ import {
   PageTitle,
   ResendForm,
 } from "@/features/account";
-import { auth } from "@/lib/auth";
+import { getSessionUser } from "@/lib/session";
 import { z } from "zod";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,15 +29,15 @@ export default async function CheckEmail({
   const [t, params, session] = await Promise.all([
     getTranslations("account.checkEmail"),
     searchParams,
-    auth(),
+    getSessionUser(),
   ]);
 
   // A signed-in account that is already verified has nothing to wait for.
-  if (session?.user?.id) {
+  if (session?.id) {
     const [row] = await getDb()
       .select({ emailVerified: users.emailVerified, email: users.email })
       .from(users)
-      .where(eq(users.id, session.user.id))
+      .where(eq(users.id, session.id))
       .limit(1);
     if (row?.emailVerified) redirect(HOME);
   }
@@ -45,7 +45,7 @@ export default async function CheckEmail({
   const fromQuery = z.email().safeParse(params.email);
   const email = fromQuery.success
     ? fromQuery.data
-    : (session?.user?.email ?? undefined);
+    : (session?.email ?? undefined);
 
   return (
     <AuthShell icon={<Mail aria-hidden />}>

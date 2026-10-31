@@ -61,7 +61,7 @@ describe("setLocaleAction", () => {
     const { setLocaleAction } =
       await import("@/features/game/set-locale-action");
     const user = await newUser();
-    authMock.mockResolvedValue({ user: { id: user.id } });
+    authMock.mockResolvedValue({ user: { id: user.id }, sessionVersion: 0 });
 
     await setLocaleAction(form("de"));
 
@@ -77,7 +77,7 @@ describe("setLocaleAction", () => {
     const { setLocaleAction } =
       await import("@/features/game/set-locale-action");
     const user = await newUser();
-    authMock.mockResolvedValue({ user: { id: user.id } });
+    authMock.mockResolvedValue({ user: { id: user.id }, sessionVersion: 0 });
 
     await setLocaleAction(form("xx"));
     await setLocaleAction(new FormData());

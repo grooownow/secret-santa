@@ -1,0 +1,1 @@
+ALTER TABLE "auth_tokens" ADD COLUMN "pending_nonce_hash" text;

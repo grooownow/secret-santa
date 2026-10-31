@@ -54,33 +54,57 @@ describe("requireUser", () => {
     expect(redirectMock).toHaveBeenCalledExactlyOnceWith("/signin");
   });
 
-  it("returns the session user's id/email/name without redirecting", async () => {
+  it("returns the session user's id/email/name when the session version is current", async () => {
     authMock.mockResolvedValue({
       user: { id: "user-1", email: "a@gridfin.dev", name: "Ada" },
       sessionVersion: 4,
     });
+    selectMock.mockResolvedValue([{ sessionVersion: 4 }]);
     const { requireUser } = await import("./require-user");
 
     await expect(requireUser()).resolves.toEqual({
       id: "user-1",
       email: "a@gridfin.dev",
       name: "Ada",
-      sessionVersion: 4,
     });
     expect(redirectMock).not.toHaveBeenCalled();
   });
 
   it("defaults email to null when the session user has none", async () => {
-    authMock.mockResolvedValue({ user: { id: "user-2" } });
+    authMock.mockResolvedValue({ user: { id: "user-2" }, sessionVersion: 0 });
+    selectMock.mockResolvedValue([{ sessionVersion: 0 }]);
     const { requireUser } = await import("./require-user");
 
     await expect(requireUser()).resolves.toEqual({
       id: "user-2",
       email: null,
       name: undefined,
-      // An old token without a version is reported as -1, which never matches.
-      sessionVersion: -1,
     });
+  });
+
+  it("redirects a session issued before the account's session version", async () => {
+    authMock.mockResolvedValue({ user: { id: "user-1" }, sessionVersion: 3 });
+    selectMock.mockResolvedValue([{ sessionVersion: 4 }]);
+    const { requireUser } = await import("./require-user");
+
+    await expect(requireUser()).rejects.toThrow("NEXT_REDIRECT_SENTINEL");
+    expect(redirectMock).toHaveBeenCalledExactlyOnceWith("/signin");
+  });
+
+  it("redirects a token that carries no session version at all", async () => {
+    authMock.mockResolvedValue({ user: { id: "user-1" } });
+    selectMock.mockResolvedValue([{ sessionVersion: 0 }]);
+    const { requireUser } = await import("./require-user");
+
+    await expect(requireUser()).rejects.toThrow("NEXT_REDIRECT_SENTINEL");
+  });
+
+  it("redirects when the session user's row is gone", async () => {
+    authMock.mockResolvedValue({ user: { id: "user-1" }, sessionVersion: 0 });
+    selectMock.mockResolvedValue([]);
+    const { requireUser } = await import("./require-user");
+
+    await expect(requireUser()).rejects.toThrow("NEXT_REDIRECT_SENTINEL");
   });
 
   it("returns the seeded admin when dev bypass is on and there is no session", async () => {

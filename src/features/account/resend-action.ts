@@ -6,6 +6,7 @@ import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
 import { claimVerifySlot, RESEND_SECONDS } from "./cooldown";
 import { emailSchema } from "./schemas";
+import { readRegistrationNonce } from "./registration-nonce";
 import { queueVerifyEmail } from "./send-token-mail";
 
 export interface ResendState {
@@ -48,7 +49,8 @@ export async function resendVerificationAction(
     .limit(1);
   // Keeps what the latest registration chose; the token is issued and mailed
   // after the response so unknown addresses answer in the same time.
-  if (user && !user.emailVerified) queueVerifyEmail(user, "latest");
+  if (user && !user.emailVerified)
+    queueVerifyEmail(user, { nonce: await readRegistrationNonce() });
 
   return { status: "sent", retryAfter: RESEND_SECONDS, email };
 }

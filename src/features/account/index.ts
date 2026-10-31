@@ -6,6 +6,7 @@ export { ResendForm } from "./resend-form";
 export { ForgotForm } from "./forgot-form";
 export { ResetForm } from "./reset-form";
 export { WelcomeForm } from "./welcome-form";
+export { readRegistrationNonce } from "./registration-nonce";
 export { verifyEmailToken } from "./verify-email-action";
 export {
   tokenIsValid,

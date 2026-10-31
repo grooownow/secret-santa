@@ -2,33 +2,24 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { getSessionUser, type SessionUser } from "@/lib/session";
 import { env } from "@/lib/env";
 
-export interface SessionUser {
-  id: string;
-  email: string | null;
-  name?: string | null;
-  /**
-   * The `users.sessionVersion` the JWT was issued with (-1 when an old token
-   * has none). Absent for the dev bypass, which has no session.
-   */
-  sessionVersion?: number;
-}
+export type { SessionUser } from "@/lib/session";
 
 /**
  * Defense-in-depth guard for protected server components and server
  * actions. `src/middleware.ts` only performs an optimistic, local
  * cookie/JWT check (spec §5.6-2) — it never touches the database. This
- * calls the real `auth()` (backed by the Drizzle adapter) and redirects to
+ * calls `getSessionUser()` (JWT plus the session-version check) and redirects to
  * `/signin` when there's no authenticated session, so every protected data
  * access has its own, independent authorization check rather than trusting
  * middleware alone.
  */
 export async function requireUser(): Promise<SessionUser> {
-  const session = await auth();
+  const sessionUser = await getSessionUser();
 
-  if (!session?.user && env.AUTH_DEV_BYPASS) {
+  if (!sessionUser && env.AUTH_DEV_BYPASS) {
     // Dev bypass: act as the seeded admin so local runs skip sign-in. This
     // reads a real db row so downstream writes scoped to user.id hit a real
     // user. Guarded off in production by src/lib/env.ts.
@@ -43,14 +34,9 @@ export async function requireUser(): Promise<SessionUser> {
     }
   }
 
-  if (!session?.user) {
+  if (!sessionUser) {
     redirect("/signin");
   }
 
-  return {
-    id: session.user.id,
-    email: session.user.email ?? null,
-    name: session.user.name,
-    sessionVersion: session.sessionVersion ?? -1,
-  };
+  return sessionUser;
 }

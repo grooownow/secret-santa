@@ -1,5 +1,7 @@
 import { CircleCheck, Clock } from "lucide-react";
 import type { Metadata } from "next";
+import type { Route } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { LinkButton, TextLink } from "@/components/form-ui";
 import {
@@ -7,6 +9,7 @@ import {
   PageText,
   PageTitle,
   ResendForm,
+  readRegistrationNonce,
   verifyEmailToken,
 } from "@/features/account";
 
@@ -25,9 +28,20 @@ export default async function VerifyEmail({
     getTranslations("account.verifyExpired"),
     searchParams,
   ]);
-  const ok = typeof token === "string" && (await verifyEmailToken(token));
+  const result =
+    typeof token === "string"
+      ? await verifyEmailToken(token, await readRegistrationNonce())
+      : ({ status: "invalid" } as const);
 
-  if (ok) {
+  if (result.status === "choose-password") {
+    // Opened elsewhere than where the registration happened: the mailbox is
+    // confirmed, the owner now picks their own password.
+    redirect(
+      `/reset-password?token=${encodeURIComponent(result.resetToken)}` as Route,
+    );
+  }
+
+  if (result.status === "verified") {
     return (
       <AuthShell icon={<CircleCheck aria-hidden />}>
         <PageTitle>{t("title")}</PageTitle>
