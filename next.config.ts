@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
+
+  // Participant photos live in Vercel Blob (public store, *.public.blob.vercel-storage.com).
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
+  },
 
   // PGlite ships a WASM binary and resolves its own assets through Node's
   // fs/URL APIs. Bundled into a server chunk it ends up with a second `URL`
@@ -39,4 +52,4 @@ const nextConfig: NextConfig = {
 
 // Sentry error tracking moved into the observability module (App preset);
 // next.config.ts is intentionally not wrapped in `withSentryConfig`.
-export default nextConfig;
+export default withNextIntl(nextConfig);

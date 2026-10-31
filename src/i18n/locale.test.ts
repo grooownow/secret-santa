@@ -1,0 +1,67 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+import { LOCALES, pickLocale } from "./locale";
+
+describe("pickLocale", () => {
+  it("prefers a valid cookie over the browser language", () => {
+    expect(pickLocale("de", "ru")).toBe("de");
+  });
+
+  it("falls back to Accept-Language when there is no cookie", () => {
+    expect(pickLocale(undefined, "es-ES,es;q=0.9")).toBe("es");
+  });
+
+  it("respects q-weights in Accept-Language", () => {
+    expect(pickLocale(undefined, "fr;q=0.9,uk;q=0.8,en;q=0.1")).toBe("uk");
+    expect(pickLocale(undefined, "en;q=0.2,de;q=0.9")).toBe("de");
+  });
+
+  it("falls back to English for unknown cookie and language", () => {
+    expect(pickLocale("xx", "fr")).toBe("en");
+    expect(pickLocale(undefined, undefined)).toBe("en");
+    expect(pickLocale(null, "")).toBe("en");
+  });
+
+  it("ignores an invalid cookie but still reads the browser language", () => {
+    expect(pickLocale("xx", "ru-RU,ru;q=0.9")).toBe("ru");
+  });
+});
+
+type Tree = { [key: string]: string | Tree };
+
+function flatten(tree: Tree, prefix = ""): string[] {
+  return Object.entries(tree).flatMap(([key, value]) =>
+    typeof value === "string"
+      ? [`${prefix}${key}`]
+      : flatten(value, `${prefix}${key}.`),
+  );
+}
+
+function load(locale: string): Tree {
+  const file = path.resolve(__dirname, "../../messages", `${locale}.json`);
+  return JSON.parse(readFileSync(file, "utf8")) as Tree;
+}
+
+describe("messages files", () => {
+  const reference = flatten(load("ru")).sort();
+
+  it("has the same set of keys in all five locales", () => {
+    expect(LOCALES).toEqual(["ru", "uk", "en", "es", "de"]);
+    for (const locale of LOCALES) {
+      expect(flatten(load(locale)).sort(), locale).toEqual(reference);
+    }
+  });
+
+  it("has no Cyrillic text in en, es and de", () => {
+    for (const locale of ["en", "es", "de"]) {
+      expect(JSON.stringify(load(locale)), locale).not.toMatch(/[А-Яа-яЁё]/);
+    }
+  });
+
+  it("has no empty strings", () => {
+    for (const locale of LOCALES) {
+      expect(JSON.stringify(load(locale)), locale).not.toContain('""');
+    }
+  });
+});

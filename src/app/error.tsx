@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
+import { ErrorScreen } from "@/components/error-screen";
 
 export default function ErrorPage({
   error,
@@ -10,22 +11,29 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   // The server already logged this error (via onRequestError in
-  // src/instrumentation.ts, which calls src/lib/logger.ts) before this
-  // client boundary rendered. Do not console.log here — only surface the
-  // digest so a user can hand it to support without leaking a stack trace.
+  // src/instrumentation.ts) before this client boundary rendered. Do not
+  // console.log here — only surface the digest so a user can hand it to
+  // support without leaking a stack trace.
+  const t = useTranslations();
   return (
-    <main className="bg-background text-foreground flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
-      <h1 className="text-2xl font-semibold">Something went wrong</h1>
-      <p className="text-muted-foreground max-w-md text-sm">
-        An unexpected error occurred. You can try again, and if the problem
-        persists, share the reference below with support.
-      </p>
-      {error.digest ? (
-        <p className="text-muted-foreground font-mono text-xs">
-          Reference: {error.digest}
-        </p>
-      ) : null}
-      <Button onClick={reset}>Try again</Button>
-    </main>
+    <ErrorScreen
+      digest={error.digest}
+      onRetry={reset}
+      labels={{
+        appName: t("app.name"),
+        title: t("error.title"),
+        text: t("error.text"),
+        uncertainTitle: t("error.uncertainTitle"),
+        uncertainText: t("error.uncertainText"),
+        retry: t("error.retry"),
+        home: t("error.home"),
+        reference: t("error.reference"),
+        footer: {
+          rules: t("footer.rules"),
+          madeBy: t("footer.madeBy"),
+          threads: t("footer.threads"),
+        },
+      }}
+    />
   );
 }

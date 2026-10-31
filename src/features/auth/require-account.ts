@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import type { Route } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
@@ -32,7 +33,8 @@ export async function requireAccount(): Promise<Account> {
 export async function requireVerifiedAccount(): Promise<Account> {
   const account = await requireAccount();
   if (!account.emailVerified) {
-    redirect("/verify");
+    // The /verify page is built with the account flow; typedRoutes needs the cast until then.
+    redirect("/verify" as Route);
   }
   return account;
 }

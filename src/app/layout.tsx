@@ -1,37 +1,50 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Geist } from "next/font/google";
+import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import { getLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import { env } from "@/lib/env";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const outfit = Outfit({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-outfit",
+});
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-bricolage",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: {
-    default: "Gridfin",
-    template: "%s · Gridfin",
+    default: "Secret Santa Bialto",
+    template: "%s · Secret Santa Bialto",
   },
-  description: "Agent-native SaaS starter",
+  // The site is for neighbours only: keep it out of every search index.
+  robots: { index: false, follow: false },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
   return (
     <html
-      lang="en"
-      className={cn("font-sans", geist.variable)}
+      lang={locale}
+      className={cn("font-sans", outfit.variable, bricolage.variable)}
       suppressHydrationWarning
     >
       <body>
-        <ThemeProvider>
-          <AnalyticsProvider>{children}</AnalyticsProvider>
-        </ThemeProvider>
+        <NextIntlClientProvider>
+          <ThemeProvider>
+            <AnalyticsProvider>{children}</AnalyticsProvider>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

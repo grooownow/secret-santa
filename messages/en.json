@@ -1,0 +1,47 @@
+{
+  "app": {
+    "name": "Secret Santa"
+  },
+  "header": {
+    "home": "Home",
+    "signIn": "Sign in"
+  },
+  "language": {
+    "label": "Language",
+    "switch": "Choose a language",
+    "title": "Which language works best?",
+    "hint": "The chosen language is used in the interface and in emails.",
+    "save": "Save language"
+  },
+  "footer": {
+    "rules": "Rules and data",
+    "madeBy": "Made by",
+    "threads": "Threads"
+  },
+  "translate": {
+    "button": "Translate",
+    "opensInNewTab": "Opens in a new tab"
+  },
+  "error": {
+    "title": "A little holiday pause",
+    "text": "We can't reach the server right now. Please try again in a moment.",
+    "uncertainTitle": "We're not sure the action was saved",
+    "uncertainText": "Once you're back online, check the status in your account before submitting the form again.",
+    "retry": "Try again",
+    "home": "Home",
+    "reference": "Error code"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The address may have changed or contains a typo.",
+    "home": "Home"
+  },
+  "closed": {
+    "title": "The game is over",
+    "text": "Thank you for playing. The site is closed and participants' data has been deleted."
+  },
+  "home": {
+    "title": "Secret Santa Bialto",
+    "text": "A game for neighbours. Everything else is coming soon."
+  }
+}

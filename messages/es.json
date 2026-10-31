@@ -1,0 +1,47 @@
+{
+  "app": {
+    "name": "Amigo Invisible"
+  },
+  "header": {
+    "home": "Inicio",
+    "signIn": "Entrar"
+  },
+  "language": {
+    "label": "Idioma",
+    "switch": "Elegir idioma",
+    "title": "¿En qué idioma te viene mejor?",
+    "hint": "El idioma elegido se usa en la interfaz y en los correos.",
+    "save": "Guardar idioma"
+  },
+  "footer": {
+    "rules": "Reglas y datos",
+    "madeBy": "Creado por",
+    "threads": "Threads"
+  },
+  "translate": {
+    "button": "Traducir",
+    "opensInNewTab": "Se abre en una pestaña nueva"
+  },
+  "error": {
+    "title": "Una pequeña pausa navideña",
+    "text": "No podemos conectar con el servidor. Inténtalo de nuevo en un rato.",
+    "uncertainTitle": "No estamos seguros de que la acción se haya guardado",
+    "uncertainText": "Cuando vuelvas a conectarte, comprueba el estado en tu cuenta antes de enviar el formulario otra vez.",
+    "retry": "Intentar de nuevo",
+    "home": "Inicio",
+    "reference": "Código de error"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "text": "Puede que la dirección haya cambiado o tenga un error.",
+    "home": "Inicio"
+  },
+  "closed": {
+    "title": "El juego ha terminado",
+    "text": "Gracias por jugar. El sitio está cerrado y los datos de los participantes se han eliminado."
+  },
+  "home": {
+    "title": "Amigo Invisible Bialto",
+    "text": "Un juego para vecinos. Lo demás llegará muy pronto."
+  }
+}

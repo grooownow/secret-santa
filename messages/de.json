@@ -1,0 +1,47 @@
+{
+  "app": {
+    "name": "Wichteln"
+  },
+  "header": {
+    "home": "Startseite",
+    "signIn": "Anmelden"
+  },
+  "language": {
+    "label": "Sprache",
+    "switch": "Sprache wählen",
+    "title": "Welche Sprache passt am besten?",
+    "hint": "Die gewählte Sprache wird in der Oberfläche und in E-Mails verwendet.",
+    "save": "Sprache speichern"
+  },
+  "footer": {
+    "rules": "Regeln und Daten",
+    "madeBy": "Umgesetzt von",
+    "threads": "Threads"
+  },
+  "translate": {
+    "button": "Übersetzen",
+    "opensInNewTab": "Öffnet sich in einem neuen Tab"
+  },
+  "error": {
+    "title": "Eine kleine Winterpause",
+    "text": "Wir erreichen den Server gerade nicht. Bitte versuche es gleich noch einmal.",
+    "uncertainTitle": "Unklar, ob die Aktion gespeichert wurde",
+    "uncertainText": "Prüfe nach der Verbindung den Status in deinem Bereich, bevor du das Formular erneut abschickst.",
+    "retry": "Noch einmal versuchen",
+    "home": "Startseite",
+    "reference": "Fehlercode"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "text": "Vielleicht hat sich die Adresse geändert oder enthält einen Tippfehler.",
+    "home": "Startseite"
+  },
+  "closed": {
+    "title": "Das Spiel ist vorbei",
+    "text": "Danke fürs Mitspielen. Die Seite ist geschlossen, die Daten der Teilnehmenden wurden gelöscht."
+  },
+  "home": {
+    "title": "Wichteln Bialto",
+    "text": "Ein Spiel für Nachbarn. Alles Weitere folgt bald."
+  }
+}

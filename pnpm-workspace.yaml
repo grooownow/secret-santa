@@ -3,7 +3,9 @@ allowBuilds:
   # slot deliberately doesn't do source-map upload (see next.config.ts), so
   # the binary is never invoked; denying its postinstall keeps that decision
   # consistent and shrinks the install footprint.
+  "@parcel/watcher": false
   "@sentry/cli": false
+  "@swc/core": false
   # Transitive dep of posthog-js; postinstall only prints a sponsor message.
   core-js: false
   esbuild: true
