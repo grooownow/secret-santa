@@ -3,6 +3,7 @@ import { cookies, headers } from "next/headers";
 import { getDb } from "@/db/client";
 import { authTokens, users } from "@/db/schema";
 import { LOCALE_COOKIE, isLocale, pickLocale } from "@/i18n/locale";
+import { isAdminEmail } from "./admin-email";
 import { registrationOpen } from "./game-phase";
 import { getSettings } from "./game-settings";
 import { logger } from "./logger";
@@ -16,7 +17,8 @@ const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
 
 /**
  * Decides whether a Google sign-in may proceed. An existing email always may
- * (it opens the same account); a new email only while registration is open.
+ * (it opens the same account); a new email only while registration is open,
+ * except `ADMIN_EMAIL`, which may always sign up.
  * Also hardens account linking: if the existing account was created with a
  * password but never verified, whoever set that password did not prove they
  * own the mailbox, so the password is dropped and Google's proof of ownership
@@ -38,7 +40,11 @@ export async function googleSignInAllowed(
     .limit(1);
 
   if (!existing) {
-    return registrationOpen(now, await getSettings());
+    // The organizer can always come back, even after the deadline, so the
+    // admin area is never lost for the rest of the game.
+    return (
+      isAdminEmail(normalized) || registrationOpen(now, await getSettings())
+    );
   }
   if (!existing.emailVerified) {
     // Whoever registered this address never proved they own the mailbox, so

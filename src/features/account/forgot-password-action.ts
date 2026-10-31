@@ -36,7 +36,12 @@ export async function forgotPasswordAction(
   if (claimResetSlot(email) > 0) return { status: "sent", email };
 
   const [user] = await getDb()
-    .select({ id: users.id, email: users.email, locale: users.locale })
+    .select({
+      id: users.id,
+      email: users.email,
+      locale: users.locale,
+      emailVerified: users.emailVerified,
+    })
     .from(users)
     .where(eq(users.email, email))
     .limit(1);

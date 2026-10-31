@@ -40,6 +40,10 @@ vi.mock("next/headers", () => ({
   headers: async () => requestHeaders,
 }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("@/lib/env", async (importOriginal) => {
+  const original = await importOriginal<typeof import("@/lib/env")>();
+  return { env: { ...original.env, ADMIN_EMAIL: "kate@example.dev" } };
+});
 vi.mock("@/lib/auth", () => ({
   auth: () => authMock(),
   signIn: (...args: unknown[]) => signInMock(...args),
@@ -510,16 +514,19 @@ describe("registration", () => {
     expect(sent).toHaveLength(6);
   });
 
-  it("stops account mails for the day once the daily cap is reached", async () => {
-    const { ACCOUNT_MAIL_DAILY_CAP } =
+  it("stops sign-up mails for the day once the daily cap (minus the reset reserve) is reached", async () => {
+    const { ACCOUNT_MAIL_DAILY_CAP, RESERVED_FOR_RESETS } =
       await import("@/features/account/mail-quota");
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-12-01T12:00:00+01:00"));
     await db.insert(sentEmails).values(
-      Array.from({ length: ACCOUNT_MAIL_DAILY_CAP - 1 }, (_, i) => ({
-        key: `account-mail:2026-12-01:seed-${i}`,
-        sentAt: new Date(),
-      })),
+      Array.from(
+        { length: ACCOUNT_MAIL_DAILY_CAP - RESERVED_FOR_RESETS - 1 },
+        (_, i) => ({
+          key: `account-mail:2026-12-01:seed-${i}`,
+          sentAt: new Date(),
+        }),
+      ),
     );
     await redirectTarget(() =>
       register({ ...validRegistration, email: "last@example.com" }),
@@ -1013,6 +1020,43 @@ describe("password reset", () => {
     expect(sent).toHaveLength(2);
   });
 
+  it("keeps the end of the daily cap for resets of verified accounts", async () => {
+    const { ACCOUNT_MAIL_DAILY_CAP, RESERVED_FOR_RESETS } =
+      await import("@/features/account/mail-quota");
+    const { forgotPasswordAction } =
+      await import("@/features/account/forgot-password-action");
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-12-01T12:00:00+01:00"));
+    await userWithPassword(); // r@example.com, unverified
+    await db.insert(users).values(
+      makeUser({
+        email: "in-game@example.com",
+        emailVerified: new Date(),
+        passwordHash: await hashPassword("old-password"),
+      }),
+    );
+    // Sign-ups used everything but the reserve.
+    await db.insert(sentEmails).values(
+      Array.from(
+        { length: ACCOUNT_MAIL_DAILY_CAP - RESERVED_FOR_RESETS },
+        (_, i) => ({
+          key: `account-mail:2026-12-01:seed-${i}`,
+          sentAt: new Date(),
+        }),
+      ),
+    );
+    await redirectTarget(() =>
+      register({ ...validRegistration, email: "late@example.com" }),
+    );
+    await forgotPasswordAction({}, form({ email: "r@example.com" }));
+    await flush();
+    expect(sent).toHaveLength(0);
+
+    await forgotPasswordAction({}, form({ email: "in-game@example.com" }));
+    await flush();
+    expect(sent.map((m) => m.to)).toEqual(["in-game@example.com"]);
+  });
+
   it("limits forgot password to 5 per minute per IP", async () => {
     const { forgotPasswordAction } =
       await import("@/features/account/forgot-password-action");
@@ -1058,6 +1102,22 @@ describe("google sign-in", () => {
       false,
     );
     expect(await allUsers()).toHaveLength(0);
+  });
+
+  it("the organizer may sign up with Google or email after the deadline", async () => {
+    const { googleSignInAllowed } = await import("@/lib/auth-events");
+    const after = new Date("2026-12-20T12:00:00+01:00");
+    expect(await googleSignInAllowed("Kate@Example.dev", true, after)).toBe(
+      true,
+    );
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(after);
+    const target = await redirectTarget(() =>
+      register({ ...validRegistration, email: "kate@example.dev" }),
+    );
+    await flush();
+    expect(target).toBe("/check-email?email=kate%40example.dev");
+    expect(sent.map((m) => m.to)).toEqual(["kate@example.dev"]);
   });
 
   it("refuses a Google email that Google itself has not verified", async () => {

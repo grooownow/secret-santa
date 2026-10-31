@@ -7,6 +7,7 @@ import { z } from "zod";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
 import { getSettings, registrationOpen } from "@/features/game";
+import { isAdminEmail } from "@/lib/admin-email";
 import { hashPassword } from "@/lib/password";
 import { claimVerifySlot, underFormLimit, underIpLimit } from "./cooldown";
 import { setLocaleCookie } from "./locale-cookie";
@@ -78,7 +79,11 @@ export async function registerAction(
   if (!underFormLimit("register", email) || !(await underIpLimit("register"))) {
     return { error: "rate", ...echo };
   }
-  if (!registrationOpen(new Date(), await getSettings())) {
+  // The organizer may register at any time, so the admin is never lost.
+  if (
+    !isAdminEmail(email) &&
+    !registrationOpen(new Date(), await getSettings())
+  ) {
     return { error: "closed", ...echo };
   }
 

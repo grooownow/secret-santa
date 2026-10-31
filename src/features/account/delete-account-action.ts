@@ -11,6 +11,7 @@ import {
   postKey,
 } from "@/features/translation";
 import { DEFAULT_DATES, getPhase } from "@/lib/game-phase";
+import { isAdminEmail } from "@/lib/admin-email";
 import { signOut } from "@/lib/auth";
 import { logger } from "@/lib/logger";
 import { deletePhotos } from "@/lib/photo-storage";
@@ -66,8 +67,15 @@ export async function deleteAccountAction(
             .from(wallPosts)
             .where(inArray(wallPosts.participantId, ids))
         : [];
-      // Cascades remove participants, tokens and OAuth links.
-      await tx.delete(users).where(eq(users.id, account.id));
+      if (isAdminEmail(account.email)) {
+        // The organizer leaves the game, not the admin: the account stays.
+        if (ids.length) {
+          await tx.delete(participants).where(inArray(participants.id, ids));
+        }
+      } else {
+        // Cascades remove participants, tokens and OAuth links.
+        await tx.delete(users).where(eq(users.id, account.id));
+      }
       return {
         open: true,
         photos: [

@@ -18,6 +18,7 @@ import {
 } from "@/features/translation";
 import { DEFAULT_LOCALE, isLocale } from "@/i18n/locale";
 import { DEFAULT_DATES } from "@/lib/game-phase";
+import { isAdminEmail } from "@/lib/admin-email";
 import { logger } from "@/lib/logger";
 import { deletePhotos } from "@/lib/photo-storage";
 
@@ -216,8 +217,17 @@ export async function withdrawParticipant(
       if (change) affected.push(change);
     }
     // An adult leaves with the whole account (spec, "Данные"); a child alone.
-    if (target.kind === "adult") {
+    // The organizer's account stays (only her participants go), or she would
+    // lose the admin area for the rest of the game.
+    const [owner] = await tx
+      .select({ email: users.email })
+      .from(users)
+      .where(eq(users.id, target.userId))
+      .limit(1);
+    if (target.kind === "adult" && !isAdminEmail(owner?.email)) {
       await tx.delete(users).where(eq(users.id, target.userId));
+    } else if (target.kind === "adult") {
+      await tx.delete(participants).where(inArray(participants.id, doomedIds));
     } else {
       await tx.delete(participants).where(eq(participants.id, target.id));
     }

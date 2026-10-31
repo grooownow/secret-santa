@@ -13,7 +13,12 @@ import {
   type PendingRegistration,
 } from "./tokens";
 
-type Recipient = { id: string; email: string; locale: string };
+type Recipient = {
+  id: string;
+  email: string;
+  locale: string;
+  emailVerified?: Date | null;
+};
 
 function link(path: string, token: string): string {
   const base = env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
@@ -26,7 +31,9 @@ async function issueAndSend(
   path: string,
   pending?: PendingRegistration,
 ): Promise<void> {
-  if (!(await takeAccountMailQuota())) {
+  // Only resets of verified accounts may use the reserved part of the cap.
+  const reserved = type === "reset" && !!user.emailVerified;
+  if (!(await takeAccountMailQuota(reserved))) {
     logger.warn({ type }, "account mail skipped: daily cap reached");
     return;
   }

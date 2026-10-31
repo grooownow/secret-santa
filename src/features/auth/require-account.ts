@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
-import { env } from "@/lib/env";
+import { isAdminEmail } from "@/lib/admin-email";
 import { requireUser } from "./require-user";
 
 /** The signed-in user's row, never carrying the password hash. */
@@ -62,10 +62,5 @@ export async function requireOrganizer(): Promise<Account> {
 export function isOrganizer(
   account: Pick<Account, "email" | "emailVerified">,
 ): boolean {
-  const adminEmail = env.ADMIN_EMAIL?.trim().toLowerCase();
-  return (
-    !!adminEmail &&
-    !!account.emailVerified &&
-    account.email.trim().toLowerCase() === adminEmail
-  );
+  return !!account.emailVerified && isAdminEmail(account.email);
 }

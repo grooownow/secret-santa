@@ -384,6 +384,29 @@ describe("deleteAccountAction", () => {
   });
 });
 
+describe("organizer leaving the game", () => {
+  it("deleting the organizer's own account removes her participants but keeps the account", async () => {
+    await db.update(settings).set({ drawnAt: null });
+    vi.setSystemTime(new Date("2026-11-20T12:00:00+01:00"));
+    await asOrganizer();
+    const [kate] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, ORGANIZER_EMAIL));
+    await db
+      .insert(participants)
+      .values(makeParticipant(kate!.id, { name: "Kate" }));
+    const { deleteAccountAction } = await import("@/features/account");
+    expect(await deleteAccountAction({}, form({ confirm: "yes" }))).toEqual({
+      deleted: true,
+    });
+    expect((await db.select().from(users)).map((u) => u.email)).toEqual([
+      ORGANIZER_EMAIL,
+    ]);
+    expect(await db.select().from(participants)).toHaveLength(0);
+  });
+});
+
 describe("resendBroadcast", () => {
   it("sends only in the phase where the mailing is due", async () => {
     await asOrganizer();
