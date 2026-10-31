@@ -1,7 +1,9 @@
+import Link from "next/link";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -27,6 +29,14 @@ export default function HomePage() {
             in Claude Code to get started.
           </p>
         </CardContent>
+        <CardFooter>
+          <Link
+            href="/signin"
+            className="text-muted-foreground hover:text-foreground text-xs underline-offset-4 hover:underline"
+          >
+            Sign in
+          </Link>
+        </CardFooter>
       </Card>
     </main>
   );

@@ -8,8 +8,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
-        disallow: "/dashboard",
+        // The site is closed to search engines entirely (spec: neighbours only).
+        disallow: "/",
       },
     ],
     sitemap: `${baseURL}/sitemap.xml`,

@@ -42,7 +42,7 @@ right after the fit check. Determines which modules Step 4 installs.
 The `modules/<name>/` directories applied to this project (via
 `pnpm module:apply <name>`), in install order. Empty for `Landing`.
 
-<!-- gridfin:fill -->
+persistence
 
 ## Current phase
 
@@ -55,7 +55,7 @@ One of: `idea` / `building v1` / `live` / `paused`.
 The language the agent speaks with you in chat (artifacts stay English).
 To change it later, edit the value below (or just ask the agent to switch).
 
-<!-- gridfin:fill -->
+Russian
 
 ## Key URLs
 
