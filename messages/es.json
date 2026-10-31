@@ -45,10 +45,6 @@
     "cardText": "Los perfiles, fotos, mensajes y parejas se eliminaron el {date}. El sitio ya no admite participantes.",
     "organizer": "Organiza el juego: Kate. Seguimos en contacto por <link>Telegram</link>."
   },
-  "home": {
-    "title": "Amigo Invisible Bialto",
-    "text": "Un juego para vecinos. Lo demás llegará muy pronto."
-  },
   "emails": {
     "hello": "¡Hola!",
     "forNames": "Este correo trata sobre: {names}.",
@@ -109,8 +105,8 @@
       "cta": "Abrir mi cuenta"
     },
     "reveal": {
-      "subject": "Amigos invisibles revelados",
-      "title": "Amigos invisibles revelados",
+      "subject": "Santas revelados",
+      "title": "Santas revelados",
       "body": "Es 1 de enero y ya se ven los nombres. Entra en tu cuenta para saber quién cuidó de ti y comprobar tu pista.",
       "cta": "Abrir mi cuenta"
     },
@@ -629,7 +625,7 @@
       "note": "Nota",
       "leftOn": "dejado el {date}",
       "edited": "Tu Santa corrigió los datos; estos son los más recientes.",
-      "notFoundButton": "No encontré el regalo",
+      "notFoundButton": "El regalo no está en su sitio",
       "notFoundHint": "Pulsa si no hay nada en ese lugar. La organización recibirá el aviso.",
       "wall": "Al muro de agradecimientos"
     },
@@ -778,5 +774,177 @@
       "social": "Redes",
       "order": "Encargar un sitio web o una aplicación"
     }
+  },
+  "meta": {
+    "siteName": "Amigo Invisible Bialto",
+    "title": "Amigo Invisible para el vecindario de Bialto",
+    "description": "Un intercambio de regalos de Año Nuevo entre vecinos."
+  },
+  "landing": {
+    "metaDescription": "Un intercambio de regalos de Año Nuevo entre vecinos. Inscripciones hasta el {close}, regalos del {range}, presupuesto de unos 10–15 €.",
+    "hero": {
+      "title": "Amigo Invisible para el vecindario de Bialto",
+      "subtitle": "Regalémonos un poco de fiesta: una bonita sorpresa de un vecino a otro.",
+      "deadline": "Las inscripciones están abiertas hasta el {close}.",
+      "deadlineClosed": "Las inscripciones han terminado.",
+      "cta": "Ser un Santa",
+      "alreadyIn": "¿Ya participas? <link>Entrar</link>",
+      "toCabinet": "A mi cuenta"
+    },
+    "what": {
+      "title": "Qué es el Amigo Invisible",
+      "text": "El Amigo Invisible es un intercambio de regalos de Año Nuevo. El sorteo te asigna a un vecino para quien preparas una sorpresa. Alguien del vecindario también te regalará algo a ti, pero no sabrás quién hasta el {reveal}. Participar es gratis y cada persona compra su propio regalo."
+    },
+    "how": {
+      "title": "Cómo funciona",
+      "steps": {
+        "1": {
+          "title": "Inscríbete hasta el {close}.",
+          "text": "Indica tu nombre, edificio y piso, y deja pistas para tu Santa: qué te haría ilusión. Puedes añadir a niños a tu cuenta."
+        },
+        "2": {
+          "title": "Descubre a quién regalas.",
+          "text": "El {draw} se hace el sorteo. En tu cuenta aparecerá el vecino para quien preparas el regalo: nombre, edificio, piso y sus pistas."
+        },
+        "3": {
+          "title": "Elige un regalo.",
+          "text": "Lee las pistas de esa persona y busca algo que le guste. Precio orientativo: 10–15 €."
+        },
+        "4": {
+          "title": "Deja el regalo del {range}.",
+          "text": "Ponlo en una taquilla o buzón del edificio de esa persona y pulsa «Regalo dejado». Recibirá un correo que explica dónde buscarlo."
+        },
+        "5": {
+          "title": "Descubre quién fue tu Santa.",
+          "text": "El {reveal} se revelan los nombres. Hasta entonces puedes intentar adivinarlo."
+        }
+      }
+    },
+    "key": {
+      "title": "El juego depende de nosotros",
+      "text": "El servicio no puede garantizar que todos reciban un regalo: todo depende de nosotros, el vecindario. Si participas, por favor no olvides dejar tu regalo antes del {giftsEnd}. Tu persona asignada lo estará esperando, y el {reveal} se revelarán los nombres de todos los Santas."
+    },
+    "dates": {
+      "title": "Fechas",
+      "when": "Cuándo",
+      "what": "Qué ocurre",
+      "rows": {
+        "1": {
+          "when": "hasta el {close}",
+          "what": "inscripciones"
+        },
+        "2": {
+          "when": "{draw}",
+          "what": "sorteo"
+        },
+        "3": {
+          "when": "{range}",
+          "what": "dejamos los regalos"
+        },
+        "4": {
+          "when": "{reveal}",
+          "what": "descubrimos quién fue nuestro Santa"
+        },
+        "5": {
+          "when": "{closeDay}",
+          "what": "termina el juego y se borran los datos"
+        }
+      }
+    },
+    "faq": {
+      "title": "Preguntas y respuestas",
+      "items": {
+        "1": {
+          "q": "¿Quién puede participar?",
+          "a": "Quienes viven en Bialto, adultos y niños. Un adulto inscribe a un niño en su propia cuenta."
+        },
+        "2": {
+          "q": "¿Cuánto cuesta?",
+          "a": "Participar es gratis. Tú decides cuánto gastar, pero que sea algo modesto, de unos 10–15 €."
+        },
+        "3": {
+          "q": "¿Hace falta conocer a los vecinos?",
+          "a": "No, de eso se trata. El juego ayuda a conocer a quienes viven cerca."
+        },
+        "4": {
+          "q": "¿Me puede tocar alguien de mi piso?",
+          "a": "No. El sorteo nunca empareja a personas del mismo piso."
+        },
+        "5": {
+          "q": "No hablo el idioma de mi vecino. ¿Qué hago?",
+          "a": "El sitio funciona en ruso, ucraniano, inglés, español y alemán. Las pistas del vecino se muestran automáticamente en el idioma de tu interfaz y el original se abre con un botón."
+        },
+        "6": {
+          "q": "¿Quién verá mi dirección y mi foto?",
+          "a": "Solo tu Santa. La organización ve tu nombre, edificio y piso, pero no sabe quién regala a quién."
+        },
+        "7": {
+          "q": "¿Y si el regalo no está en su sitio?",
+          "a": "Pulsa «El regalo no está en su sitio» en tu cuenta y la organización intentará ayudar. No podemos garantizar un regalo: el juego depende de quienes participan."
+        },
+        "8": {
+          "q": "¿Y si cambio de opinión?",
+          "a": "Borra tu ficha antes del {close}. Después, escribe a la organización; se puede hasta el {lastExit}."
+        },
+        "9": {
+          "q": "¿Qué pasa con mis datos después del juego?",
+          "a": "El {closeDay} se borran todas las fichas y fotos, y el sitio se cierra."
+        }
+      }
+    },
+    "final": {
+      "title": "Alguien del vecindario ya puede ser tu Santa",
+      "text": "Solo falta unirse. Las inscripciones están abiertas hasta el {close}.",
+      "cta": "Ser un Santa"
+    },
+    "organizer": "Organiza el juego: Kate, <link>escríbele por Telegram</link>."
+  },
+  "rules": {
+    "badge": "Juego 2026–2027",
+    "title": "Reglas y datos",
+    "intro": "El juego es solo para quienes viven en Bialto. Participar es gratis y cada persona compra su propio regalo.",
+    "gift": {
+      "title": "Un regalo de vecino a vecino",
+      "text": "Las inscripciones están abiertas hasta el {close} y el sorteo se hace el {draw}. Precio orientativo: 10–15 €. El regalo se deja del {range} en una taquilla o buzón del edificio de la persona asignada. Los nombres de los Santas se revelan el {reveal}. El servicio no puede garantizar un regalo para todos: el juego depende de quienes participan."
+    },
+    "kids": {
+      "title": "Los niños participan con adultos",
+      "text": "Un adulto añade a un niño en su propia cuenta. Si la persona participante tiene menos de 14 años, da el consentimiento su padre, madre o tutor. Para participantes de 14 a 17 años, el adulto confirma que la persona adolescente está de acuerdo por sí misma. Puedes crear tu propia cuenta a partir de los 14 años; al registrarte confirmas tu edad."
+    },
+    "controller": {
+      "title": "Quién es responsable de los datos",
+      "text": "De los datos se encarga Kate, que organiza el juego. Puedes escribirle por <link>Telegram</link>."
+    },
+    "purpose": {
+      "title": "Para qué sirven los datos",
+      "text": "Solo para el juego: hacer el sorteo, mostrar a cada Santa qué le hará ilusión a su persona asignada y avisar de dónde buscar el regalo. No usamos los datos para publicidad ni los vendemos."
+    },
+    "stored": {
+      "title": "Qué guardamos y quién lo ve",
+      "text": "Correo, nombre, edificio, piso, deseos, cosas que evitar, una foto opcional y publicaciones del muro. La dirección y la foto solo las ve el Santa de esa persona. La organización ve el nombre, el edificio y el piso, pero no sabe quién regala a quién."
+    },
+    "health": {
+      "title": "Alergias y salud",
+      "text": "Las alergias y las necesidades de alimentación son datos de salud. Indicarlas es opcional. Si las indicas, solo las verá tu Santa, y el consentimiento que das al registrarte también las cubre."
+    },
+    "processors": {
+      "title": "A quién enviamos datos",
+      "intro": "El juego funciona con servicios gratuitos. Cada uno recibe solo lo que necesita para su trabajo.",
+      "vercel": "Vercel: alojamiento del sitio.",
+      "neon": "Neon: base de datos con las fichas.",
+      "blob": "Vercel Blob: almacenamiento de fotos.",
+      "gmail": "Gmail: envío de correos; recibe la dirección de correo y el texto del mensaje.",
+      "google": "Acceso con Google: si lo eliges, Google nos indica tu correo y tu nombre.",
+      "translate": "Google Traductor: el botón «Traducir» lo abre en una pestaña nueva y el texto de la publicación llega a Google. Solo ocurre cuando pulsas el botón."
+    },
+    "retention": {
+      "title": "Cuándo se borran los datos",
+      "text": "El {closeLong} se borran automáticamente todas las fichas, fotos, publicaciones, traducciones y parejas, y el sitio se cierra. Los correos enviados quedan en el buzón de Gmail de la organización; Kate borra ese buzón a mano."
+    },
+    "rights": {
+      "title": "Cómo salir y borrar tus datos",
+      "text": "Antes del sorteo, borra tu cuenta o tu ficha desde tu cuenta. Después del sorteo, el borrado se hace a través de la organización, como una baja del juego: escribe a Kate; se puede hasta el {lastExit}. A partir del {giftsStart} el borrado se ejecuta el {closeDay}."
+    },
+    "version": "Versión del texto: {version}"
   }
 }

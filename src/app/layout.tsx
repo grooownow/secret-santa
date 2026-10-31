@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Bricolage_Grotesque, Outfit } from "next/font/google";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -17,15 +17,28 @@ const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: {
-    default: "Secret Santa Bialto",
-    template: "%s · Secret Santa Bialto",
-  },
-  // The site is for neighbours only: keep it out of every search index.
-  robots: { index: false, follow: false },
-};
+// Localized by the visitor's interface language. Nothing here reads the
+// database, so error pages can still render when it is down.
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, locale] = await Promise.all([getTranslations("meta"), getLocale()]);
+  return {
+    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+    title: {
+      default: t("title"),
+      template: `%s · ${t("siteName")}`,
+    },
+    description: t("description"),
+    openGraph: {
+      siteName: t("siteName"),
+      title: t("title"),
+      description: t("description"),
+      type: "website",
+      locale,
+    },
+    // The site is for neighbours only: keep it out of every search index.
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function RootLayout({
   children,

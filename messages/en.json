@@ -45,10 +45,6 @@
     "cardText": "Profiles, photos, posts and pairs were deleted on {date}. The site no longer accepts participants.",
     "organizer": "Game organizer: Kate. Stay in touch on <link>Telegram</link>."
   },
-  "home": {
-    "title": "Secret Santa Bialto",
-    "text": "A game for neighbours. Everything else is coming soon."
-  },
   "emails": {
     "hello": "Hello!",
     "forNames": "This email is about: {names}.",
@@ -629,7 +625,7 @@
       "note": "Note",
       "leftOn": "left on {date}",
       "edited": "Your Santa corrected the details; these are the latest.",
-      "notFoundButton": "I could not find the gift",
+      "notFoundButton": "The gift is not there",
       "notFoundHint": "Press if there is nothing at this place. The organizer will be notified.",
       "wall": "To the wall of thanks"
     },
@@ -778,5 +774,177 @@
       "social": "Social",
       "order": "Order a website or an app"
     }
+  },
+  "meta": {
+    "siteName": "Secret Santa Bialto",
+    "title": "Secret Santa for Bialto neighbours",
+    "description": "A New Year gift exchange between neighbours."
+  },
+  "landing": {
+    "metaDescription": "A New Year gift exchange between neighbours. Sign up by {close}, leave gifts {range}, budget about €10–15.",
+    "hero": {
+      "title": "Secret Santa for Bialto neighbours",
+      "subtitle": "Let’s give each other a little holiday: a nice surprise from one neighbour to another.",
+      "deadline": "Sign-ups are open until {close}.",
+      "deadlineClosed": "Sign-ups are closed.",
+      "cta": "Become a Santa",
+      "alreadyIn": "Already playing? <link>Sign in</link>",
+      "toCabinet": "To my account"
+    },
+    "what": {
+      "title": "What is Secret Santa",
+      "text": "Secret Santa is a New Year gift exchange. The draw picks a neighbour for whom you prepare a surprise. Someone among your neighbours will give you a gift too, but you will only find out who on {reveal}. It is free to join, and everyone buys their own gift."
+    },
+    "how": {
+      "title": "How it works",
+      "steps": {
+        "1": {
+          "title": "Sign up by {close}.",
+          "text": "Enter your name, building and flat, and leave hints for your Santa: what would delight you. You can add children to your account."
+        },
+        "2": {
+          "title": "Meet your recipient.",
+          "text": "The draw takes place on {draw}. Your account will show the neighbour you are preparing a gift for: name, building, flat and their hints."
+        },
+        "3": {
+          "title": "Choose a gift.",
+          "text": "Read your recipient’s hints and find something they will enjoy. Price guide: €10–15."
+        },
+        "4": {
+          "title": "Leave the gift {range}.",
+          "text": "Put it in a locker or mailbox in your recipient’s building and press “Gift left”. Your neighbour will get an email saying where to look."
+        },
+        "5": {
+          "title": "Find out who your Santa was.",
+          "text": "On {reveal} the names are revealed. Until then you can try to guess."
+        }
+      }
+    },
+    "key": {
+      "title": "The game depends on us",
+      "text": "The service cannot guarantee that everyone gets a gift: it all depends on us, the neighbours. If you take part, please remember to leave your gift by {giftsEnd}. Your recipient will be waiting for it, and on {reveal} the names of all the Santas will be revealed."
+    },
+    "dates": {
+      "title": "Dates",
+      "when": "When",
+      "what": "What happens",
+      "rows": {
+        "1": {
+          "when": "until {close}",
+          "what": "sign-ups"
+        },
+        "2": {
+          "when": "{draw}",
+          "what": "the draw"
+        },
+        "3": {
+          "when": "{range}",
+          "what": "leave the gifts"
+        },
+        "4": {
+          "when": "{reveal}",
+          "what": "find out who your Santa was"
+        },
+        "5": {
+          "when": "{closeDay}",
+          "what": "the game ends and data is deleted"
+        }
+      }
+    },
+    "faq": {
+      "title": "Questions and answers",
+      "items": {
+        "1": {
+          "q": "Who can take part?",
+          "a": "Bialto residents, adults and children. An adult registers a child in their own account."
+        },
+        "2": {
+          "q": "How much does it cost?",
+          "a": "It is free to join. You decide how much to spend, but keep it modest, about €10–15."
+        },
+        "3": {
+          "q": "Do I need to know my neighbours?",
+          "a": "No, that is the point. The game helps you meet the people who live nearby."
+        },
+        "4": {
+          "q": "Could I get someone from my own flat?",
+          "a": "No. The draw never pairs people from the same flat."
+        },
+        "5": {
+          "q": "I don’t speak my neighbour’s language. What now?",
+          "a": "The site works in Russian, Ukrainian, English, Spanish and German. Your neighbour’s hints are shown automatically in your interface language, and you can open the original with one button."
+        },
+        "6": {
+          "q": "Who will see my address and photo?",
+          "a": "Only your Santa. The organizer sees your name, building and flat, but does not know who gives to whom."
+        },
+        "7": {
+          "q": "What if the gift is not there?",
+          "a": "Press “The gift is not there” in your account and the organizer will try to help. We cannot guarantee a gift: the game depends on the participants."
+        },
+        "8": {
+          "q": "What if I change my mind?",
+          "a": "Delete your profile yourself before {close}. After that, write to the organizer, which is possible until {lastExit}."
+        },
+        "9": {
+          "q": "What happens to my data after the game?",
+          "a": "On {closeDay} all profiles and photos are deleted and the site closes."
+        }
+      }
+    },
+    "final": {
+      "title": "A neighbour is already ready to be your Santa",
+      "text": "All that is left is to join. Sign-ups are open until {close}.",
+      "cta": "Become a Santa"
+    },
+    "organizer": "Game organizer: Kate, <link>write on Telegram</link>."
+  },
+  "rules": {
+    "badge": "Game 2026–2027",
+    "title": "Rules and data",
+    "intro": "The game is only for Bialto residents. It is free to join, and everyone buys their own gift.",
+    "gift": {
+      "title": "A gift from one neighbour to another",
+      "text": "Sign-ups are open until {close} and the draw takes place on {draw}. Price guide: €10–15. Leave the gift {range} in a locker or mailbox of your recipient’s building. The Santas’ names are revealed on {reveal}. The service cannot guarantee a gift for everyone: the game depends on the participants."
+    },
+    "kids": {
+      "title": "Children take part with adults",
+      "text": "An adult adds a child in their own account. For a participant under 14, a parent or guardian gives consent. For a participant aged 14 to 17, the adult confirms that the teenager agrees themselves. You can create your own account from the age of 14; you confirm your age when you register."
+    },
+    "controller": {
+      "title": "Who is responsible for the data",
+      "text": "Kate, the organizer of the game, is responsible for the data. You can write to her on <link>Telegram</link>."
+    },
+    "purpose": {
+      "title": "Why we need the data",
+      "text": "Only for the game: to run the draw, to show a Santa what will delight their recipient, and to tell the recipient where to look for the gift. We do not use the data for advertising and we do not sell it."
+    },
+    "stored": {
+      "title": "What we store and who sees it",
+      "text": "Email, name, building, flat, wishes, things to avoid, an optional photo and wall posts. The address and photo are visible only to the Santa of that participant. The organizer sees the name, building and flat, but does not know who gives to whom."
+    },
+    "health": {
+      "title": "Allergies and health",
+      "text": "Allergies and dietary needs count as health data. Providing them is optional. If you do, only your Santa will see them, and the consent you give at registration covers them too."
+    },
+    "processors": {
+      "title": "Who we share data with",
+      "intro": "The game runs on free services. Each one receives only what it needs to do its job.",
+      "vercel": "Vercel: hosting of the site.",
+      "neon": "Neon: the database with the profiles.",
+      "blob": "Vercel Blob: storage of photos.",
+      "gmail": "Gmail: sending emails; it receives the email address and the text of the message.",
+      "google": "Google sign-in: if you choose it, Google tells us your email and name.",
+      "translate": "Google Translate: the “Translate” button opens it in a new tab and the text of the post goes to Google. This happens only when you press the button."
+    },
+    "retention": {
+      "title": "When the data is deleted",
+      "text": "On {closeLong} all profiles, photos, posts, translations and pairs are deleted automatically and the site closes. Sent emails remain in the organizer’s Gmail mailbox; Kate deletes that mailbox by hand."
+    },
+    "rights": {
+      "title": "How to leave and delete your data",
+      "text": "Before the draw, delete your account or profile yourself in your account. After the draw, deletion goes through the organizer, like dropping out of the game: write to Kate, which is possible until {lastExit}. From {giftsStart} the deletion is carried out on {closeDay}."
+    },
+    "version": "Text version: {version}"
   }
 }

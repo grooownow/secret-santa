@@ -45,10 +45,6 @@
     "cardText": "Profile, Fotos, Beiträge und Paare wurden am {date} gelöscht. Die Seite nimmt keine Teilnehmenden mehr auf.",
     "organizer": "Organisation des Spiels: Kate. Wir bleiben in Kontakt über <link>Telegram</link>."
   },
-  "home": {
-    "title": "Wichteln Bialto",
-    "text": "Ein Spiel für Nachbarn. Alles Weitere folgt bald."
-  },
   "emails": {
     "hello": "Hallo!",
     "forNames": "Diese E-Mail betrifft: {names}.",
@@ -69,7 +65,7 @@
     "application": {
       "subject": "Anmeldung eingegangen",
       "title": "Anmeldung eingegangen",
-      "body": "Deine Wichtel-Anmeldung ist eingegangen. Wir schreiben dir, sobald die Auslosung stattgefunden hat.",
+      "body": "Deine Anmeldung zum Wichteln ist eingegangen. Wir schreiben dir, sobald die Auslosung stattgefunden hat.",
       "cta": "Konto öffnen"
     },
     "draw": {
@@ -109,9 +105,9 @@
       "cta": "Konto öffnen"
     },
     "reveal": {
-      "subject": "Wichtel enthüllt",
-      "title": "Wichtel enthüllt",
-      "body": "Es ist der 1. Januar und die Namen der Wichtel sind offen. Schau in dein Konto, wer dich beschenkt hat, und prüfe deine Vermutung.",
+      "subject": "Santas enthüllt",
+      "title": "Santas enthüllt",
+      "body": "Es ist der 1. Januar und die Namen der Santas sind offen. Schau in dein Konto, wer dich beschenkt hat, und prüfe deine Vermutung.",
       "cta": "Konto öffnen"
     },
     "gift": {
@@ -135,7 +131,7 @@
       "processors": "Wünsche und Pinnwand-Beiträge werden automatisch vom Dienst Groq übersetzt. Es wird nur der Text selbst gesendet, ohne Namen und Adresse."
     },
     "register": {
-      "title": "Wichtel werden",
+      "title": "Santa werden",
       "text": "Ein Konto für dich und deine Kinder. Die Teilnahme ist kostenlos.",
       "email": "E-Mail",
       "emailPlaceholder": "name@example.com",
@@ -168,7 +164,7 @@
       "submit": "Anmelden",
       "pending": "Wird angemeldet…",
       "noAccount": "Noch nicht dabei?",
-      "join": "Wichtel werden",
+      "join": "Santa werden",
       "notice": {
         "denied": "Die Anmeldung ist geschlossen: neue Konten werden nicht angelegt. Wenn du schon ein Konto hast, melde dich mit derselben E-Mail an.",
         "failed": "Die Anmeldung mit Google hat nicht geklappt. Versuche es erneut."
@@ -190,7 +186,7 @@
     },
     "verified": {
       "title": "E-Mail bestätigt",
-      "text": "Jetzt ist alles bereit. Melde dich an und fülle deinen Steckbrief aus, damit dein Wichtel weiß, was er dir schenken kann.",
+      "text": "Jetzt ist alles bereit. Melde dich an und fülle deinen Steckbrief aus, damit dein Santa weiß, was dich freut.",
       "signIn": "Anmelden"
     },
     "verifyExpired": {
@@ -258,7 +254,7 @@
       "tellAboutYou": "Erzähl von dir",
       "inGameText": "Bis zur Auslosung kannst du Kinder hinzufügen oder Steckbriefe ändern.",
       "notReady": "Dein Steckbrief ist noch nicht fertig",
-      "notReadyText": "Ohne Name, Haus und Wohnung können wir keinen Wichtel für dich finden. Fülle ihn bis {date} aus.",
+      "notReadyText": "Ohne Name, Haus und Wohnung können wir keinen Santa für dich finden. Fülle ihn bis {date} aus.",
       "drawOn": "Die Auslosung ist am {date}",
       "drawText": "Wir schreiben dir, sobald sie stattgefunden hat. Bis dahin lassen sich Steckbriefe ändern.",
       "family": "Deine Familie im Spiel",
@@ -269,7 +265,7 @@
       "edit": "Steckbrief bearbeiten",
       "addChild": "Kind hinzufügen",
       "fillProfile": "Steckbrief ausfüllen",
-      "hintTitle": "Was deinen Wichtel freuen würde",
+      "hintTitle": "Was deinen Santa freuen würde",
       "hintText": "Nenne ein paar Wünsche und was man besser nicht schenkt. Ein paar Worte genügen.",
       "drawLine": "Die Auslosung ist am {draw}."
     },
@@ -283,7 +279,7 @@
     "adult": {
       "title": "Lernen wir uns kennen",
       "titleEdit": "Dein Steckbrief",
-      "intro": "Das sieht nur dein Wichtel. Die Adresse hilft ihm, deine Wohnung zu finden.",
+      "intro": "Das sieht nur dein Santa. Die Adresse hilft, deine Wohnung zu finden.",
       "name": "Name",
       "namePlaceholder": "Wie sollen wir dich nennen",
       "building": "Haus",
@@ -324,7 +320,7 @@
       "upload": "Foto hochladen",
       "change": "Foto ersetzen",
       "preparing": "Foto wird vorbereitet…",
-      "hint": "Jedes Foto geht, auch vom iPhone. Es wird automatisch verkleinert. Nur dein Wichtel sieht es.",
+      "hint": "Jedes Foto geht, auch vom iPhone. Es wird automatisch verkleinert. Nur dein Santa sieht es.",
       "failed": "Dieses Foto ließ sich nicht öffnen. Wähle ein anderes oder speichere den Steckbrief ohne Foto; dein Text bleibt erhalten.",
       "remove": "Gespeichertes Foto entfernen"
     },
@@ -367,13 +363,13 @@
       "drawMail": "E-Mail zur Auslosung",
       "sentOf": "{sent} von {total} gesendet",
       "participantsLink": "Teilnehmende",
-      "backupLink": "Ersatz-Wichtel gesucht",
+      "backupLink": "Ersatz-Santa gesucht",
       "collectUntil": "Bis {date} · Madrid",
       "beforeTitle": "Vor der Auslosung",
       "beforeText": "Prüfe die Bewohnerliste und entferne fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Profil teil.",
       "giftsTitle": "Zeit der Geschenke",
       "revealTitle": "Santas aufgedeckt",
-      "helpTitle": "Nachbarn brauchen Hilfe",
+      "helpTitle": "Hilfe in der Nachbarschaft gesucht",
       "helpText": "Ohne Santa: {count}. Organisiere das Geschenk selbst oder bitte jemanden aus der Nachbarschaft.",
       "waitingBackup": "Warten auf einen Ersatz-Santa",
       "backupNeeded": "Auf der Ersatzliste",
@@ -629,7 +625,7 @@
       "note": "Zettel",
       "leftOn": "hinterlegt am {date}",
       "edited": "Dein Santa hat die Angaben korrigiert; das sind die neuesten.",
-      "notFoundButton": "Ich habe das Geschenk nicht gefunden",
+      "notFoundButton": "Das Geschenk ist nicht da",
       "notFoundHint": "Drücke, wenn dort nichts liegt. Die Organisation wird benachrichtigt.",
       "wall": "Zur Dankeswand"
     },
@@ -663,15 +659,15 @@
       "option": "{name} · Haus {building}",
       "submit": "Tipp speichern",
       "pending": "Wird gespeichert…",
-      "hint": "Die Liste zeigt nur Name und Haus: Adressen und Fotos anderer Teilnehmer bleiben verborgen.",
+      "hint": "Die Liste zeigt nur Name und Haus: Adressen und Fotos anderer Teilnehmender bleiben verborgen.",
       "savedTitle": "Tipp auf {name}",
       "savedBox": "Tipp gespeichert",
       "savedHint": "Am 1. Januar erfahren wir, ob er stimmt.",
       "change": "Tipp ändern",
       "changeUntil": "Die Wahl kann bis Ende {date} geändert werden.",
       "errors": {
-        "invalid": "Wähle einen Teilnehmer aus der Liste.",
-        "notFound": "Teilnehmer nicht gefunden.",
+        "invalid": "Wähle eine teilnehmende Person aus der Liste.",
+        "notFound": "Teilnehmende Person nicht gefunden.",
         "closed": "Tipps werden nicht mehr angenommen.",
         "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal."
       }
@@ -778,5 +774,177 @@
       "social": "Soziale Netze",
       "order": "Website oder App bestellen"
     }
+  },
+  "meta": {
+    "siteName": "Wichteln Bialto",
+    "title": "Wichteln für die Nachbarschaft in Bialto",
+    "description": "Ein Geschenkeaustausch zum Jahreswechsel unter Nachbarn."
+  },
+  "landing": {
+    "metaDescription": "Ein Geschenkeaustausch zum Jahreswechsel unter Nachbarn. Anmeldung bis {close}, Geschenke {range}, Budget etwa 10–15 €.",
+    "hero": {
+      "title": "Wichteln für die Nachbarschaft in Bialto",
+      "subtitle": "Schenken wir einander ein bisschen Festtagsfreude: eine schöne Überraschung von Nachbar zu Nachbar.",
+      "deadline": "Anmeldung bis {close}.",
+      "deadlineClosed": "Die Anmeldung ist beendet.",
+      "cta": "Santa werden",
+      "alreadyIn": "Schon dabei? <link>Anmelden</link>",
+      "toCabinet": "Zu meinem Konto"
+    },
+    "what": {
+      "title": "Was ist Wichteln",
+      "text": "Beim Wichteln tauscht man zum Jahreswechsel Geschenke. Die Auslosung bestimmt eine Person aus der Nachbarschaft, für die du eine Überraschung vorbereitest. Auch du wirst von jemandem aus der Nachbarschaft beschenkt, aber wer das ist, erfährst du erst am {reveal}. Die Teilnahme ist kostenlos, das Geschenk kauft jede Person selbst."
+    },
+    "how": {
+      "title": "So funktioniert es",
+      "steps": {
+        "1": {
+          "title": "Melde dich bis {close} an.",
+          "text": "Gib Namen, Haus und Wohnung an und hinterlasse Hinweise für deinen Santa: was dich freuen würde. Kinder kannst du deinem Konto hinzufügen."
+        },
+        "2": {
+          "title": "Erfahre, wen du beschenkst.",
+          "text": "Am {draw} findet die Auslosung statt. In deinem Konto erscheint die Person, für die du ein Geschenk vorbereitest: Name, Haus, Wohnung und ihre Hinweise."
+        },
+        "3": {
+          "title": "Wähle ein Geschenk.",
+          "text": "Lies die Hinweise der beschenkten Person und finde etwas, das sie freut. Preisrahmen: 10–15 €."
+        },
+        "4": {
+          "title": "Lege das Geschenk {range} ab.",
+          "text": "Lege es in ein Schließfach oder einen Briefkasten im Haus der beschenkten Person und tippe auf „Geschenk abgelegt“. Sie bekommt eine E-Mail, wo sie suchen soll."
+        },
+        "5": {
+          "title": "Erfahre, wer dein Santa war.",
+          "text": "Am {reveal} werden die Namen aufgedeckt. Bis dahin kannst du raten."
+        }
+      }
+    },
+    "key": {
+      "title": "Das Spiel lebt von uns",
+      "text": "Der Dienst kann nicht garantieren, dass jede Person ein Geschenk bekommt: Das hängt von uns allen in der Nachbarschaft ab. Wenn du mitmachst, denke bitte daran, dein Geschenk bis zum {giftsEnd} abzulegen. Deine beschenkte Person wartet darauf, und am {reveal} werden die Namen aller Santas aufgedeckt."
+    },
+    "dates": {
+      "title": "Termine",
+      "when": "Wann",
+      "what": "Was passiert",
+      "rows": {
+        "1": {
+          "when": "bis {close}",
+          "what": "Anmeldung"
+        },
+        "2": {
+          "when": "{draw}",
+          "what": "Auslosung"
+        },
+        "3": {
+          "when": "{range}",
+          "what": "Geschenke ablegen"
+        },
+        "4": {
+          "when": "{reveal}",
+          "what": "wir erfahren, wer unser Santa war"
+        },
+        "5": {
+          "when": "{closeDay}",
+          "what": "das Spiel endet, die Daten werden gelöscht"
+        }
+      }
+    },
+    "faq": {
+      "title": "Fragen und Antworten",
+      "items": {
+        "1": {
+          "q": "Wer kann mitmachen?",
+          "a": "Alle, die in Bialto wohnen, Erwachsene und Kinder. Eine erwachsene Person meldet ein Kind in ihrem eigenen Konto an."
+        },
+        "2": {
+          "q": "Was kostet es?",
+          "a": "Die Teilnahme ist kostenlos. Wie viel du ausgibst, entscheidest du selbst, aber es sollte etwas Preiswertes sein, etwa 10–15 €."
+        },
+        "3": {
+          "q": "Muss ich die Nachbarschaft kennen?",
+          "a": "Nein, genau darum geht es. Das Spiel hilft, die Menschen in der Nähe kennenzulernen."
+        },
+        "4": {
+          "q": "Kann ich jemanden aus meiner Wohnung bekommen?",
+          "a": "Nein. Die Auslosung führt nie Personen aus derselben Wohnung zusammen."
+        },
+        "5": {
+          "q": "Ich spreche die Sprache meiner Nachbarschaft nicht. Was tun?",
+          "a": "Die Seite funktioniert auf Russisch, Ukrainisch, Englisch, Spanisch und Deutsch. Die Hinweise der Nachbarn werden automatisch in deiner Sprache angezeigt, das Original öffnest du mit einem Tipp."
+        },
+        "6": {
+          "q": "Wer sieht meine Adresse und mein Foto?",
+          "a": "Nur dein Santa. Die Organisation sieht Name, Haus und Wohnung, weiß aber nicht, wer wen beschenkt."
+        },
+        "7": {
+          "q": "Was tun, wenn das Geschenk nicht da ist?",
+          "a": "Tippe in deinem Konto auf „Das Geschenk ist nicht da“, dann versucht die Organisation zu helfen. Ein Geschenk können wir nicht garantieren, das Spiel lebt von den Teilnehmenden."
+        },
+        "8": {
+          "q": "Und wenn ich es mir anders überlege?",
+          "a": "Lösche dein Profil bis {close} selbst. Später schreib der Organisation, das ist bis {lastExit} möglich."
+        },
+        "9": {
+          "q": "Was passiert nach dem Spiel mit meinen Daten?",
+          "a": "Am {closeDay} werden alle Profile und Fotos gelöscht, und die Seite wird geschlossen."
+        }
+      }
+    },
+    "final": {
+      "title": "Jemand aus der Nachbarschaft ist schon bereit, dein Santa zu sein",
+      "text": "Du musst nur noch mitmachen. Anmeldung bis {close}.",
+      "cta": "Santa werden"
+    },
+    "organizer": "Organisation des Spiels: Kate, <link>auf Telegram schreiben</link>."
+  },
+  "rules": {
+    "badge": "Spiel 2026–2027",
+    "title": "Regeln und Daten",
+    "intro": "Das Spiel ist nur für Menschen aus Bialto. Die Teilnahme ist kostenlos, das Geschenk kauft jede Person selbst.",
+    "gift": {
+      "title": "Ein Geschenk von Nachbar zu Nachbar",
+      "text": "Die Anmeldung läuft bis {close}, die Auslosung findet am {draw} statt. Preisrahmen: 10–15 €. Das Geschenk wird {range} in ein Schließfach oder einen Briefkasten im Haus der beschenkten Person gelegt. Die Namen der Santas werden am {reveal} aufgedeckt. Der Dienst kann nicht garantieren, dass jede Person ein Geschenk bekommt: Das Spiel lebt von den Teilnehmenden."
+    },
+    "kids": {
+      "title": "Kinder machen mit Erwachsenen mit",
+      "text": "Ein Kind wird von einer erwachsenen Person in ihrem eigenen Konto hinzugefügt. Bei Teilnehmenden unter 14 Jahren willigen die Eltern oder Erziehungsberechtigten ein. Bei Teilnehmenden von 14 bis 17 Jahren bestätigt die erwachsene Person, dass der oder die Jugendliche selbst einverstanden ist. Ein eigenes Konto ist ab 14 Jahren möglich, bei der Anmeldung bestätigst du dein Alter."
+    },
+    "controller": {
+      "title": "Wer für die Daten verantwortlich ist",
+      "text": "Für die Daten ist Kate verantwortlich, die das Spiel organisiert. Du erreichst sie auf <link>Telegram</link>."
+    },
+    "purpose": {
+      "title": "Wofür wir die Daten brauchen",
+      "text": "Nur für das Spiel: die Auslosung durchführen, dem Santa zeigen, was die beschenkte Person freut, und mitteilen, wo das Geschenk liegt. Wir verwenden die Daten nicht für Werbung und verkaufen sie nicht."
+    },
+    "stored": {
+      "title": "Was wir speichern und wer es sieht",
+      "text": "E-Mail, Name, Haus, Wohnung, Wünsche, Dinge, die man besser nicht schenkt, ein optionales Foto und Beiträge an der Dankeswand. Adresse und Foto sieht nur der Santa dieser Person. Die Organisation sieht Name, Haus und Wohnung, weiß aber nicht, wer wen beschenkt."
+    },
+    "health": {
+      "title": "Allergien und Gesundheit",
+      "text": "Allergien und Ernährungsbedürfnisse zählen zu den Gesundheitsdaten. Die Angabe ist freiwillig. Wenn du sie angibst, sieht sie nur dein Santa, und die Einwilligung bei der Anmeldung umfasst sie ebenfalls."
+    },
+    "processors": {
+      "title": "An wen wir Daten weitergeben",
+      "intro": "Das Spiel läuft auf kostenlosen Diensten. Jeder erhält nur das, was er für seine Aufgabe braucht.",
+      "vercel": "Vercel: Hosting der Seite.",
+      "neon": "Neon: Datenbank mit den Profilen.",
+      "blob": "Vercel Blob: Speicherung der Fotos.",
+      "gmail": "Gmail: Versand der E-Mails; dorthin gelangen die E-Mail-Adresse und der Text der Nachricht.",
+      "google": "Anmeldung mit Google: Wenn du sie wählst, teilt Google uns deine E-Mail und deinen Namen mit.",
+      "translate": "Google Übersetzer: Die Schaltfläche „Übersetzen“ öffnet ihn in einem neuen Tab, und der Text des Beitrags gelangt zu Google. Das geschieht nur, wenn du die Schaltfläche drückst."
+    },
+    "retention": {
+      "title": "Wann die Daten gelöscht werden",
+      "text": "Am {closeLong} werden alle Profile, Fotos, Beiträge, Übersetzungen und Paare automatisch gelöscht, und die Seite wird geschlossen. Versendete E-Mails bleiben im Gmail-Postfach der Organisation, Kate löscht dieses Postfach von Hand."
+    },
+    "rights": {
+      "title": "Wie du aussteigst und Daten löschst",
+      "text": "Vor der Auslosung löschst du dein Konto oder Profil selbst in deinem Konto. Nach der Auslosung läuft das Löschen über die Organisation, wie ein Ausstieg aus dem Spiel: Schreibe Kate, das ist bis {lastExit} möglich. Ab dem {giftsStart} wird das Löschen am {closeDay} ausgeführt."
+    },
+    "version": "Textversion: {version}"
   }
 }

@@ -1,27 +1,39 @@
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
-import { SiteFooter, SiteHeader } from "@/features/game";
+import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
+import { getSettings } from "@/features/game";
+import { LandingPage, gameDates } from "@/features/landing";
+import { getSessionUser } from "@/lib/session";
 
-// Placeholder: the real landing page is built in a later task.
+// Link preview for the house chat: title and description from the spec, with
+// the dates taken from the settings.
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, locale, settings] = await Promise.all([
+    getTranslations(),
+    getLocale(),
+    getSettings(),
+  ]);
+  const title = t("meta.title");
+  const description = t("landing.metaDescription", gameDates(settings, locale));
+  return {
+    title: { absolute: title },
+    description,
+    openGraph: { title, description, type: "website" },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
+
 export default async function HomePage() {
-  const [t, h] = await Promise.all([
-    getTranslations("home"),
-    getTranslations("header"),
+  const [locale, settings, user] = await Promise.all([
+    getLocale(),
+    getSettings(),
+    getSessionUser(),
   ]);
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader
-        action={
-          <Link href="/signin" className="text-santa-ink text-[13px]">
-            {h("signIn")}
-          </Link>
-        }
-      />
-      <main className="flex flex-1 flex-col gap-5 px-[26px] py-7">
-        <h1 className="text-[26px] leading-tight font-bold">{t("title")}</h1>
-        <p className="text-santa-muted text-sm leading-relaxed">{t("text")}</p>
-      </main>
-      <SiteFooter />
-    </div>
+    <LandingPage
+      settings={settings}
+      now={new Date()}
+      locale={locale}
+      signedIn={!!user}
+    />
   );
 }

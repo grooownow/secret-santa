@@ -1,6 +1,5 @@
 "use client";
 
-import type { Route } from "next";
 import { useTranslations } from "next-intl";
 import { LOCALES, LOCALE_NAMES } from "@/i18n/locale";
 import {
@@ -9,9 +8,6 @@ import {
   SelectInput,
   TextLink,
 } from "@/components/form-ui";
-
-/** The rules page is built in a later task, so typedRoutes needs the cast. */
-const RULES_HREF = "/rules" as Route;
 
 /** Language select, consent and 14+ checkboxes, shared by register and /welcome. */
 export function ConsentFields({
@@ -41,7 +37,7 @@ export function ConsentFields({
           {t("age")}
         </CheckboxRow>
         <p className="text-santa-muted text-xs">{t("processors")}</p>
-        <TextLink href={RULES_HREF}>{t("rules")}</TextLink>
+        <TextLink href="/rules">{t("rules")}</TextLink>
       </div>
     </>
   );

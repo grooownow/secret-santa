@@ -1,9 +1,8 @@
-// This is a TEMPLATE — the /gridfin agent rebrands this for the user's product.
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const alt = "Gridfin";
+export const alt = "Secret Santa Bialto";
 export const size = {
   width: 1200,
   height: 630,
@@ -11,44 +10,46 @@ export const size = {
 
 export const contentType = "image/png";
 
+// Link preview card: title on the brand green with the yellow ribbon. The
+// default font has no Cyrillic, so the card is in Latin letters only (no
+// custom font is chosen yet). Metadata images are exempt from the token rule.
 export default function Image() {
   return new ImageResponse(
     <div
       style={{
-        fontSize: 128,
-        background: "#0a0a0a",
+        background: "#183d26",
         width: "100%",
         height: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 40,
-        padding: 40,
+        gap: 36,
       }}
     >
       <div
         style={{
-          fontSize: 80,
+          fontSize: 112,
           fontWeight: 700,
-          color: "white",
+          color: "#ffffff",
           letterSpacing: "-2px",
         }}
       >
-        Gridfin
+        Secret Santa
       </div>
       <div
         style={{
-          fontSize: 40,
-          color: "#a1a1a1",
-          textAlign: "center",
+          background: "#fff000",
+          color: "#183d26",
+          fontSize: 56,
+          fontWeight: 700,
+          padding: "14px 56px",
+          borderRadius: 999,
         }}
       >
-        Agent-native SaaS starter for Claude Code
+        Bialto
       </div>
     </div>,
-    {
-      ...size,
-    },
+    { ...size },
   );
 }

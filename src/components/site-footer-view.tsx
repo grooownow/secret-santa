@@ -1,4 +1,3 @@
-import type { Route } from "next";
 import Link from "next/link";
 
 const DEVELOPER_URL = "https://ludvik4.dev";
@@ -19,11 +18,7 @@ export interface SiteFooterLabels {
 export function SiteFooterView({ labels }: { labels: SiteFooterLabels }) {
   return (
     <footer className="border-santa-line flex flex-col gap-3 border-t px-[26px] py-5">
-      {/* The rules page is built in a later task. */}
-      <Link
-        href={"/rules" as Route}
-        className="text-santa-green text-xs leading-relaxed"
-      >
+      <Link href="/rules" className="text-santa-green text-xs leading-relaxed">
         {labels.rules}
       </Link>
       <p className="text-santa-muted flex items-center gap-[3px] pt-[5px] text-[10px]">
