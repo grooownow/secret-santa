@@ -353,17 +353,21 @@ export async function retryMissingTranslations(
       failed += 1;
       streak += 1;
       logger.warn({ err: error, sourceKey: source.key }, "retry failed");
-      // oxlint-disable-next-line no-await-in-loop
-      await db
-        .insert(translationAttempts)
-        .values({ sourceKey: source.key })
-        .onConflictDoUpdate({
-          target: translationAttempts.sourceKey,
-          set: {
-            attempts: sql`${translationAttempts.attempts} + 1`,
-            lastAttemptAt: new Date(),
-          },
-        });
+      try {
+        // oxlint-disable-next-line no-await-in-loop
+        await db
+          .insert(translationAttempts)
+          .values({ sourceKey: source.key })
+          .onConflictDoUpdate({
+            target: translationAttempts.sourceKey,
+            set: {
+              attempts: sql`${translationAttempts.attempts} + 1`,
+              lastAttemptAt: new Date(),
+            },
+          });
+      } catch (attemptError) {
+        logger.warn({ err: attemptError }, "could not record the attempt");
+      }
     }
   }
   return { done, failed };

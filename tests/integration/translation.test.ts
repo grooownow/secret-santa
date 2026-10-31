@@ -330,10 +330,43 @@ describe("auto-translation", () => {
     ).toBe("[en] books");
   });
 
-  it("retry puts recently failed sources last and honours the time budget", async () => {
+  it("retry puts recently failed sources last", async () => {
+    const user = await signedInUser("en");
+    const insert = (name: string) =>
+      db
+        .insert(participants)
+        .values(
+          makeParticipant(user.id, {
+            kind: "child",
+            name,
+            wishes: `w-${name}`,
+          }),
+        )
+        .returning();
+    const [a] = await insert("a");
+    // "a" fails once and is recorded as recently failed.
+    failing = true;
+    expect(await retryMissingTranslations(10)).toEqual({ done: 0, failed: 1 });
+    failing = false;
+    // "c" appears later, but it was never tried, so it goes first.
+    const [c] = await insert("c");
+    calls.length = 0;
+    expect(await retryMissingTranslations(1)).toEqual({ done: 1, failed: 0 });
+    expect(calls.map((x) => x.text)).toEqual(["w-c"]);
+    const keyA = `participant:${a?.id}:wishes`;
+    const keyC = `participant:${c?.id}:wishes`;
+    expect(
+      (await getLocalized([{ key: keyC, original: "w-c" }], "de")).get(keyC),
+    ).toBe("[de] w-c");
+    expect(
+      (await getLocalized([{ key: keyA, original: "w-a" }], "de")).get(keyA),
+    ).toBeNull();
+  });
+
+  it("retry honours the time budget", async () => {
     const user = await signedInUser("en");
     await db.insert(participants).values(
-      ["a", "b", "c"].map((n) =>
+      ["a", "b"].map((n) =>
         makeParticipant(user.id, {
           kind: "child",
           name: n,
@@ -341,26 +374,19 @@ describe("auto-translation", () => {
         }),
       ),
     );
-    // "w-a" always fails; it must not block the others on the next run.
-    const bad: Translator = {
-      async translate(text, _f, to) {
-        if (text === "w-a") throw new Error("poison");
-        return Object.fromEntries(to.map((l) => [l, `[${l}] ${text}`]));
-      },
-    };
-    setTranslatorForTests(bad);
-    expect(await retryMissingTranslations(10)).toEqual({ done: 2, failed: 1 });
-    expect(await retryMissingTranslations(1)).toEqual({ done: 0, failed: 1 });
-
-    // A slow translator exhausts a tiny budget after the first item.
     setTranslatorForTests({
-      async translate(text, _f, to) {
+      async translate(text, from, to) {
+        calls.push({ text, from, to });
         await new Promise((r) => setTimeout(r, 30));
         return Object.fromEntries(to.map((l) => [l, `[${l}] ${text}`]));
       },
     });
-    const result = await retryMissingTranslations(10, 10);
-    expect(result).toEqual({ done: 1, failed: 0 });
+    // The 10 ms budget is spent by the first item; the second is skipped.
+    expect(await retryMissingTranslations(10, 10)).toEqual({
+      done: 1,
+      failed: 0,
+    });
+    expect(calls).toHaveLength(1);
   });
 
   it("retry stops after consecutive failures", async () => {
