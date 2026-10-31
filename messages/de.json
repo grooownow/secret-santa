@@ -367,7 +367,18 @@
       "backupLink": "Ersatz-Wichtel gesucht",
       "collectUntil": "Bis {date} · Madrid",
       "beforeTitle": "Vor der Auslosung",
-      "beforeText": "Prüfen Sie die Bewohnerliste und entfernen Sie fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Profil teil."
+      "beforeText": "Prüfen Sie die Bewohnerliste und entfernen Sie fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Profil teil.",
+      "giftsTitle": "Zeit der Geschenke",
+      "revealTitle": "Santas aufgedeckt",
+      "helpTitle": "Nachbarn brauchen Hilfe",
+      "helpText": "Ohne Santa: {count}. Organisiert das Geschenk selbst oder bittet eine Nachbarin oder einen Nachbarn.",
+      "waitingBackup": "Warten auf einen Ersatz-Santa",
+      "backupNeeded": "Auf der Ersatzliste",
+      "backupOrganized": "Davon organisiert",
+      "giftsOpenMail": "E-Mail vom 25. Dezember",
+      "reminderMail": "Erinnerung vom 29. Dezember",
+      "revealMail": "E-Mail vom 1. Januar",
+      "purgeNote": "Am {date} werden alle Profile, Fotos, Beiträge und Paare automatisch gelöscht. Das Gmail-Postfach muss von Hand geleert werden."
     },
     "draw": {
       "start": "Auslosung starten",
@@ -395,6 +406,78 @@
       "confirmReady": "Bereite Teilnehmende: {count}",
       "confirmExcluded": "Unbestätigt und nicht in der Auslosung: {count}. Prüfen Sie die Liste vor dem Start.",
       "confirmMail": "Teilnehmende erhalten eine E-Mail nur mit dem Link zum Bereich. Die Organisation sieht die Paare nicht."
+    },
+    "participants": {
+      "title": "Unsere Teilnehmenden",
+      "intro": {
+        "collect": "Teilnehmende: {count}. Entfernt fremde Anmeldungen vor der Auslosung.",
+        "waiting": "Teilnehmende: {count}. Der Ausstieg ist bis zum 24. Dezember möglich.",
+        "later": "Teilnehmende: {count}. Ab dem 25. Dezember gibt es keinen Ausstieg."
+      },
+      "search": "Suchen",
+      "searchPlaceholder": "Name, Haus oder Wohnung",
+      "empty": "Niemand gefunden.",
+      "flat": "Haus {building}, Wohnung {apartment}",
+      "verified": "E-Mail bestätigt",
+      "unverified": "E-Mail nicht bestätigt",
+      "remove": "Anmeldung löschen",
+      "removeConfirm": "Anmeldung löschen? Profil, Foto und Daten der Person werden gelöscht.",
+      "removeFailed": "Löschen hat nicht geklappt. Bitte versuche es noch einmal.",
+      "withdraw": "Ausstieg"
+    },
+    "withdraw": {
+      "title": "Eine Person steigt aus dem Spiel aus",
+      "flat": "Haus {building}, Wohnung {apartment}",
+      "boxTitle": "Möglich bis zum 24. Dezember",
+      "boxText": "Der Santa dieser Person bekommt deren Beschenkte oder Beschenkten und eine E-Mail über die Änderung. Die Person verschwindet samt Profil und Foto aus dem Spiel.",
+      "backupNote": "Wohnt die neue beschenkte Person in derselben Wohnung wie die schenkende, landet sie auf der Liste „Ersatz-Santa gesucht“, und die schenkende Person bekommt eine E-Mail, dass sie niemanden mehr beschenken muss.",
+      "accountNote": "Steigt eine erwachsene Person aus, steigen auch alle Teilnehmenden ihres Kontos aus.",
+      "confirm": "Ausstieg bestätigen",
+      "running": "Wird ausgetragen…",
+      "cancel": "Abbrechen",
+      "closed": "Der Ausstieg ist nicht mehr möglich: er gilt bis zum 24. Dezember.",
+      "notFound": "Diese Person ist schon weg."
+    },
+    "backup": {
+      "title": "Ersatz-Santa gesucht",
+      "intro": "Das Geschenk kann selbst vorbereitet oder von einer Nachbarin oder einem Nachbarn übernommen werden. Santas stehen nicht in dieser Liste.",
+      "empty": "Im Moment braucht niemand Hilfe.",
+      "flat": "Haus {building}, Wohnung {apartment}",
+      "reason": {
+        "noSanta": "Der Santa ist ausgestiegen",
+        "notFound": "Das Geschenk liegt nicht da",
+        "notMarked": "Das Geschenk ist nicht markiert"
+      },
+      "organize": "Geschenk organisiert",
+      "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal.",
+      "organizedTitle": "Organisiert · {count}"
+    },
+    "settings": {
+      "title": "Termine und Einladung",
+      "zone": "Alle Termine in Madrider Zeit.",
+      "fields": {
+        "applicationsCloseOn": "Letzter Tag für Anmeldungen",
+        "drawOn": "Datum der Auslosung",
+        "giftsStartOn": "Beginn der Geschenke",
+        "giftsEndOn": "Ende der Geschenke",
+        "revealOn": "Aufdeckung der Santas",
+        "closeOn": "Ende des Spiels"
+      },
+      "errors": {
+        "invalid": "Prüft die Termine: Es müssen echte Tage sein.",
+        "order": "Die Termine sind nicht in der richtigen Reihenfolge: Anmeldung, Auslosung, Geschenke, Aufdeckung, Ende.",
+        "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal."
+      },
+      "saved": "Termine gespeichert.",
+      "saving": "Wird gespeichert…",
+      "save": "Termine speichern",
+      "drawNote": "Das Datum der Auslosung startet sie nicht automatisch: Die Organisation startet sie mit dem Knopf in der Übersicht.",
+      "qrTitle": "QR zum Ausdrucken",
+      "qrText": "Link zur Seite für einen Aushang im Treppenhaus oder den Hauschat.",
+      "qrAlt": "QR-Code mit dem Link zur Seite",
+      "download": "PNG herunterladen",
+      "print": "Druckansicht",
+      "sheetTitle": "Wichteln Bialto"
     }
   },
   "cabinet": {
@@ -642,6 +725,44 @@
       "noParticipant": "Fülle zuerst deinen Steckbrief aus.",
       "notFound": "Beitrag nicht gefunden.",
       "failed": "Veröffentlichen ist fehlgeschlagen. Bitte versuche es noch einmal."
+    }
+  },
+  "settings": {
+    "title": "Deine Einstellungen",
+    "email": "E-Mail",
+    "language": "Sprache der Oberfläche",
+    "dataTitle": "Teilnahme und Daten",
+    "dataCollect": "Vor der Auslosung kannst du dein Konto selbst löschen. Danach nur über die Organisation.",
+    "dataLater": "Nach der Auslosung ist ein Ausstieg nur über die Organisation möglich.",
+    "delete": {
+      "back": "Einstellungen",
+      "title": "Das Spiel verlassen?",
+      "boxTitle": "Das ganze Konto wird gelöscht",
+      "boxText": "Dein Profil und die Profile deiner Kinder, Fotos und Kontodaten werden gelöscht. Das lässt sich nicht rückgängig machen.",
+      "names": "Aus der Auslosung gehen: {names}.",
+      "stay": "Im Spiel bleiben",
+      "confirm": "Ja, Konto löschen",
+      "deleting": "Wird gelöscht…",
+      "closed": "Die Auslosung hat schon stattgefunden: Du kannst das Konto nicht selbst löschen.",
+      "failed": "Das Konto konnte nicht gelöscht werden. Bitte versuche es noch einmal."
+    },
+    "leave": {
+      "back": "Einstellungen",
+      "title": "Pläne geändert?",
+      "boxTitle": "Schreib der Organisation",
+      "boxText": "Nach der Auslosung ist ein Ausstieg nur über die Organisation möglich, bis einschließlich {date}. So bleibt niemand ohne Santa.",
+      "contact": "Organisation: {name}. Erreichbar über Telegram.",
+      "dataTitle": "Daten löschen",
+      "dataText": "Ab dem {from} gibt es keinen Ausstieg. Eine Bitte um Löschung des Kontos wird am {until} erfüllt, wenn das Spiel endet.",
+      "toCabinet": "Zurück zum Bereich"
+    },
+    "signOut": "Abmelden",
+    "author": {
+      "title": "Über den Autor",
+      "madeBy": "Gemacht von",
+      "contact": "Kontakt",
+      "social": "Soziale Netze",
+      "order": "Website oder App bestellen"
     }
   }
 }

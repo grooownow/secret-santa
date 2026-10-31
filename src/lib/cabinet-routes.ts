@@ -42,3 +42,5 @@ export function guessPath(id: string): Route {
 export function revealPath(id: string): Route {
   return `/home/reveal/${id}` as Route;
 }
+/** Leaving the game: delete the account (collect) or ask the organizer. */
+export const CABINET_SETTINGS_DELETE = "/home/settings/delete" as Route;

@@ -367,7 +367,18 @@
       "backupLink": "Backup Santa needed",
       "collectUntil": "Until {date} · Madrid",
       "beforeTitle": "Before the draw",
-      "beforeText": "Check the residents list and remove strangers. Only confirmed accounts with a filled-in profile take part."
+      "beforeText": "Check the residents list and remove strangers. Only confirmed accounts with a filled-in profile take part.",
+      "giftsTitle": "Gift time",
+      "revealTitle": "Santas revealed",
+      "helpTitle": "Neighbours need help",
+      "helpText": "Without a Santa: {count}. Arrange the gift yourself or ask a neighbour.",
+      "waitingBackup": "Waiting for a backup Santa",
+      "backupNeeded": "On the backup list",
+      "backupOrganized": "Of them arranged",
+      "giftsOpenMail": "Email of 25 December",
+      "reminderMail": "Reminder of 29 December",
+      "revealMail": "Email of 1 January",
+      "purgeNote": "On {date} all profiles, photos, posts and pairs are deleted automatically. The Gmail mailbox has to be cleared by hand."
     },
     "draw": {
       "start": "Run the draw",
@@ -395,6 +406,78 @@
       "confirmReady": "Participants ready: {count}",
       "confirmExcluded": "Not confirmed and out of the draw: {count}. Check the list before you start.",
       "confirmMail": "Participants get an email with only a link to their cabinet. The organiser will not see the pairs."
+    },
+    "participants": {
+      "title": "Our participants",
+      "intro": {
+        "collect": "Participants: {count}. Remove strangers before the draw.",
+        "waiting": "Participants: {count}. Withdrawal is available until 24 December.",
+        "later": "Participants: {count}. There is no withdrawal from 25 December."
+      },
+      "search": "Search",
+      "searchPlaceholder": "Name, building or flat",
+      "empty": "Nobody found.",
+      "flat": "Building {building}, flat {apartment}",
+      "verified": "Email confirmed",
+      "unverified": "Email not confirmed",
+      "remove": "Delete entry",
+      "removeConfirm": "Delete this entry? The profile, photo and data of the participant will be deleted.",
+      "removeFailed": "Could not delete. Please try again.",
+      "withdraw": "Withdraw"
+    },
+    "withdraw": {
+      "title": "A participant leaves the game",
+      "flat": "Building {building}, flat {apartment}",
+      "boxTitle": "Available until 24 December",
+      "boxText": "This participant's Santa gets their recipient and an email about the change. The participant disappears from the game together with the profile and photo.",
+      "backupNote": "If the new recipient lives in the same flat as the giver, they go to the “Backup Santa needed” list, and the giver gets an email that there is nobody left to give to.",
+      "accountNote": "When an adult leaves, every participant of their account leaves too.",
+      "confirm": "Confirm withdrawal",
+      "running": "Withdrawing…",
+      "cancel": "Cancel",
+      "closed": "Withdrawal is no longer available: it works until 24 December.",
+      "notFound": "This participant is already gone."
+    },
+    "backup": {
+      "title": "Backup Santa needed",
+      "intro": "You can prepare the gift yourself or ask a neighbour. Santas are not shown in this list.",
+      "empty": "Nobody needs help right now.",
+      "flat": "Building {building}, flat {apartment}",
+      "reason": {
+        "noSanta": "The Santa dropped out",
+        "notFound": "The gift is not there",
+        "notMarked": "The gift is not marked"
+      },
+      "organize": "Gift arranged",
+      "failed": "Could not save. Please try again.",
+      "organizedTitle": "Arranged · {count}"
+    },
+    "settings": {
+      "title": "Dates and invitation",
+      "zone": "All dates are in Madrid time.",
+      "fields": {
+        "applicationsCloseOn": "Last day for entries",
+        "drawOn": "Draw date",
+        "giftsStartOn": "Gifts start",
+        "giftsEndOn": "Gifts end",
+        "revealOn": "Santas revealed",
+        "closeOn": "Game closes"
+      },
+      "errors": {
+        "invalid": "Check the dates: they must be real days.",
+        "order": "The dates are out of order: entries, draw, gifts, reveal, close.",
+        "failed": "Could not save. Please try again."
+      },
+      "saved": "Dates saved.",
+      "saving": "Saving…",
+      "save": "Save dates",
+      "drawNote": "The draw date does not start the draw automatically: the organizer starts it with the button on the Overview.",
+      "qrTitle": "QR to print",
+      "qrText": "A link to the site for a notice in the lobby or the building chat.",
+      "qrAlt": "QR code with the link to the site",
+      "download": "Download PNG",
+      "print": "Print version",
+      "sheetTitle": "Secret Santa Bialto"
     }
   },
   "cabinet": {
@@ -642,6 +725,44 @@
       "noParticipant": "Fill in your profile first.",
       "notFound": "Post not found.",
       "failed": "Could not post. Please try again."
+    }
+  },
+  "settings": {
+    "title": "Your settings",
+    "email": "Email",
+    "language": "Interface language",
+    "dataTitle": "Participation and data",
+    "dataCollect": "Before the draw you can delete your account yourself. After it, only through the organizer.",
+    "dataLater": "After the draw you can leave the game only through the organizer.",
+    "delete": {
+      "back": "Settings",
+      "title": "Leave the game?",
+      "boxTitle": "The whole account will be deleted",
+      "boxText": "Your profile and your children's profiles, photos and account data will be deleted. This cannot be undone.",
+      "names": "Leaving the draw: {names}.",
+      "stay": "Stay in the game",
+      "confirm": "Yes, delete the account",
+      "deleting": "Deleting…",
+      "closed": "The draw has already happened: you cannot delete the account yourself.",
+      "failed": "Could not delete the account. Please try again."
+    },
+    "leave": {
+      "back": "Settings",
+      "title": "Plans changed?",
+      "boxTitle": "Write to the organizer",
+      "boxText": "After the draw you can leave the game only through the organizer, up to and including {date}. That way nobody is left without a Santa.",
+      "contact": "Organizer: {name}. You can reach them on Telegram.",
+      "dataTitle": "Deleting data",
+      "dataText": "From {from} there is no withdrawal. A request to delete the account is carried out on {until}, when the game ends.",
+      "toCabinet": "Back to the cabinet"
+    },
+    "signOut": "Sign out",
+    "author": {
+      "title": "About the author",
+      "madeBy": "Made by",
+      "contact": "Contact",
+      "social": "Social",
+      "order": "Order a website or an app"
     }
   }
 }

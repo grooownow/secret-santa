@@ -21,23 +21,29 @@ export default async function AdminLayout({
   const t = await getTranslations("admin");
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader
-        action={
-          <form action={signOutAction}>
-            <button type="submit" className="text-santa-ink text-[13px]">
-              {t("signOut")}
-            </button>
-          </form>
-        }
-      />
+      <div className="print:hidden">
+        <SiteHeader
+          action={
+            <form action={signOutAction}>
+              <button type="submit" className="text-santa-ink text-[13px]">
+                {t("signOut")}
+              </button>
+            </form>
+          }
+        />
+      </div>
       <main className="flex flex-1 flex-col gap-5 px-[26px] py-8">
-        <span className="bg-santa-mint text-santa-green self-start rounded-full px-3 py-[7px] text-[11px] font-semibold">
+        <span className="bg-santa-mint text-santa-green self-start rounded-full px-3 py-[7px] text-[11px] font-semibold print:hidden">
           {t("title")}
         </span>
-        <AdminNav />
+        <div className="print:hidden">
+          <AdminNav />
+        </div>
         {children}
       </main>
-      <SiteFooter />
+      <div className="print:hidden">
+        <SiteFooter />
+      </div>
     </div>
   );
 }

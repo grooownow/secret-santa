@@ -15,7 +15,7 @@ vi.mock("next-intl", () => ({
     lookup([...ns.split("."), key]).replace("{name}", values?.name ?? ""),
 }));
 vi.mock("./add-post-action", () => ({ addPost: vi.fn() }));
-vi.mock("@/features/profile", () => ({
+vi.mock("@/features/profile/photo-input", () => ({
   PhotoInput: () => <div data-testid="photo" />,
 }));
 

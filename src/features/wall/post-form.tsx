@@ -9,7 +9,10 @@ import {
   SubmitButton,
   TextAreaInput,
 } from "@/components/form-ui";
-import { PhotoInput } from "@/features/profile";
+// Deep import on purpose: the profile index pulls server-only code (db,
+// next/headers) into this client component and breaks `next build`.
+// eslint-disable-next-line boundaries/dependencies
+import { PhotoInput } from "@/features/profile/photo-input";
 import { addPost } from "./add-post-action";
 import { MAX_POST_LENGTH } from "./schemas";
 import type { PostState } from "./state";

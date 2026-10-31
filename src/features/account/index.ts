@@ -18,3 +18,6 @@ export type { TokenPurpose } from "./tokens";
 export { HOME } from "./routes";
 export { RESEND_SECONDS } from "./cooldown";
 export { signOutAction } from "./sign-out-action";
+export { DeleteAccountForm } from "./delete-account-form";
+export { SettingsView } from "./settings-view";
+export { deleteAccountAction } from "./delete-account-action";

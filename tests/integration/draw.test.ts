@@ -301,7 +301,9 @@ describe("overview and resend", () => {
     const ids = (await db.select().from(participants)).map((p) => p.id);
     for (const id of ids) expect(text).not.toContain(id);
     expect(Object.keys(overview).sort()).toEqual([
-      "broadcast",
+      "backupNeeded",
+      "backupOrganized",
+      "broadcasts",
       "excluded",
       "giftsMarked",
       "participants",
@@ -325,11 +327,17 @@ describe("overview and resend", () => {
     expect(await db.select().from(assignments)).toHaveLength(3);
 
     const { getOverview } = await import("@/features/admin");
-    expect((await getOverview()).broadcast).toEqual({ total: 3, sent: 2 });
+    expect((await getOverview()).broadcasts.draw).toEqual({
+      total: 3,
+      sent: 2,
+    });
 
     const { resendDrawMail } = await import("@/features/draw");
     expect(await resendDrawMail()).toMatchObject({ sent: 1, failed: 0 });
-    expect((await getOverview()).broadcast).toEqual({ total: 3, sent: 3 });
+    expect((await getOverview()).broadcasts.draw).toEqual({
+      total: 3,
+      sent: 3,
+    });
     expect(new Set(sent.map((m) => m.to)).size).toBe(3);
     expect(sent).toHaveLength(3);
     setMailTransportForTests(async (m) => {

@@ -1,14 +1,44 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import { Field, SelectInput } from "@/components/form-ui";
 import { LOCALES, LOCALE_NAMES, isLocale } from "@/i18n/locale";
 import { setLocaleAction } from "./set-locale-action";
 
-/** Full-screen language selection (frame 52): radio list plus a save button. */
-export async function LanguageForm() {
+/**
+ * Language selection: the full-screen radio list (frame 52, default) or, with
+ * `variant="select"`, the compact dropdown of the account settings (dyqXx).
+ */
+export async function LanguageForm({
+  variant = "page",
+}: {
+  variant?: "page" | "select";
+}) {
   const [current, t] = await Promise.all([
     getLocale(),
     getTranslations("language"),
   ]);
   const active = isLocale(current) ? current : "en";
+
+  if (variant === "select") {
+    return (
+      <form action={setLocaleAction} className="flex flex-col gap-3">
+        <Field label={t("label")}>
+          <SelectInput name="locale" defaultValue={active}>
+            {LOCALES.map((locale) => (
+              <option key={locale} value={locale}>
+                {LOCALE_NAMES[locale]}
+              </option>
+            ))}
+          </SelectInput>
+        </Field>
+        <button
+          type="submit"
+          className="bg-santa-green text-santa-white h-14 rounded-full px-6 text-base font-semibold"
+        >
+          {t("save")}
+        </button>
+      </form>
+    );
+  }
 
   return (
     <form action={setLocaleAction} className="flex flex-col gap-5">
