@@ -88,7 +88,10 @@ export async function sendMail(message: MailMessage): Promise<void> {
   // E2E only (env.ts refuses this variable on any real deployment): write the
   // mail to a file the test reads, instead of sending it.
   if (env.E2E_MAIL_OUTBOX) {
-    await appendFile(env.E2E_MAIL_OUTBOX, `${JSON.stringify(message)}\n`);
+    await appendFile(
+      /*turbopackIgnore: true*/ env.E2E_MAIL_OUTBOX,
+      `${JSON.stringify(message)}\n`,
+    );
     return;
   }
 
