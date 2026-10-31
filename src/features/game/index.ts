@@ -22,3 +22,6 @@ export type { HomePhase, HomeViewProps } from "./home-view";
 export { ParticipantSwitcher } from "./participant-switcher";
 export type { SwitcherPerson } from "./participant-switcher";
 export { formatGameDay, daysBetween } from "@/lib/game-time";
+export { runDaily, addDays } from "./daily";
+export type { DailyReport } from "./daily";
+export { purgeAll } from "./purge";

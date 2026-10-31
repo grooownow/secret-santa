@@ -168,6 +168,10 @@ deliberately separate from `package.json`'s `version`, which is **your product's
 version — set it to whatever you like, ship your own 1.0.0, it won't confuse the
 update check.
 
+## After the game
+
+The daily job (`/api/cron/daily`, Vercel Cron, needs `CRON_SECRET`) purges all personal data on the close date (Jan 10): accounts, participants, pairs, posts, translations, sent-mail ledger and every photo. The settings row stays with `purgedAt` set. The Gmail mailbox used for sending is not touched by the app: the owner deletes it manually after Jan 10.
+
 ## License
 
 Gridfin is a commercial template: build unlimited products with it (yours

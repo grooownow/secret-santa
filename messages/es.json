@@ -40,7 +40,10 @@
   },
   "closed": {
     "title": "El juego ha terminado",
-    "text": "Gracias por jugar. El sitio está cerrado y los datos de los participantes se han eliminado."
+    "text": "Gracias por jugar. Esperamos que os hayáis acercado un poco más.",
+    "cardTitle": "Datos eliminados",
+    "cardText": "Los perfiles, fotos, mensajes y parejas se eliminaron el 10 de enero de 2027. El sitio ya no admite participantes.",
+    "organizer": "Organiza el juego: Kate. Seguimos en contacto por <link>Telegram</link>."
   },
   "home": {
     "title": "Amigo Invisible Bialto",

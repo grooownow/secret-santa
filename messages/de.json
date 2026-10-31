@@ -40,7 +40,10 @@
   },
   "closed": {
     "title": "Das Spiel ist vorbei",
-    "text": "Danke fürs Mitspielen. Die Seite ist geschlossen, die Daten der Teilnehmenden wurden gelöscht."
+    "text": "Danke fürs Mitspielen. Wir hoffen, ihr seid euch ein Stück nähergekommen.",
+    "cardTitle": "Daten gelöscht",
+    "cardText": "Profile, Fotos, Beiträge und Paare wurden am 10. Januar 2027 gelöscht. Die Seite nimmt keine Teilnehmenden mehr auf.",
+    "organizer": "Organisation des Spiels: Kate. Wir bleiben in Kontakt über <link>Telegram</link>."
   },
   "home": {
     "title": "Wichteln Bialto",

@@ -40,7 +40,10 @@
   },
   "closed": {
     "title": "The game is over",
-    "text": "Thank you for playing. The site is closed and participants' data has been deleted."
+    "text": "Thank you for playing. We hope you got a little closer to each other.",
+    "cardTitle": "Data deleted",
+    "cardText": "Profiles, photos, posts and pairs were deleted on January 10, 2027. The site no longer accepts participants.",
+    "organizer": "Game organizer: Kate. Stay in touch on <link>Telegram</link>."
   },
   "home": {
     "title": "Secret Santa Bialto",
