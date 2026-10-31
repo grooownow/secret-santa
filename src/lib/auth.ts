@@ -10,8 +10,9 @@ import { verifyPassword } from "@/lib/password";
 import { rateLimit } from "@/lib/rate-limit";
 import { authConfig } from "./auth.config";
 import {
-  googleSignInAllowed,
+  currentSessionVersion,
   onGoogleUserCreated,
+  signInPolicy,
   syncLocaleCookie,
 } from "./auth-events";
 
@@ -44,9 +45,18 @@ export const DUMMY_PASSWORD_HASH =
 const EMAIL_ATTEMPTS_PER_MINUTE = 10;
 const IP_ATTEMPTS_PER_MINUTE = 30;
 
-function clientIp(request: Request | undefined): string {
+/**
+ * The caller's IP, or null when the request carries none. `x-real-ip` is set
+ * by the platform (Vercel sets it and overwrites client values); the first
+ * `x-forwarded-for` entry is the fallback. With no IP the per-IP bucket is
+ * skipped rather than shared, so one anonymous request cannot lock out all
+ * the others; the per-email limit still applies.
+ */
+export function clientIp(request: Request | undefined): string | null {
+  const real = request?.headers.get("x-real-ip")?.trim();
+  if (real) return real;
   const forwarded = request?.headers.get("x-forwarded-for");
-  return forwarded?.split(",")[0]?.trim() || "unknown";
+  return forwarded?.split(",")[0]?.trim() || null;
 }
 
 /**
@@ -70,10 +80,13 @@ export async function authorizeCredentials(
     limit: EMAIL_ATTEMPTS_PER_MINUTE,
     windowMs: 60_000,
   });
-  const byIp = rateLimit(`signin:ip:${clientIp(request)}`, {
-    limit: IP_ATTEMPTS_PER_MINUTE,
-    windowMs: 60_000,
-  });
+  const ip = clientIp(request);
+  const byIp = ip
+    ? rateLimit(`signin:ip:${ip}`, {
+        limit: IP_ATTEMPTS_PER_MINUTE,
+        windowMs: 60_000,
+      })
+    : { allowed: true };
   if (!byEmail.allowed || !byIp.allowed) return null;
 
   const rows = await getDb()
@@ -112,11 +125,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    // Google only: an unknown email may not create an account after the
-    // registration deadline. Credentials already checked the password.
+    // Stamps the JWT with the account's session version at sign-in. It is read
+    // here (Node, db) and not in the edge-safe auth.config.ts, so the
+    // middleware stays database-free; requireAccount compares it later.
+    async jwt({ token, user }) {
+      if (user?.id) {
+        token.id = user.id;
+        token.sv = await currentSessionVersion(user.id);
+      }
+      return token;
+    },
+    // Only Google and credentials may sign in (see signInPolicy).
     async signIn({ user, account, profile }) {
-      if (account?.provider !== "google") return true;
-      return googleSignInAllowed(
+      return signInPolicy(
+        account?.provider,
         user.email,
         typeof profile?.email_verified === "boolean"
           ? profile.email_verified

@@ -27,6 +27,14 @@ export async function requireAccount(
   if (!row) {
     redirect("/signin");
   }
+  // A session issued before the account was verified, reset or taken over by
+  // Google is no longer valid (see users.sessionVersion).
+  if (
+    typeof user.sessionVersion === "number" &&
+    user.sessionVersion !== row.sessionVersion
+  ) {
+    redirect("/signin");
+  }
   // Without consent the cabinet stays closed. /welcome itself passes
   // `allowWithoutConsent`, which is what keeps it from redirecting to itself.
   if (!row.consentAt && !options.allowWithoutConsent) {

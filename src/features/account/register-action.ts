@@ -16,7 +16,7 @@ import {
   localeSchema,
   passwordSchema,
 } from "./schemas";
-import { sendVerifyEmail } from "./send-token-mail";
+import { queueRegistration } from "./send-token-mail";
 import { CONSENT_VERSION } from "./tokens";
 
 export type RegisterError =
@@ -79,42 +79,29 @@ export async function registerAction(
     return { error: "closed", ...echo };
   }
 
-  // Hash before looking the email up, so a new and an existing address cost
-  // the same time.
+  // Hash before looking the email up, so every branch costs the same time.
   const passwordHash = await hashPassword(password);
-  const db = getDb();
-  const [existing] = await db
+  const [existing] = await getDb()
     .select({ id: users.id, emailVerified: users.emailVerified })
     .from(users)
     .where(eq(users.email, email))
     .limit(1);
 
-  let target: { id: string; email: string; locale: string } | null = null;
-  if (!existing) {
-    const [created] = await db
-      .insert(users)
-      .values({
-        email,
-        passwordHash,
-        locale,
-        consentVersion: CONSENT_VERSION,
-        consentAt: new Date(),
-      })
-      .onConflictDoNothing()
-      .returning();
-    target = created ?? null;
-  } else if (!existing.emailVerified) {
-    const [row] = await db
-      .select({ id: users.id, email: users.email, locale: users.locale })
-      .from(users)
-      .where(eq(users.id, existing.id))
-      .limit(1);
-    target = row ?? null;
+  // The password and consent are NOT written to the user row. They travel
+  // with the verify token and are applied when that token is used, so the
+  // owner of the mailbox, not whoever registered first, decides the password.
+  // A later registration of an unverified address replaces the earlier token.
+  if (!existing?.emailVerified) {
+    queueRegistration(email, existing?.id ?? null, {
+      passwordHash,
+      locale,
+      consentVersion: CONSENT_VERSION,
+      consentAt: new Date(),
+    });
   }
-
-  if (target && claimVerifySlot(email) === 0) {
-    await sendVerifyEmail(target);
-  }
+  // Starts the 60 second "send again" countdown shown on /check-email. Not a
+  // gate here: a second registrant must still get their own link.
+  claimVerifySlot(email);
 
   await setLocaleCookie(locale);
   redirect(`/check-email?email=${encodeURIComponent(email)}` as Route);

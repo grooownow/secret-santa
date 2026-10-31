@@ -27,6 +27,9 @@ export const users = pgTable("users", {
   apartment: text("apartment"),
   consentVersion: text("consent_version"),
   consentAt: timestamp("consent_at", { withTimezone: true }),
+  // Bumped when an account is verified, reset or taken over by Google, so
+  // sessions issued before that moment stop working (see requireAccount).
+  sessionVersion: integer("session_version").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -146,6 +149,13 @@ export const authTokens = pgTable("auth_tokens", {
   purpose: tokenPurpose("purpose").notNull(),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   usedAt: timestamp("used_at", { withTimezone: true }),
+  // Registration data bound to a verify token: it is applied to the user only
+  // when this very token is consumed, so whoever owns the mailbox decides the
+  // password. Null on reset tokens and on plain verify tokens.
+  pendingPasswordHash: text("pending_password_hash"),
+  pendingLocale: text("pending_locale"),
+  pendingConsentVersion: text("pending_consent_version"),
+  pendingConsentAt: timestamp("pending_consent_at", { withTimezone: true }),
 });
 
 // Idempotency ledger for mass mailings. A row is a claim made before sending

@@ -9,6 +9,11 @@ export interface SessionUser {
   id: string;
   email: string | null;
   name?: string | null;
+  /**
+   * The `users.sessionVersion` the JWT was issued with (-1 when an old token
+   * has none). Absent for the dev bypass, which has no session.
+   */
+  sessionVersion?: number;
 }
 
 /**
@@ -46,5 +51,6 @@ export async function requireUser(): Promise<SessionUser> {
     id: session.user.id,
     email: session.user.email ?? null,
     name: session.user.name,
+    sessionVersion: session.sessionVersion ?? -1,
   };
 }

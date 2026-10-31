@@ -87,23 +87,12 @@ describe("buildProviders", () => {
     expect(buildProviders({})).toHaveLength(0);
   });
 
-  it("includes github when AUTH_GITHUB_ID and AUTH_GITHUB_SECRET are set", () => {
-    const providers = buildProviders({
+  it("never offers github, even when its env vars are set", () => {
+    const withGithub = {
       AUTH_GITHUB_ID: "gh-id",
       AUTH_GITHUB_SECRET: "gh-secret",
-    });
-
-    expect(
-      providerIdsFor({
-        AUTH_GITHUB_ID: "gh-id",
-        AUTH_GITHUB_SECRET: "gh-secret",
-      }),
-    ).toEqual(["github"]);
-    expect(providers).toHaveLength(1);
-  });
-
-  it("omits github when only one of the id/secret pair is set", () => {
-    expect(buildProviders({ AUTH_GITHUB_ID: "gh-id" })).toHaveLength(0);
+    } as Parameters<typeof buildProviders>[0];
+    expect(buildProviders(withGithub)).toHaveLength(0);
   });
 
   it("includes google when AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET are set", () => {
@@ -113,16 +102,5 @@ describe("buildProviders", () => {
         AUTH_GOOGLE_SECRET: "g-secret",
       }),
     ).toEqual(["google"]);
-  });
-
-  it("includes both when all four vars are set", () => {
-    expect(
-      providerIdsFor({
-        AUTH_GITHUB_ID: "gh-id",
-        AUTH_GITHUB_SECRET: "gh-secret",
-        AUTH_GOOGLE_ID: "g-id",
-        AUTH_GOOGLE_SECRET: "g-secret",
-      }),
-    ).toEqual(["github", "google"]);
   });
 });

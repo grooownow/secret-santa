@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, desc, eq, gt, isNull } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { authTokens } from "@/db/schema";
 
@@ -20,13 +20,24 @@ function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 
+/** Registration data that travels with a verify token. */
+export type PendingRegistration = {
+  passwordHash: string;
+  locale: string;
+  consentVersion: string;
+  consentAt: Date;
+};
+
 /**
  * Creates a single-use token for the user and returns the raw value to put
  * into the email link. Older unused tokens of the same purpose stop working.
+ * A verify token may carry the registration data (`pending`); it is applied
+ * only when this token is consumed.
  */
 export async function issueToken(
   userId: string,
   purpose: TokenPurpose,
+  pending?: PendingRegistration,
 ): Promise<string> {
   const db = getDb();
   const token = randomBytes(32).toString("base64url");
@@ -44,6 +55,10 @@ export async function issueToken(
     userId,
     purpose,
     expiresAt: new Date(Date.now() + TOKEN_TTL_MS[purpose]),
+    pendingPasswordHash: pending?.passwordHash ?? null,
+    pendingLocale: pending?.locale ?? null,
+    pendingConsentVersion: pending?.consentVersion ?? null,
+    pendingConsentAt: pending?.consentAt ?? null,
   });
   return token;
 }
@@ -56,6 +71,14 @@ export async function consumeToken(
   token: string,
   purpose: TokenPurpose,
 ): Promise<string | null> {
+  return (await consumeTokenRow(token, purpose))?.userId ?? null;
+}
+
+/** Like `consumeToken`, but also returns the registration data it carried. */
+export async function consumeTokenRow(
+  token: string,
+  purpose: TokenPurpose,
+): Promise<{ userId: string; pending: PendingRegistration | null } | null> {
   const now = new Date();
   const [row] = await getDb()
     .update(authTokens)
@@ -69,7 +92,68 @@ export async function consumeToken(
       ),
     )
     .returning();
-  return row?.userId ?? null;
+  if (!row) return null;
+  const pending =
+    row.pendingPasswordHash && row.pendingConsentVersion && row.pendingConsentAt
+      ? {
+          passwordHash: row.pendingPasswordHash,
+          locale: row.pendingLocale ?? "en",
+          consentVersion: row.pendingConsentVersion,
+          consentAt: row.pendingConsentAt,
+        }
+      : null;
+  return { userId: row.userId, pending };
+}
+
+/** Drops every unused token of the user, e.g. once the account is verified. */
+export async function revokeTokens(
+  userId: string,
+  purpose: TokenPurpose,
+): Promise<void> {
+  await getDb()
+    .delete(authTokens)
+    .where(
+      and(
+        eq(authTokens.userId, userId),
+        eq(authTokens.purpose, purpose),
+        isNull(authTokens.usedAt),
+      ),
+    );
+}
+
+/**
+ * Registration data of the newest unused verify token, so "send again" keeps
+ * what the last registration chose instead of verifying a passwordless
+ * account.
+ */
+export async function latestPendingRegistration(
+  userId: string,
+): Promise<PendingRegistration | undefined> {
+  const [row] = await getDb()
+    .select()
+    .from(authTokens)
+    .where(
+      and(
+        eq(authTokens.userId, userId),
+        eq(authTokens.purpose, "verify"),
+        isNull(authTokens.usedAt),
+      ),
+    )
+    .orderBy(desc(authTokens.expiresAt))
+    .limit(1);
+  if (
+    !row?.pendingPasswordHash ||
+    !row.pendingConsentVersion ||
+    !row.pendingConsentAt
+  ) {
+    return undefined;
+  }
+  return {
+    passwordHash: row.pendingPasswordHash,
+    locale: row.pendingLocale ?? "en",
+    consentVersion: row.pendingConsentVersion,
+    consentAt: row.pendingConsentAt,
+  };
 }
 
 /** Read-only check, so a page can show "link expired" before asking for input. */

@@ -143,5 +143,40 @@ describe("authorizeCredentials", () => {
         ),
       ).not.toBeNull();
     });
+
+    it("prefers x-real-ip over a spoofable x-forwarded-for", async () => {
+      selectMock.mockResolvedValue([]);
+      for (let i = 0; i < 32; i++) {
+        // The attacker rotates X-Forwarded-For; the platform's x-real-ip stays.
+        // oxlint-disable-next-line no-await-in-loop
+        await authorizeCredentials(
+          { email: `u${i}@b.co`, password: "pw" },
+          new Request("http://localhost/x", {
+            method: "POST",
+            headers: {
+              "x-real-ip": "7.7.7.7",
+              "x-forwarded-for": `1.2.3.${i}`,
+            },
+          }),
+        );
+      }
+      expect(vi.mocked(verifyPassword).mock.calls.length).toBe(30);
+    });
+
+    it("without any IP there is no shared bucket: other emails are not locked out", async () => {
+      selectMock.mockResolvedValue([]);
+      for (let i = 0; i < 40; i++) {
+        // oxlint-disable-next-line no-await-in-loop
+        await authorizeCredentials({ email: `u${i}@b.co`, password: "pw" });
+      }
+      // Every attempt reached the password check, none hit a global bucket.
+      expect(vi.mocked(verifyPassword).mock.calls.length).toBe(40);
+      // The per-email limit still applies.
+      for (let i = 0; i < 12; i++) {
+        // oxlint-disable-next-line no-await-in-loop
+        await authorizeCredentials({ email: "same@b.co", password: "pw" });
+      }
+      expect(vi.mocked(verifyPassword).mock.calls.length).toBe(50);
+    });
   });
 });

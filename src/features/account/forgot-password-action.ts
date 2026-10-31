@@ -6,7 +6,7 @@ import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
 import { underFormLimit } from "./cooldown";
 import { emailSchema } from "./schemas";
-import { sendResetEmail } from "./send-token-mail";
+import { queueResetEmail } from "./send-token-mail";
 
 export interface ForgotState {
   status?: "sent" | "invalid" | "rate";
@@ -36,7 +36,7 @@ export async function forgotPasswordAction(
     .from(users)
     .where(eq(users.email, email))
     .limit(1);
-  if (user) await sendResetEmail(user);
+  if (user) queueResetEmail(user);
 
   return { status: "sent", email };
 }

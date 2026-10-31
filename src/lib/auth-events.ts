@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 import { getDb } from "@/db/client";
-import { users } from "@/db/schema";
+import { authTokens, users } from "@/db/schema";
 import { LOCALE_COOKIE, isLocale, pickLocale } from "@/i18n/locale";
 import { registrationOpen } from "./game-phase";
 import { getSettings } from "./game-settings";
@@ -41,10 +41,27 @@ export async function googleSignInAllowed(
     return registrationOpen(now, await getSettings());
   }
   if (!existing.emailVerified) {
+    // Whoever registered this address never proved they own the mailbox, so
+    // nothing they set survives: password, consent, pending verify links and
+    // sessions are all dropped. The owner starts over at /welcome.
     await db
       .update(users)
-      .set({ emailVerified: now, passwordHash: null })
+      .set({
+        emailVerified: now,
+        passwordHash: null,
+        consentAt: null,
+        consentVersion: null,
+        sessionVersion: sql`${users.sessionVersion} + 1`,
+      })
       .where(eq(users.id, existing.id));
+    await db
+      .delete(authTokens)
+      .where(
+        and(
+          eq(authTokens.userId, existing.id),
+          eq(authTokens.purpose, "verify"),
+        ),
+      );
   }
   return true;
 }
@@ -91,4 +108,29 @@ export async function syncLocaleCookie(userId: string): Promise<void> {
   } catch (error) {
     logger.warn({ err: error }, "could not set the locale cookie");
   }
+}
+
+/**
+ * Provider allowlist for the Auth.js `signIn` callback: only credentials
+ * (checked in `authorize`) and Google (checked here). Anything else, such as
+ * a provider added by mistake, is refused.
+ */
+export async function signInPolicy(
+  provider: string | undefined,
+  email: string | null | undefined,
+  emailVerified: boolean | undefined,
+): Promise<boolean> {
+  if (provider === "credentials") return true;
+  if (provider !== "google") return false;
+  return googleSignInAllowed(email, emailVerified);
+}
+
+/** The session version to stamp on a JWT issued at sign-in. */
+export async function currentSessionVersion(userId: string): Promise<number> {
+  const [row] = await getDb()
+    .select({ sessionVersion: users.sessionVersion })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  return row?.sessionVersion ?? 0;
 }

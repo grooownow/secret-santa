@@ -8,7 +8,7 @@ import { users } from "@/db/schema";
 import { signIn } from "@/lib/auth";
 import { hashPassword } from "@/lib/password";
 import { passwordSchema } from "./schemas";
-import { consumeToken } from "./tokens";
+import { consumeToken, revokeTokens } from "./tokens";
 
 export interface ResetState {
   error?: "password" | "mismatch" | "expired";
@@ -50,10 +50,14 @@ export async function resetPasswordAction(
       passwordHash: await hashPassword(password),
       // A reset link proves the mailbox is theirs.
       emailVerified: sql`coalesce(${users.emailVerified}, now())`,
+      // Sessions issued before the reset stop working.
+      sessionVersion: sql`${users.sessionVersion} + 1`,
     })
     .where(eq(users.id, userId))
     .returning();
   if (!user) return { error: "expired" };
+  // A pending registration link must not overwrite this new password later.
+  await revokeTokens(userId, "verify");
 
   try {
     await signIn("credentials", {

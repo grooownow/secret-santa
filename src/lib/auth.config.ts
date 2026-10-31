@@ -1,6 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
 import type { Provider } from "next-auth/providers";
-import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import { env } from "@/lib/env";
 
@@ -11,8 +10,6 @@ import { env } from "@/lib/env";
  */
 
 export interface AuthProviderEnv {
-  AUTH_GITHUB_ID?: string;
-  AUTH_GITHUB_SECRET?: string;
   AUTH_GOOGLE_ID?: string;
   AUTH_GOOGLE_SECRET?: string;
 }
@@ -24,15 +21,6 @@ export interface AuthProviderEnv {
  */
 export function buildProviders(providerEnv: AuthProviderEnv): Provider[] {
   const providers: Provider[] = [];
-
-  if (providerEnv.AUTH_GITHUB_ID && providerEnv.AUTH_GITHUB_SECRET) {
-    providers.push(
-      GitHub({
-        clientId: providerEnv.AUTH_GITHUB_ID,
-        clientSecret: providerEnv.AUTH_GITHUB_SECRET,
-      }),
-    );
-  }
 
   if (providerEnv.AUTH_GOOGLE_ID && providerEnv.AUTH_GOOGLE_SECRET) {
     providers.push(
@@ -98,6 +86,9 @@ export function buildAuthConfig(
       session({ session, token }) {
         if (session.user && typeof token.id === "string") {
           session.user.id = token.id;
+        }
+        if (typeof token.sv === "number") {
+          session.sessionVersion = token.sv;
         }
         return session;
       },

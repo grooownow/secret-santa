@@ -57,6 +57,7 @@ describe("requireUser", () => {
   it("returns the session user's id/email/name without redirecting", async () => {
     authMock.mockResolvedValue({
       user: { id: "user-1", email: "a@gridfin.dev", name: "Ada" },
+      sessionVersion: 4,
     });
     const { requireUser } = await import("./require-user");
 
@@ -64,6 +65,7 @@ describe("requireUser", () => {
       id: "user-1",
       email: "a@gridfin.dev",
       name: "Ada",
+      sessionVersion: 4,
     });
     expect(redirectMock).not.toHaveBeenCalled();
   });
@@ -76,6 +78,8 @@ describe("requireUser", () => {
       id: "user-2",
       email: null,
       name: undefined,
+      // An old token without a version is reported as -1, which never matches.
+      sessionVersion: -1,
     });
   });
 

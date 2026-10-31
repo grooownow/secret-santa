@@ -6,7 +6,7 @@ import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
 import { claimVerifySlot, RESEND_SECONDS } from "./cooldown";
 import { emailSchema } from "./schemas";
-import { sendVerifyEmail } from "./send-token-mail";
+import { queueVerifyEmail } from "./send-token-mail";
 
 export interface ResendState {
   status?: "sent" | "wait" | "invalid";
@@ -46,7 +46,9 @@ export async function resendVerificationAction(
     .from(users)
     .where(eq(users.email, email))
     .limit(1);
-  if (user && !user.emailVerified) await sendVerifyEmail(user);
+  // Keeps what the latest registration chose; the token is issued and mailed
+  // after the response so unknown addresses answer in the same time.
+  if (user && !user.emailVerified) queueVerifyEmail(user, "latest");
 
   return { status: "sent", retryAfter: RESEND_SECONDS, email };
 }
