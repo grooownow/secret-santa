@@ -1,0 +1,97 @@
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@/lib/env", () => ({
+  env: { NEXT_PUBLIC_APP_URL: "https://santa.example" },
+}));
+
+import { LOCALES } from "@/i18n/locale";
+import { EMAIL_TYPES, renderEmail } from "./templates";
+
+const SIGNATURE_URLS = ["ludvik4.dev", "threads.com/@ludvik.coffee"];
+
+describe("renderEmail", () => {
+  it("renders every type in every locale with a subject, text and cabinet link", () => {
+    for (const locale of LOCALES) {
+      for (const type of EMAIL_TYPES) {
+        const out = renderEmail(type, locale, {
+          names: ["Ana"],
+          url: "https://santa.example/x",
+        });
+        expect(out.subject, `${type}/${locale}`).toBeTruthy();
+        expect(out.subject).not.toMatch(/emails\./);
+        expect(out.text).toContain("https://santa.example/x");
+        expect(out.html).toContain("https://santa.example/x");
+      }
+    }
+  });
+
+  it("uses the requested language", () => {
+    expect(renderEmail("draw", "ru", {}).subject).toBe("Жеребьёвка прошла");
+    expect(renderEmail("draw", "de", {}).subject).toBe(
+      "Die Auslosung ist erfolgt",
+    );
+  });
+
+  it("draw and reveal emails never contain recipient or santa names", () => {
+    // The caller only knows the account's own participants; pair data has no
+    // way in. Names of pair members passed anywhere else must not appear.
+    for (const type of ["draw", "reveal"] as const) {
+      const out = renderEmail(type, "en", { names: ["Own Child"] });
+      expect(out.text).toContain("https://santa.example/home");
+      expect(out.text).not.toMatch(/Receiver|Santa Name/);
+      expect(out.text.match(/Own Child/g)).toHaveLength(1);
+    }
+    const draw = renderEmail("draw", "en", {
+      names: ["Own Child"],
+      place: "locker",
+      code: "1234",
+      note: "secret note",
+    });
+    expect(draw.text + draw.html).not.toMatch(/1234|secret note|Locker/);
+  });
+
+  it("only the reveal email has the developer line", () => {
+    for (const type of EMAIL_TYPES) {
+      const out = renderEmail(type, "ru", { names: ["Ана"] });
+      const has = SIGNATURE_URLS.some(
+        (u) => out.text.includes(u) || out.html.includes(u),
+      );
+      expect(has, type).toBe(type === "reveal");
+    }
+    const reveal = renderEmail("reveal", "ru", {});
+    expect(reveal.html).toContain("https://ludvik4.dev");
+    expect(reveal.html).toContain("https://www.threads.com/@ludvik.coffee");
+    expect(reveal.text).toContain("Сделано");
+  });
+
+  it("lists the participants the email concerns", () => {
+    const out = renderEmail("draw", "en", { names: ["Ana", "Leo"] });
+    expect(out.text).toContain("Ana and Leo");
+  });
+
+  it("gift-waiting shows place, code and note, escaping user text in html", () => {
+    const out = renderEmail("giftWaiting", "en", {
+      names: ["Ana"],
+      place: "mailbox",
+      code: "B-12",
+      note: "<b>hi</b>",
+    });
+    expect(out.text).toContain("Mailbox");
+    expect(out.text).toContain("B-12");
+    expect(out.text).toContain("<b>hi</b>");
+    expect(out.html).toContain("&lt;b&gt;hi&lt;/b&gt;");
+    expect(out.html).not.toContain("<b>hi</b>");
+  });
+
+  it("picks the nobody-to-give-to wording for reassigned", () => {
+    const changed = renderEmail("reassigned", "en", {});
+    const none = renderEmail("reassigned", "en", { noReceiver: true });
+    expect(changed.subject).toBe("Your recipient has changed");
+    expect(none.subject).toBe("No one left to give to");
+  });
+
+  it("falls back to English for an unknown locale value", () => {
+    const out = renderEmail("draw", "xx" as never, {});
+    expect(out.subject).toBe("The draw is done");
+  });
+});

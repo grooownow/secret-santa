@@ -43,5 +43,78 @@
   "home": {
     "title": "Wichteln Bialto",
     "text": "Ein Spiel für Nachbarn. Alles Weitere folgt bald."
+  },
+  "emails": {
+    "hello": "Hallo!",
+    "forNames": "Diese E-Mail betrifft: {names}.",
+    "ignore": "Falls du das nicht warst, ignoriere diese E-Mail einfach.",
+    "madeBy": "Gemacht von",
+    "verify": {
+      "subject": "E-Mail bestätigen",
+      "title": "E-Mail-Bestätigung",
+      "body": "Um am Spiel teilzunehmen, bestätige bitte deine E-Mail. Das dauert nur eine Sekunde.",
+      "cta": "E-Mail bestätigen"
+    },
+    "reset": {
+      "subject": "Passwort zurücksetzen",
+      "title": "Passwort zurücksetzen",
+      "body": "Wir haben eine Anfrage für ein neues Passwort erhalten. Der Link ist nur kurz gültig.",
+      "cta": "Neues Passwort wählen"
+    },
+    "application": {
+      "subject": "Anmeldung eingegangen",
+      "title": "Anmeldung eingegangen",
+      "body": "Deine Wichtel-Anmeldung ist eingegangen. Wir schreiben dir, sobald die Auslosung stattgefunden hat.",
+      "cta": "Konto öffnen"
+    },
+    "draw": {
+      "subject": "Die Auslosung ist erfolgt",
+      "title": "Die Auslosung ist erfolgt",
+      "body": "Die Paare stehen fest. Öffne dein Konto, um zu erfahren, wen du beschenkst. Das ist geheim, erzähle es niemandem.",
+      "cta": "Konto öffnen"
+    },
+    "giftsOpen": {
+      "subject": "Geschenke können abgelegt werden",
+      "title": "Geschenke können abgelegt werden",
+      "body": "Ab heute kannst du das Geschenk im Haus deiner beschenkten Person ablegen: in einem Schließfach oder im Briefkasten. Als Richtwert gelten 10–15 €. Markiere das Geschenk bis Ende des 31. Dezember in deinem Konto.",
+      "cta": "Konto öffnen"
+    },
+    "reminder": {
+      "subject": "Geschenk-Erinnerung",
+      "title": "Dein Geschenk ist noch nicht markiert",
+      "body": "Wenn das Geschenk bereit ist, lege es im Haus deiner beschenkten Person ab und markiere es bis Ende des 31. Dezember in deinem Konto.",
+      "cta": "Konto öffnen"
+    },
+    "giftWaiting": {
+      "subject": "Ein Geschenk wartet auf dich",
+      "title": "Ein Geschenk wartet auf dich",
+      "body": "Für dich wurde ein Geschenk abgelegt. So findest du es.",
+      "cta": "Konto öffnen"
+    },
+    "reassigned": {
+      "subject": "Deine beschenkte Person hat sich geändert",
+      "title": "Deine beschenkte Person hat sich geändert",
+      "body": "Deine bisherige beschenkte Person ist aus dem Spiel ausgeschieden, du hast eine neue. Details findest du im Konto.",
+      "cta": "Konto öffnen"
+    },
+    "noReceiver": {
+      "subject": "Niemand mehr zu beschenken",
+      "title": "Niemand mehr zu beschenken",
+      "body": "Deine beschenkte Person ist ausgeschieden und es gibt noch keine neue. Keine Sorge: Dein eigenes Geschenk kommt trotzdem an.",
+      "cta": "Konto öffnen"
+    },
+    "reveal": {
+      "subject": "Wichtel enthüllt",
+      "title": "Wichtel enthüllt",
+      "body": "Es ist der 1. Januar und die Namen der Wichtel sind offen. Schau in dein Konto, wer dich beschenkt hat, und prüfe deine Vermutung.",
+      "cta": "Konto öffnen"
+    },
+    "gift": {
+      "place": "Ort",
+      "locker": "Schließfach",
+      "mailbox": "Briefkasten",
+      "code": "Nummer oder Code",
+      "note": "Notiz"
+    }
   }
 }

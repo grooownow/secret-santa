@@ -43,5 +43,78 @@
   "home": {
     "title": "Secret Santa Bialto",
     "text": "A game for neighbours. Everything else is coming soon."
+  },
+  "emails": {
+    "hello": "Hello!",
+    "forNames": "This email is about: {names}.",
+    "ignore": "If this wasn't you, just ignore this email.",
+    "madeBy": "Made by",
+    "verify": {
+      "subject": "Confirm your email",
+      "title": "Email confirmation",
+      "body": "To take part in the game, please confirm your email. It only takes a second.",
+      "cta": "Confirm email"
+    },
+    "reset": {
+      "subject": "Password reset",
+      "title": "Password reset",
+      "body": "We received a request for a new password. The link is valid for a short time.",
+      "cta": "Choose a new password"
+    },
+    "application": {
+      "subject": "Application received",
+      "title": "Application received",
+      "body": "Your Secret Santa application has been received. We will write when the draw is done.",
+      "cta": "Open your account"
+    },
+    "draw": {
+      "subject": "The draw is done",
+      "title": "The draw is done",
+      "body": "The pairs are set. Open your account to find out who you will look after. It is a secret, so keep it to yourself.",
+      "cta": "Open your account"
+    },
+    "giftsOpen": {
+      "subject": "Gifts can be left now",
+      "title": "Gifts can be left now",
+      "body": "From today you can leave a gift at your recipient's building: in a locker or a mailbox. A guide for the amount is 10–15 €. Mark the gift in your account by the end of 31 December.",
+      "cta": "Open your account"
+    },
+    "reminder": {
+      "subject": "Gift reminder",
+      "title": "Your gift is not marked yet",
+      "body": "If the gift is ready, leave it at your recipient's building and mark it in your account by the end of 31 December.",
+      "cta": "Open your account"
+    },
+    "giftWaiting": {
+      "subject": "A gift is waiting for you",
+      "title": "A gift is waiting for you",
+      "body": "A gift has been left for you. Here is where to look.",
+      "cta": "Open your account"
+    },
+    "reassigned": {
+      "subject": "Your recipient has changed",
+      "title": "Your recipient has changed",
+      "body": "Your previous recipient has left the game, and you have a new one. Details are in your account.",
+      "cta": "Open your account"
+    },
+    "noReceiver": {
+      "subject": "No one left to give to",
+      "title": "No one left to give to",
+      "body": "Your recipient has left the game and there is no new one yet. Don't worry: your own gift will still arrive.",
+      "cta": "Open your account"
+    },
+    "reveal": {
+      "subject": "Santas revealed",
+      "title": "Santas revealed",
+      "body": "It is 1 January and the Santas' names are open. Visit your account to see who looked after you and to check your guess.",
+      "cta": "Open your account"
+    },
+    "gift": {
+      "place": "Place",
+      "locker": "Locker",
+      "mailbox": "Mailbox",
+      "code": "Number or code",
+      "note": "Note"
+    }
   }
 }

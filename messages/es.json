@@ -43,5 +43,78 @@
   "home": {
     "title": "Amigo Invisible Bialto",
     "text": "Un juego para vecinos. Lo demás llegará muy pronto."
+  },
+  "emails": {
+    "hello": "¡Hola!",
+    "forNames": "Este correo trata sobre: {names}.",
+    "ignore": "Si no has sido tú, ignora este correo.",
+    "madeBy": "Hecho por",
+    "verify": {
+      "subject": "Confirma tu correo",
+      "title": "Confirmación del correo",
+      "body": "Para participar en el juego, confirma tu correo. Solo lleva un segundo.",
+      "cta": "Confirmar correo"
+    },
+    "reset": {
+      "subject": "Restablecer contraseña",
+      "title": "Restablecer contraseña",
+      "body": "Hemos recibido una solicitud de nueva contraseña. El enlace es válido poco tiempo.",
+      "cta": "Elegir nueva contraseña"
+    },
+    "application": {
+      "subject": "Solicitud recibida",
+      "title": "Solicitud recibida",
+      "body": "Hemos recibido tu solicitud para el Amigo Invisible. Te escribiremos cuando se haga el sorteo.",
+      "cta": "Abrir mi cuenta"
+    },
+    "draw": {
+      "subject": "El sorteo está hecho",
+      "title": "El sorteo está hecho",
+      "body": "Las parejas están listas. Entra en tu cuenta para saber de quién te encargas. Es un secreto, no se lo cuentes a nadie.",
+      "cta": "Abrir mi cuenta"
+    },
+    "giftsOpen": {
+      "subject": "Ya se pueden dejar regalos",
+      "title": "Ya se pueden dejar regalos",
+      "body": "Desde hoy puedes dejar el regalo en el portal de tu destinatario: en una taquilla o en un buzón. Como referencia, entre 10 y 15 €. Marca el regalo en tu cuenta antes de que acabe el 31 de diciembre.",
+      "cta": "Abrir mi cuenta"
+    },
+    "reminder": {
+      "subject": "Recordatorio del regalo",
+      "title": "Tu regalo aún no está marcado",
+      "body": "Si el regalo ya está listo, déjalo en el portal de tu destinatario y márcalo en tu cuenta antes de que acabe el 31 de diciembre.",
+      "cta": "Abrir mi cuenta"
+    },
+    "giftWaiting": {
+      "subject": "Te espera un regalo",
+      "title": "Te espera un regalo",
+      "body": "Han dejado un regalo para ti. Aquí tienes dónde buscarlo.",
+      "cta": "Abrir mi cuenta"
+    },
+    "reassigned": {
+      "subject": "Ha cambiado tu destinatario",
+      "title": "Ha cambiado tu destinatario",
+      "body": "Tu destinatario anterior ha salido del juego y tienes uno nuevo. Los detalles están en tu cuenta.",
+      "cta": "Abrir mi cuenta"
+    },
+    "noReceiver": {
+      "subject": "Ya no hay a quién regalar",
+      "title": "Ya no hay a quién regalar",
+      "body": "Tu destinatario ha salido del juego y todavía no hay uno nuevo. Tranquilidad: tu regalo llegará igualmente.",
+      "cta": "Abrir mi cuenta"
+    },
+    "reveal": {
+      "subject": "Amigos invisibles revelados",
+      "title": "Amigos invisibles revelados",
+      "body": "Es 1 de enero y ya se ven los nombres. Entra en tu cuenta para saber quién cuidó de ti y comprobar tu pista.",
+      "cta": "Abrir mi cuenta"
+    },
+    "gift": {
+      "place": "Lugar",
+      "locker": "Taquilla",
+      "mailbox": "Buzón",
+      "code": "Número o código",
+      "note": "Nota"
+    }
   }
 }
