@@ -31,7 +31,7 @@ import { createTestDb, type TestDb } from "./helpers/test-db";
 
 let db: TestDb;
 let cleanup: () => Promise<void>;
-const deletePhotosMock = vi.fn(async (_urls: string[]) => {});
+const deleteAllPhotosMock = vi.fn(async (_urls: string[]) => {});
 const env = vi.hoisted(() => ({
   CRON_SECRET: "s3cret" as string | undefined,
   NODE_ENV: "test",
@@ -39,7 +39,12 @@ const env = vi.hoisted(() => ({
 
 vi.mock("@/db/client", () => ({ getDb: () => db }));
 vi.mock("@/lib/photo-storage", () => ({
-  deletePhotos: (urls: string[]) => deletePhotosMock(urls),
+  deleteAllPhotos: (urls: string[]) => deleteAllPhotosMock(urls),
+}));
+const retryMock = vi.hoisted(() => vi.fn());
+vi.mock("@/features/translation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/features/translation")>()),
+  retryMissingTranslations: retryMock,
 }));
 vi.mock("@/lib/env", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/env")>();
@@ -80,8 +85,10 @@ async function reset() {
 
 beforeEach(async () => {
   outbox.length = 0;
-  deletePhotosMock.mockReset();
-  deletePhotosMock.mockResolvedValue(undefined);
+  retryMock.mockReset();
+  retryMock.mockResolvedValue({ done: 0, failed: 0 });
+  deleteAllPhotosMock.mockReset();
+  deleteAllPhotosMock.mockResolvedValue(undefined);
   env.CRON_SECRET = "s3cret";
   env.NODE_ENV = "test";
   setMailTransportForTests(async (m) => {
@@ -271,8 +278,8 @@ describe("purge", () => {
     ]) {
       expect(await count(table)).toBe(0);
     }
-    expect(deletePhotosMock).toHaveBeenCalledOnce();
-    expect(deletePhotosMock.mock.calls[0]![0].sort()).toEqual([
+    expect(deleteAllPhotosMock).toHaveBeenCalledOnce();
+    expect(deleteAllPhotosMock.mock.calls[0]![0].sort()).toEqual([
       "data:image/png;base64,AAA",
       "https://blob.example/a.jpg",
       "https://blob.example/w.jpg",
@@ -291,7 +298,7 @@ describe("purge", () => {
 
   it("a failed blob delete leaves purgedAt empty so the next day retries", async () => {
     await seedDraw();
-    deletePhotosMock.mockRejectedValueOnce(new Error("blob down"));
+    deleteAllPhotosMock.mockRejectedValueOnce(new Error("blob down"));
     const first = await runDaily(at("2027-01-10"));
     expect(first.purge).toBe("failed");
     expect(first.failed).toBe(true);
@@ -301,7 +308,7 @@ describe("purge", () => {
     const second = await runDaily(at("2027-01-11"));
     expect(second.purge).toBe("purged");
     expect(await count(participants)).toBe(0);
-    expect(deletePhotosMock.mock.calls[1]![0]).toContain(
+    expect(deleteAllPhotosMock.mock.calls[1]![0]).toContain(
       "https://blob.example/a.jpg",
     );
   });
@@ -312,9 +319,36 @@ describe("purge", () => {
     const r = await runDaily(at("2027-01-10"));
     expect(r.purge).toBe("skipped");
     expect(await count(participants)).toBe(2);
-    expect(deletePhotosMock).not.toHaveBeenCalled();
+    expect(deleteAllPhotosMock).not.toHaveBeenCalled();
     expect(
       (await db.select().from(settings).where(eq(settings.id, 1)))[0]?.purgedAt,
     ).toBeNull();
+  });
+
+  it("from closeOn it sends nothing and skips the translation retry", async () => {
+    await seedDraw();
+    const r = await runDaily(at("2027-01-10"));
+    expect(r.broadcasts).toEqual({});
+    expect(r.translations).toBeUndefined();
+    expect(retryMock).not.toHaveBeenCalled();
+    expect(outbox).toHaveLength(0);
+  });
+});
+
+describe("translation retry", () => {
+  it("runs on gifts-window days and is reported", async () => {
+    await seedDraw();
+    retryMock.mockResolvedValue({ done: 3, failed: 1 });
+    const r = await runDaily(at("2026-12-26"));
+    expect(retryMock).toHaveBeenCalledOnce();
+    expect(r.translations).toEqual({ done: 3, failed: 1 });
+  });
+
+  it("a crash is reported as failed without stopping the job", async () => {
+    await seedDraw();
+    retryMock.mockRejectedValue(new Error("groq down"));
+    const r = await runDaily(at("2026-12-25"));
+    expect(r.failed).toBe(true);
+    expect(r.broadcasts["gifts-open"]?.sent).toBe(2);
   });
 });

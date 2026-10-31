@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { getTranslations } from "next-intl/server";
-import { SiteFooter, SiteHeader } from "@/features/game";
+import { getLocale, getTranslations } from "next-intl/server";
+import { SiteFooter, SiteHeader, getSettings } from "@/features/game";
 
 const TELEGRAM_URL = "https://t.me/ludvik4";
 
@@ -20,6 +20,12 @@ function telegramLink(chunks: ReactNode) {
 // Lives outside the (site) group on purpose: that group redirects here.
 export default async function ClosedPage() {
   const t = await getTranslations("closed");
+  const locale = await getLocale();
+  const { closeOn } = await getSettings();
+  const date = new Intl.DateTimeFormat(locale, {
+    dateStyle: "long",
+    timeZone: "UTC",
+  }).format(new Date(`${closeOn}T12:00:00Z`));
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
@@ -31,7 +37,7 @@ export default async function ClosedPage() {
             {t("cardTitle")}
           </h2>
           <p className="text-santa-ink text-[13px] leading-relaxed">
-            {t("cardText")}
+            {t("cardText", { date })}
           </p>
         </section>
         <p className="text-santa-ink text-[13px] leading-relaxed">

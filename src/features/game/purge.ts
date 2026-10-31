@@ -14,7 +14,7 @@ import {
   users,
   wallPosts,
 } from "@/db/schema";
-import { deletePhotos } from "@/lib/photo-storage";
+import { deleteAllPhotos } from "@/lib/photo-storage";
 import { todayInMadrid } from "@/lib/game-time";
 
 export type PurgeResult = "purged" | "skipped";
@@ -52,7 +52,7 @@ export async function purgeAll(now: Date = new Date()): Promise<PurgeResult> {
     const urls = [...photoRows, ...postRows]
       .map((row) => row.url)
       .filter((url): url is string => !!url);
-    await deletePhotos(urls);
+    await deleteAllPhotos(urls);
 
     await tx.delete(wallPosts);
     await tx.delete(guesses);
