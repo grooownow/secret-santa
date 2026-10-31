@@ -149,6 +149,7 @@ describe("guess options", () => {
       .insert(assignments)
       .values({ receiverId: child.id, giverId: null });
 
+    const late = await person("Late Lena", { building: "K", apartment: "7" });
     const { listGuessOptions } = await reveal();
     const result = await listGuessOptions(me.user.id, me.p.id);
     expect(result).toMatchObject({ state: "ready", guessedId: null });
@@ -163,6 +164,7 @@ describe("guess options", () => {
       building: "D",
     });
     expect(options.some((o) => o.id === other.p.id)).toBe(true);
+    expect(options.some((o) => o.id === late.p.id)).toBe(false);
     for (const option of options) {
       expect(Object.keys(option).sort()).toEqual(["building", "id", "name"]);
     }
@@ -255,6 +257,16 @@ describe("getReveal", () => {
     at("2027-01-01T09:00:00+01:00");
     expect(await getReveal(other.user.id, me.p.id)).toBeNull();
     expect(await getReveal(me.user.id, me.p.id)).not.toBeNull();
+  });
+
+  it("latecomer after Jan 1 gets notInDraw", async () => {
+    await trio();
+    const late = await person("Late Lena");
+    at("2027-01-01T09:00:00+01:00");
+    const { getReveal } = await reveal();
+    expect(await getReveal(late.user.id, late.p.id)).toEqual({
+      state: "notInDraw",
+    });
   });
 
   it("shows the santa and whether the guess was right", async () => {

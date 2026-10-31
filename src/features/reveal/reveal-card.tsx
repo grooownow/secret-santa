@@ -2,6 +2,7 @@ import { Heart, Sparkles } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { LinkButton, TextLink } from "@/components/form-ui";
 import { PageText, PageTitle } from "@/features/account";
+import { cn } from "@/lib/utils";
 import { CABINET_WALL, myGiftPath } from "@/lib/cabinet-routes";
 import type { RevealResult } from "./queries";
 
@@ -16,11 +17,19 @@ function Box({
 }) {
   return (
     <div
-      className={`${tone === "yellow" ? "bg-santa-yellow text-santa-ink" : "bg-santa-mint text-santa-green"} flex flex-col gap-1 rounded-2xl p-4`}
+      className={cn(
+        "flex flex-col gap-1 rounded-2xl p-4",
+        tone === "yellow"
+          ? "bg-santa-yellow text-santa-ink"
+          : "bg-santa-mint text-santa-green",
+      )}
     >
       <p className="text-base font-bold">{title}</p>
       <p
-        className={`${tone === "yellow" ? "" : "text-santa-muted"}text-sm leading-relaxed`}
+        className={cn(
+          "text-sm leading-relaxed",
+          tone === "mint" && "text-santa-muted",
+        )}
       >
         {text}
       </p>
