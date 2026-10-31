@@ -225,17 +225,24 @@ describe("runDraw", () => {
     expect(await drawnAt()).toBeNull();
   });
 
-  it("unverified accounts stay out and are counted as excluded", async () => {
+  it("unverified accounts stay out and are counted (per account) as excluded", async () => {
     await organizer("1");
     await account("2");
     await account("3");
     const stranger = await account("4", 1, { emailVerified: null });
+    // Registered, never confirmed, no profile: the usual unverified case.
+    await db
+      .insert(users)
+      .values([
+        makeUser({ email: "pending1@example.com", emailVerified: null }),
+        makeUser({ email: "pending2@example.com", emailVerified: null }),
+      ]);
 
     const { getOverview } = await import("@/features/admin");
     expect(await getOverview()).toMatchObject({
       phase: "collect",
       participants: 3,
-      excluded: 2,
+      excluded: 3,
     });
 
     expect(await draw()).toMatchObject({ ok: true, links: 3 });
@@ -251,7 +258,7 @@ describe("runDraw", () => {
     expect(await getOverview()).toMatchObject({
       phase: "waiting",
       participants: 3,
-      excluded: 2,
+      excluded: 3,
     });
   });
 

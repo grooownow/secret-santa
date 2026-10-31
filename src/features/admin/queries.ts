@@ -48,11 +48,9 @@ export async function getOverview(): Promise<Overview> {
         .from(participants)
         .innerJoin(users, eq(users.id, participants.userId))
         .where(isNotNull(users.emailVerified)),
-      db
-        .select({ n: count() })
-        .from(participants)
-        .innerJoin(users, eq(users.id, participants.userId))
-        .where(isNull(users.emailVerified)),
+      // Registered accounts that never confirmed their email (they cannot
+      // have a profile yet, so counting participants would always give 0).
+      db.select({ n: count() }).from(users).where(isNull(users.emailVerified)),
       db.select({ n: count() }).from(assignments),
       db
         .select({ n: count() })
