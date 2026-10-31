@@ -26,6 +26,11 @@ export function NotFoundForm({ participantId }: { participantId: string }) {
         {t("notFoundButton")}
       </button>
       {state.error ? <FormAlert>{t(`errors.${state.error}`)}</FormAlert> : null}
+      {state.saved ? (
+        <output className="text-santa-green text-sm font-semibold">
+          {t("notFound.title")}
+        </output>
+      ) : null}
     </form>
   );
 }

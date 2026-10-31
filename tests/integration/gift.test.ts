@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import {
   afterAll,
   afterEach,
@@ -386,7 +387,13 @@ describe("reportNotFound", () => {
     signInAs(giver.user);
     await markGift(input(giver.p.id));
     signInAs(receiver.user);
+    vi.mocked(revalidatePath).mockClear();
     expect(await reportNotFound(receiver.p.id)).toEqual({ saved: true });
+    // The card and «Дом» are refreshed, so the new status shows at once.
+    expect(revalidatePath).toHaveBeenCalledWith(
+      `/home/my-gift/${receiver.p.id}`,
+    );
+    expect(revalidatePath).toHaveBeenCalledWith("/home");
     const first = (await row(receiver.p.id))?.notFoundAt;
     expect(first).not.toBeNull();
     expect(await getMyGift(receiver.user.id, receiver.p.id)).toMatchObject({

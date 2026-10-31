@@ -1,11 +1,13 @@
 "use server";
 
 import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { getDb } from "@/db/client";
 import { assignments } from "@/db/schema";
 import { requireVerifiedAccount } from "@/features/auth";
 import { getPhase, getSettings } from "@/features/game";
 import { getOwnParticipant } from "@/features/profile";
+import { myGiftPath } from "@/lib/cabinet-routes";
 import { logger } from "@/lib/logger";
 import { participantIdSchema } from "./schemas";
 import type { GiftState } from "./state";
@@ -43,6 +45,9 @@ export async function reportNotFound(
     logger.error({ err: error }, "could not report the missing gift");
     return { error: "failed" };
   }
+  // The card switches to «Мы передали организатору», and «Дом» follows.
+  revalidatePath(myGiftPath(id.data));
+  revalidatePath("/home");
   return { saved: true };
 }
 
