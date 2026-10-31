@@ -23,7 +23,7 @@ export async function InviteQr() {
           {t("qrText")}
         </p>
         <p className="text-santa-ink text-sm font-semibold break-all">{url}</p>
-        <div className="border-santa-line flex justify-center rounded-2xl border bg-white p-4">
+        <div className="border-santa-line bg-santa-white flex justify-center rounded-2xl border p-4">
           {/* A data URL: next/image has nothing to optimise here. */}
           {/* oxlint-disable-next-line nextjs/no-img-element */}
           <img src={preview} alt={t("qrAlt")} width={240} height={240} />
