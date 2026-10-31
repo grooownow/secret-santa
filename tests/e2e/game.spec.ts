@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import {
   devices,
   expect,
@@ -6,10 +5,18 @@ import {
   type BrowserContext,
   type Page,
 } from "@playwright/test";
-import en from "../../messages/en.json";
 import es from "../../messages/es.json";
-import { PHASES, setDates, signIn } from "./helpers";
-import { MAIL_OUTBOX, ORGANISER_STATE } from "./paths";
+import {
+  type Mail,
+  PHASES,
+  readMails,
+  registerAndConfirm as register,
+  setDates,
+  SUBJECT,
+  useOwnIp,
+  waitForMail,
+} from "./helpers";
+import { ORGANISER_STATE } from "./paths";
 
 /**
  * The whole game on one server, end to end: three accounts (one with a child)
@@ -61,76 +68,15 @@ const NEIGHBOURS: Neighbour[] = [
   },
 ];
 const CHILD = "Kiddo Anders";
-
-interface Mail {
-  to: string;
-  subject: string;
-  text: string;
-}
-
-async function readMails(): Promise<Mail[]> {
-  const raw = await readFile(MAIL_OUTBOX, "utf8").catch(() => "");
-  const mails: Mail[] = [];
-  for (const line of raw.split("\n")) {
-    if (!line) continue;
-    try {
-      mails.push(JSON.parse(line) as Mail);
-    } catch {
-      // The server may still be writing the last line; the next poll sees it.
-    }
-  }
-  return mails;
-}
-
-const SUBJECT = {
-  verify: en.emails.verify.subject,
-  draw: en.emails.draw.subject,
-  giftWaiting: en.emails.giftWaiting.subject,
+// Registers like the others but leaves after the draw. The draw never puts
+// two people of one flat next to each other, so with the child and this
+// account gone first and second, every repaired pair is across flats.
+const LEAVER: Neighbour = {
+  name: "Dmitri Dorn",
+  email: `dmitri-${RUN}@example.com`,
+  building: "B",
+  flat: "505",
 };
-
-/** Waits for a mail to `to` with this subject (matched by content, not order). */
-async function waitForMail(to: string, subject: string): Promise<Mail> {
-  let found: Mail | undefined;
-  await expect
-    .poll(
-      async () => {
-        found = (await readMails()).find(
-          (m) => m.to === to && m.subject === subject,
-        );
-        return found !== undefined;
-      },
-      { message: `mail "${subject}" to ${to}`, timeout: 20_000 },
-    )
-    .toBe(true);
-  return found as Mail;
-}
-
-/** The app-relative path of the link in a mail that contains `part`. */
-function linkIn(mail: Mail, part: string): string {
-  const match = mail.text.match(new RegExp(`https?://\\S*${part}\\S*`));
-  if (!match) throw new Error(`no ${part} link in mail: ${mail.text}`);
-  const url = new URL(match[0]);
-  return url.pathname + url.search;
-}
-
-/** Registers in this browser, confirms the mail in it, signs in. */
-async function registerAndConfirm(page: Page, who: Neighbour) {
-  await page.goto("/register");
-  await page.getByLabel("Email").fill(who.email);
-  await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByLabel(/consent to the processing/i).check();
-  await page.getByLabel(/at least 14/i).check();
-  await page.getByRole("button", { name: "Sign up" }).click();
-  await expect(page).toHaveURL(/\/check-email\?email=/);
-
-  const mail = await waitForMail(who.email, SUBJECT.verify);
-  await page.goto(linkIn(mail, "/verify-email"));
-  await page.getByRole("button", { name: "Confirm email" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Email confirmed" }),
-  ).toBeVisible();
-  await signIn(page, { email: who.email, password: PASSWORD });
-}
 
 async function fillOwnProfile(page: Page, who: Neighbour) {
   await page.getByRole("link", { name: "Fill in your profile" }).click();
@@ -168,6 +114,43 @@ interface Browser {
   page: Page;
 }
 
+/** Organiser withdraws a participant from the table (draw to 24 December). */
+async function withdraw(organiser: Page, name: string) {
+  await organiser.goto("/admin/participants");
+  const row = organiser.getByRole("listitem").filter({ hasText: name });
+  await row.getByRole("link", { name: "Withdraw" }).click();
+  await organiser.getByRole("button", { name: "Confirm withdrawal" }).click();
+  await expect(
+    organiser.getByRole("heading", { name: "Our participants" }),
+  ).toBeVisible();
+  await expect(
+    organiser.getByRole("listitem").filter({ hasText: name }),
+  ).toHaveCount(0);
+}
+
+/**
+ * Waits until exactly `count` "recipient changed" mails went to the accounts
+ * of this game, and returns the browser of the latest addressee.
+ */
+async function expectReassignedMails(
+  accounts: Browser[],
+  count: number,
+): Promise<Browser> {
+  const sent = async () =>
+    (await readMails()).filter(
+      (m) =>
+        m.subject === SUBJECT.reassigned &&
+        accounts.some((a) => a.who.email === m.to),
+    );
+  await expect
+    .poll(async () => (await sent()).length, {
+      message: "recipient-changed mails",
+    })
+    .toBe(count);
+  const latest = (await sent()).at(-1) as Mail;
+  return accounts.find((a) => a.who.email === latest.to) as Browser;
+}
+
 test.describe("the whole game", () => {
   test.describe.configure({ mode: "serial", retries: 0 });
   test.setTimeout(4 * 60_000);
@@ -189,6 +172,7 @@ test.describe("the whole game", () => {
         storageState,
       });
       contexts.push(context);
+      await useOwnIp(context);
       return context.newPage();
     };
 
@@ -200,32 +184,34 @@ test.describe("the whole game", () => {
         neighbours.push({ who, page: await open(true) });
       }
       const alice = neighbours[0] as Browser;
+      const leaver: Browser = { who: LEAVER, page: await open(true) };
+      const everyone = [...neighbours, leaver];
 
-      await test.step("three neighbours register and confirm their email", async () => {
-        for (const { who, page } of neighbours) {
-          await registerAndConfirm(page, who);
+      await test.step("three neighbours and a leaver register and confirm their email", async () => {
+        for (const { who, page } of everyone) {
+          await register(page, { email: who.email, password: PASSWORD });
         }
       });
 
-      await test.step("profiles: two adults and one adult with a child", async () => {
-        for (const { who, page } of neighbours) {
+      await test.step("profiles: three adults, one with a child, and the leaver", async () => {
+        for (const { who, page } of everyone) {
           await fillOwnProfile(page, who);
         }
         await addChild(alice.page, CHILD);
       });
 
-      await test.step("organiser runs the draw for four participants", async () => {
+      await test.step("organiser runs the draw for five participants", async () => {
         await organiser.goto("/admin");
         await organiser.getByRole("button", { name: "Run the draw" }).click();
         await expect(
-          organiser.getByText("Participants ready: 4"),
+          organiser.getByText("Participants ready: 5"),
         ).toBeVisible();
         await organiser.getByRole("button", { name: "Yes, run it" }).click();
         await expect(organiser.getByText("The draw is done")).toBeVisible();
       });
 
       await test.step("everyone is emailed and sees the waiting cabinet", async () => {
-        for (const { who } of neighbours) {
+        for (const { who } of everyone) {
           await waitForMail(who.email, SUBJECT.draw);
         }
         await alice.page.goto("/home");
@@ -236,8 +222,47 @@ test.describe("the whole game", () => {
         ).toBeVisible();
       });
 
+      await test.step("withdrawing the child gives their Santa a new recipient", async () => {
+        await withdraw(organiser, CHILD);
+        const santa = await expectReassignedMails(everyone, 1);
+        await santa.page.goto("/home");
+        await expect(
+          santa.page.getByText(
+            "Your recipient changed after someone dropped out.",
+          ),
+        ).toBeVisible();
+        await expect(
+          santa.page.getByRole("heading", { name: /^Your recipient — / }),
+        ).not.toContainText(CHILD);
+      });
+
+      await test.step("a withdrawn adult loses their account and their Santa is moved", async () => {
+        await withdraw(organiser, LEAVER.name);
+        const santa = await expectReassignedMails(everyone, 2);
+        await santa.page.goto("/home");
+        await expect(
+          santa.page.getByText(
+            "Your recipient changed after someone dropped out.",
+          ),
+        ).toBeVisible();
+        await expect(
+          santa.page.getByRole("heading", { name: /^Your recipient — / }),
+        ).not.toContainText(LEAVER.name);
+
+        // The session outlived the account: the cabinet sends them to sign-in,
+        // and the old password no longer works.
+        await leaver.page.goto("/home");
+        await expect(leaver.page).toHaveURL(/\/signin(\?|$)/);
+        await leaver.page.getByLabel("Email").fill(LEAVER.email);
+        await leaver.page.getByLabel("Password").fill(PASSWORD);
+        await leaver.page.getByRole("button", { name: "Sign in" }).click();
+        await expect(
+          leaver.page.getByText(/invalid email or password/i),
+        ).toBeVisible();
+      });
+
       // The pairs are secret, so find a giver whose recipient is also one of
-      // the three accounts we drive (a chain of four always has one).
+      // the three accounts we drive (a cycle of three, all of them).
       let giver: Browser | undefined;
       let receiver: Browser | undefined;
 
@@ -256,7 +281,8 @@ test.describe("the whole game", () => {
           .getByRole("link", { name: "View your recipient" })
           .click();
         await expect(
-          giver.page.getByText("Your recipient", { exact: true }),
+          // A repaired pair carries the "Recipient changed" chip instead.
+          giver.page.getByText(/^(Your recipient|Recipient changed)$/),
         ).toBeVisible();
         await expect(
           giver.page.getByText(receiver.who.name).first(),
@@ -301,6 +327,21 @@ test.describe("the whole game", () => {
         await expect(to.page.getByText("L-42")).toBeVisible();
         await expect(to.page.getByText("Locker").first()).toBeVisible();
         await expect(to.page.getByText("Happy holidays")).toBeVisible();
+      });
+
+      await test.step("the receiver thanks on the wall and the Santa reads it", async () => {
+        const thanks = `Thank you, the gift was perfect ${RUN}`;
+        await to.page.goto("/home/wall");
+        await to.page.getByRole("button", { name: "Add a post" }).click();
+        await to.page.getByLabel("Your post").fill(thanks);
+        await to.page
+          .getByRole("button", { name: "Post", exact: true })
+          .click();
+        await expect(to.page.getByText(thanks)).toBeVisible();
+
+        await from.page.goto("/home/wall");
+        await expect(from.page.getByText(thanks)).toBeVisible();
+        await expect(from.page.getByText(`${to.who.name} ·`)).toBeVisible();
       });
 
       await test.step("the receiver guesses their Santa", async () => {

@@ -1,4 +1,12 @@
 import { expect, test } from "@playwright/test";
+import {
+  linkIn,
+  registerAndConfirm,
+  signIn,
+  SUBJECT,
+  useOwnIp,
+  waitForMail,
+} from "./helpers";
 
 // The e2e server runs with AUTH_DEV_BYPASS=false (playwright.config.ts) and a
 // seeded admin (db:reset in the webServer command). These are the env
@@ -118,6 +126,52 @@ test.describe("registration", () => {
 
   test("an unknown reset link shows the expired state", async ({ page }) => {
     await page.goto("/reset-password?token=nope");
+    await expect(page.getByText("This link no longer works")).toBeVisible();
+  });
+});
+
+test.describe("password reset", () => {
+  test("a confirmed user sets a new password from the mailed link", async ({
+    page,
+  }, testInfo) => {
+    // Both auth projects run this file in parallel on one database.
+    const email = `reset-${testInfo.project.name}-${Date.now()}@example.com`;
+    await useOwnIp(page.context());
+    const oldPassword = "old-long-password";
+    const newPassword = "brand-new-password";
+    await registerAndConfirm(page, { email, password: oldPassword });
+    await page.context().clearCookies();
+
+    await page.goto("/forgot-password");
+    await page.getByLabel("Email").fill(email);
+    await page.getByRole("button", { name: "Send link" }).click();
+    await expect(
+      page.getByText(/if an account with this email/i),
+    ).toBeVisible();
+
+    const link = linkIn(
+      await waitForMail(email, SUBJECT.reset),
+      "/reset-password",
+    );
+    await page.goto(link);
+    await page.getByLabel("New password").fill(newPassword);
+    await page.getByLabel("Repeat the password").fill(newPassword);
+    await page.getByRole("button", { name: "Save and sign in" }).click();
+    // The reset signs the person in.
+    await expect(page).toHaveURL(/\/home(\?|$)/);
+
+    await page.context().clearCookies();
+    await page.goto("/signin");
+    await page.getByLabel("Email").fill(email);
+    await page.getByLabel("Password").fill(oldPassword);
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page.getByText(/invalid email or password/i)).toBeVisible();
+    await expect(page).toHaveURL(/\/signin(\?|$)/);
+
+    await signIn(page, { email, password: newPassword });
+
+    // The link works once.
+    await page.goto(link);
     await expect(page.getByText("This link no longer works")).toBeVisible();
   });
 });

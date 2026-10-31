@@ -39,4 +39,30 @@ test.describe("golden path smoke", () => {
       page.getByRole("heading", { name: "Page not found" }),
     ).toBeVisible();
   });
+
+  test("landing footer: organizer, author block and the rules link", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const footer = page.getByRole("contentinfo");
+
+    await expect(footer).toContainText(
+      "Game organizer: Kate, write on Telegram.",
+    );
+    await expect(footer.getByText("Made by — Ludvik4")).toBeVisible();
+    for (const [name, href] of [
+      ["write on Telegram", "https://t.me/ludvik4"],
+      ["t.me/ludvik4", "https://t.me/ludvik4"],
+      ["Threads", "https://www.threads.com/@ludvik.coffee"],
+      ["ludvik4.dev", "https://ludvik4.dev/"],
+    ] as const) {
+      const link = footer.getByRole("link", { name, exact: true });
+      await expect(link).toHaveAttribute("href", href);
+      await expect(link).toHaveAttribute("target", "_blank");
+    }
+    await expect(footer).not.toContainText("RU · UA · EN · ES · DE");
+
+    await footer.getByRole("link", { name: "Rules and data" }).click();
+    await expect(page).toHaveURL(/\/rules$/);
+  });
 });
