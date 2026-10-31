@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import {
   assignments,
@@ -204,6 +204,21 @@ export async function withdrawParticipant(
             .where(eq(participants.userId, target.userId))
         : [target];
     const doomedIds = doomed.map((p) => p.id);
+    // Once a leaving participant's gift is marked as left, the chain is not
+    // repaired: the marked gift would be handed to a new Santa who never left
+    // it. (Normally impossible: withdrawals end before the gifts start, and
+    // settings cannot move the phase back after the draw.)
+    const marked = await tx
+      .select({ receiverId: assignments.receiverId })
+      .from(assignments)
+      .where(
+        and(
+          inArray(assignments.giverId, doomedIds),
+          isNotNull(assignments.giftLeftAt),
+        ),
+      )
+      .limit(1);
+    if (marked.length > 0) return { ok: false, reason: "closed" } as const;
     const posts = await tx
       .select({ id: wallPosts.id, photoUrl: wallPosts.photoUrl })
       .from(wallPosts)

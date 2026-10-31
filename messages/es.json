@@ -484,7 +484,8 @@
         "invalid": "Revisa las fechas: deben ser días reales.",
         "order": "Las fechas no van en orden: solicitudes, sorteo, regalos, revelación, cierre.",
         "failed": "No se pudo guardar. Inténtalo de nuevo.",
-        "closeSoon": "La fecha de cierre es hoy o ya pasó: el juego se cerraría y se borrarían los datos. Elige una fecha posterior."
+        "closeSoon": "La fecha de cierre es hoy o ya pasó: el juego se cerraría y se borrarían los datos. Elige una fecha posterior.",
+        "backwards": "Con estas fechas el juego volvería a una etapa anterior, y después del sorteo eso no es posible. Elige fechas que mantengan la etapa de hoy o una posterior."
       },
       "saved": "Fechas guardadas.",
       "saving": "Guardando…",

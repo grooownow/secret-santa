@@ -356,6 +356,22 @@ describe("withdrawParticipant", () => {
     expect((await giverOf(r.id))?.giverId).toBe(a.id);
   });
 
+  it("refuses to withdraw someone whose gift is already marked as left", async () => {
+    const [a, d, r] = [
+      await person("1"),
+      await person("2"),
+      await person("3"),
+    ] as const;
+    await link([a.id, d.id, r.id]);
+    await db
+      .update(assignments)
+      .set({ giftLeftAt: new Date(), giftPlace: "locker", giftCode: "7" })
+      .where(eq(assignments.receiverId, r.id));
+    expect(await withdraw(d.id)).toEqual({ ok: false, reason: "closed" });
+    expect((await giverOf(r.id))?.giverId).toBe(d.id);
+    expect(await db.select().from(participants)).toHaveLength(3);
+  });
+
   it("removing a child removes only the child", async () => {
     const a = await person("1");
     const [kid] = await db

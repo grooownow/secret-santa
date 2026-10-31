@@ -484,7 +484,8 @@
         "invalid": "Prüfe die Termine: Es müssen echte Tage sein.",
         "order": "Die Termine sind nicht in der richtigen Reihenfolge: Anmeldung, Auslosung, Geschenke, Aufdeckung, Ende.",
         "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal.",
-        "closeSoon": "Das Enddatum ist heute oder schon vorbei: Das Spiel würde enden und die Daten würden gelöscht. Wähle ein späteres Datum."
+        "closeSoon": "Das Enddatum ist heute oder schon vorbei: Das Spiel würde enden und die Daten würden gelöscht. Wähle ein späteres Datum.",
+        "backwards": "Mit diesen Daten ginge das Spiel in eine frühere Phase zurück, und das ist nach der Auslosung nicht möglich. Wähle Daten, die die heutige Phase oder eine spätere behalten."
       },
       "saved": "Termine gespeichert.",
       "saving": "Wird gespeichert…",

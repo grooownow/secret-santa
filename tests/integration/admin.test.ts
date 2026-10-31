@@ -319,6 +319,29 @@ describe("updateSettings", () => {
     expect((await db.select().from(settings))[0]?.closeOn).toBe("2027-01-10");
   });
 
+  it("after the draw, refuses dates that move today back to an earlier phase", async () => {
+    await asOrganizer();
+    // admin.test's settings row is drawn; 26 December is the gifts phase.
+    vi.setSystemTime(new Date("2026-12-26T12:00:00+01:00"));
+    const { updateSettings } = await import("@/features/admin");
+    expect(
+      await updateSettings(
+        {},
+        form({ ...good, giftsStartOn: "2026-12-27", giftsEndOn: "2026-12-31" }),
+      ),
+    ).toEqual({ error: "backwards" });
+    expect((await db.select().from(settings))[0]?.giftsStartOn).toBe(
+      "2026-12-25",
+    );
+    // Moving later dates while staying in the same phase is fine.
+    expect(
+      await updateSettings(
+        {},
+        form({ ...good, giftsEndOn: "2027-01-02", revealOn: "2027-01-03" }),
+      ),
+    ).toEqual({ saved: true });
+  });
+
   it("saves valid dates and never runs the draw", async () => {
     await asOrganizer();
     await db.update(settings).set({ drawnAt: null });
