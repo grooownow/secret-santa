@@ -1,6 +1,7 @@
 "use server";
 
 import { eq, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { getDb } from "@/db/client";
 import { assignments, participants, settings, users } from "@/db/schema";
 import { requireVerifiedAccount } from "@/features/auth";
@@ -9,6 +10,7 @@ import { renderEmail, sendOnce } from "@/features/mail";
 import { getOwnParticipant } from "@/features/profile";
 import { isLocale } from "@/i18n/locale";
 import { DEFAULT_DATES } from "@/lib/game-phase";
+import { giftPath, recipientPath } from "@/lib/cabinet-routes";
 import { logger } from "@/lib/logger";
 import { runAfterResponse } from "@/lib/run-after-response";
 import { markGiftSchema } from "./schemas";
@@ -68,6 +70,11 @@ export async function markGift(input: unknown): Promise<GiftState> {
   }
   if (!saved) return { error: "notFound" };
 
+  // The form, the recipient card and «Мой подарок» must show the new data.
+  revalidatePath(giftPath(participantId));
+  revalidatePath(recipientPath(participantId));
+  revalidatePath("/home");
+
   const { receiverId, giftVersion } = saved;
   runAfterResponse(async () => {
     try {
@@ -116,5 +123,7 @@ export async function markGiftFormAction(
     participantId: text("participantId"),
     ...values,
   });
-  return result.saved ? result : { ...result, values };
+  // Keep the typed values on success too: React resets the form after the
+  // action, and it must reset to what was just saved, not to the old data.
+  return { ...result, values };
 }

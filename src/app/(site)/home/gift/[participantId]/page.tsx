@@ -8,6 +8,7 @@ import {
   getRecipient,
   GiftForm,
   NothingToGive,
+  NotInDraw,
   participantIdSchema,
 } from "@/features/gift";
 import { recipientPath } from "@/lib/cabinet-routes";
@@ -34,6 +35,7 @@ export default async function LeaveGiftPage({
   if (result.state === "notDrawn") {
     return <BeforeDraw drawOn={settings.drawOn} />;
   }
+  if (result.state === "notInDraw") return <NotInDraw />;
   if (result.state === "none") return <NothingToGive personId={id.data} />;
   if (!canMarkGift(new Date(), settings)) redirect(recipientPath(id.data));
 

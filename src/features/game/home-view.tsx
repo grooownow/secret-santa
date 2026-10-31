@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { LinkButton, TextLink } from "@/components/form-ui";
 import { PageText, PageTitle } from "@/features/account";
 import {
-  CABINET_HOME,
   CABINET_WALL,
   giftPath,
   guessPath,
@@ -35,8 +34,6 @@ export interface HomeViewProps {
   canGuess: boolean;
   /** Already formatted dates, e.g. "25 декабря". */
   dates: { giftsStart: string; giftsEnd: string };
-  /** The account has more than one participant: show the switch link. */
-  several: boolean;
 }
 
 function Box({
@@ -103,11 +100,6 @@ export async function HomeView(props: HomeViewProps) {
 
   return (
     <div className="flex flex-col gap-5">
-      {props.several ? (
-        <TextLink href={CABINET_HOME}>
-          {t("switch", { name: person.name })}
-        </TextLink>
-      ) : null}
       <span className="bg-santa-mint text-santa-green self-start rounded-full px-3 py-1 text-xs font-semibold">
         {chip}
       </span>

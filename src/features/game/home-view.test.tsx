@@ -34,7 +34,6 @@ const base: HomeViewProps = {
   canMark: false,
   canGuess: true,
   dates: { giftsStart: "25 December", giftsEnd: "31 December" },
-  several: false,
 };
 
 const render = (overrides: Partial<HomeViewProps>) =>
@@ -96,11 +95,6 @@ describe("HomeView per phase", () => {
     expect(out).toContain("cabinet.home.noneTitle");
     expect(out).not.toContain("cabinet.home.recipient");
     expect(out).not.toContain(`/home/gift/${ID}`);
-  });
-
-  it("several participants: the switch link is shown", async () => {
-    expect(await render({ several: true })).toContain("cabinet.home.switch");
-    expect(await render({})).not.toContain("cabinet.home.switch");
   });
 });
 

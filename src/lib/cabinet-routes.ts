@@ -15,9 +15,13 @@ export const NEW_PARTICIPANT = "/home/participants/new" as Route;
 export function participantPath(id: string): Route {
   return `/home/participants/${id}` as Route;
 }
-/** The participant's own cabinet (switcher choice). */
-export function homeOf(id: string): Route {
-  return `/home?p=${id}` as Route;
+/** The participant switcher (frame eIsHY); `to` is where a choice leads. */
+export function switchPath(to: "home" | "gift" = "home"): Route {
+  return `/home/switch?to=${to}` as Route;
+}
+/** Picks the participant (remembered in a cookie), then goes to `to`. */
+export function switchToPath(id: string, to: "home" | "gift"): Route {
+  return `/home/switch/${id}?to=${to}` as Route;
 }
 /** Recipient card of the participant's gift. */
 export function recipientPath(id: string): Route {

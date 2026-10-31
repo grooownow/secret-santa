@@ -27,10 +27,16 @@ let cleanup: () => Promise<void>;
 const authMock = vi.fn();
 
 vi.mock("@/db/client", () => ({ getDb: () => db }));
+const jar = vi.hoisted(() => new Map<string, string>());
 vi.mock("next/headers", () => ({
-  cookies: async () => ({ set: vi.fn(), get: vi.fn() }),
+  cookies: async () => ({
+    set: (name: string, value: string) => jar.set(name, value),
+    get: (name: string) =>
+      jar.has(name) ? { name, value: jar.get(name) } : undefined,
+  }),
   headers: async () => new Headers(),
 }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/navigation", () => ({
   redirect: (to: string) => {
     throw new Error(`NEXT_REDIRECT:${to}`);
@@ -72,6 +78,7 @@ afterAll(async () => {
 beforeEach(async () => {
   await flush();
   sent.length = 0;
+  jar.clear();
   authMock.mockReset();
   await db.delete(sentEmails);
   await db.delete(assignments);
@@ -203,6 +210,8 @@ describe("recipient card", () => {
   it("a former giver no longer reaches the recipient after reassignment", async () => {
     const { giver, receiver } = await pair();
     const next = await person("Next Nora", { apartment: "3" });
+    // In a real draw everyone is also a receiver, so the former giver stays in it.
+    await db.insert(assignments).values({ receiverId: giver.p.id });
     await db
       .update(assignments)
       .set({ giverId: next.p.id, reassignedAt: new Date() })
@@ -218,6 +227,7 @@ describe("recipient card", () => {
 
   it("a giver with nobody to give to sees the nothing-to-give state", async () => {
     const { giver, receiver } = await pair();
+    await db.insert(assignments).values({ receiverId: giver.p.id });
     await db
       .update(assignments)
       .set({ giverId: null })
@@ -413,3 +423,93 @@ function input(id: string, extra: Record<string, unknown> = {}) {
     ...extra,
   };
 }
+
+describe("saved form values", () => {
+  it("the action echoes the saved values so the form resets to them", async () => {
+    const { giver } = await pair();
+    signInAs(giver.user);
+    const { markGiftFormAction } =
+      await import("@/features/gift/mark-gift-action");
+    const data = new FormData();
+    data.set("participantId", giver.p.id);
+    data.set("place", "mailbox");
+    data.set("code", "9");
+    data.set("note", "second");
+    expect(await markGiftFormAction({}, data)).toEqual({
+      saved: true,
+      values: { place: "mailbox", code: "9", note: "second" },
+    });
+  });
+});
+
+describe("current participant", () => {
+  async function family() {
+    const owner = await person("Owner Olga");
+    const [child] = await db
+      .insert(participants)
+      .values(makeParticipant(owner.user.id, { kind: "child", name: "Kid" }))
+      .returning();
+    if (!child) throw new Error("no child");
+    return { owner, child };
+  }
+  const profile = () => import("@/features/profile");
+
+  it("defaults to the account owner", async () => {
+    const { owner } = await family();
+    const { getCurrentParticipant } = await profile();
+    expect((await getCurrentParticipant(owner.user.id))?.id).toBe(owner.p.id);
+  });
+
+  it("remembers an own participant and ignores a foreign id in the cookie", async () => {
+    const { owner, child } = await family();
+    const other = await person("Other", { apartment: "9" });
+    const { getCurrentParticipant, rememberParticipant } = await profile();
+
+    expect(await rememberParticipant(owner.user.id, child.id)).toBe(true);
+    expect((await getCurrentParticipant(owner.user.id))?.id).toBe(child.id);
+
+    jar.set("participant", other.p.id);
+    expect((await getCurrentParticipant(owner.user.id))?.id).toBe(owner.p.id);
+  });
+
+  it("choosing someone else's participant is refused and stores nothing", async () => {
+    const { owner } = await family();
+    const other = await person("Other", { apartment: "9" });
+    const { rememberParticipant } = await profile();
+    expect(await rememberParticipant(owner.user.id, other.p.id)).toBe(false);
+    expect(jar.has("participant")).toBe(false);
+
+    signInAs(owner.user);
+    const route =
+      await import("../../src/app/(site)/home/switch/[participantId]/route");
+    const request = { nextUrl: new URL("http://x/home/switch/a?to=gift") };
+    await expect(
+      route.GET(request as never, {
+        params: Promise.resolve({ participantId: other.p.id }),
+      }),
+    ).rejects.toThrow("NEXT_NOT_FOUND");
+    await expect(
+      route.GET(request as never, {
+        params: Promise.resolve({ participantId: owner.p.id }),
+      }),
+    ).rejects.toThrow("NEXT_REDIRECT:/home/gift");
+    expect(jar.get("participant")).toBe(owner.p.id);
+  });
+});
+
+describe("a participant who is not in the draw", () => {
+  it("is told so, not 'dropped out' and not 'before the draw'", async () => {
+    const { giver } = await pair();
+    const late = await person("Late Lena", { apartment: "8" });
+    const { getRecipient, getMyGift } = await actions();
+    expect(await getRecipient(late.user.id, late.p.id)).toEqual({
+      state: "notInDraw",
+    });
+    expect(await getMyGift(late.user.id, late.p.id)).toEqual({
+      state: "notInDraw",
+    });
+    expect(await getRecipient(giver.user.id, giver.p.id)).toMatchObject({
+      state: "ready",
+    });
+  });
+});

@@ -410,7 +410,7 @@
       "chipWaiting": "Geschenke ab {date}",
       "chipGifts": "Zeit für Geschenke",
       "chipReveal": "Santas enthüllt",
-      "titleWaiting": "Jetzt bist du jemandes Santa",
+      "titleWaiting": "Jetzt beschenkst du jemanden",
       "titleGifts": "Zeit für ein bisschen Zauber",
       "titleReveal": "Finde heraus, wer dein Santa ist",
       "switch": "Person wechseln (jetzt: {name})",
@@ -460,7 +460,7 @@
       "chip": "Deine beschenkte Person",
       "changedChip": "Beschenkte Person geändert",
       "changedTitle": "Du hast eine neue beschenkte Person",
-      "changedBox": "Du bist jetzt der Santa von {name}",
+      "changedBox": "Du beschenkst jetzt {name}",
       "changedText": "Die vorherige Person ist ausgestiegen. Adresse und Wünsche unten sind die neuen. Wir haben dir auch eine E-Mail geschickt.",
       "photoAlt": "Foto von {name}",
       "address": "Haus {building} · Wohnung {apartment}",
@@ -532,7 +532,6 @@
       "note": "Zettel",
       "leftOn": "hinterlegt am {date}",
       "edited": "Dein Santa hat die Angaben korrigiert; das sind die neuesten.",
-      "writeOrganizer": "Kate auf Telegram schreiben",
       "notFoundButton": "Ich habe das Geschenk nicht gefunden",
       "notFoundHint": "Drücke, wenn dort nichts liegt. Die Organisation wird benachrichtigt.",
       "wall": "Zur Dankeswand"
@@ -547,6 +546,13 @@
     "beforeDraw": {
       "title": "Die beschenkte Person erscheint nach der Auslosung am {date}",
       "text": "Danach bekommst du eine E-Mail und hier erscheint die Karte."
+    },
+    "notInDraw": {
+      "title": "Du bist nicht in der Auslosung",
+      "text": "Die Auslosung fand statt, bevor das Profil dieser Person im Spiel war, daher gibt es weder eine beschenkte Person noch einen Santa. Schreib der Organisation, dann sucht ihr eine Lösung."
     }
+  },
+  "organizer": {
+    "write": "Kate auf Telegram schreiben"
   }
 }

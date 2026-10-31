@@ -1,12 +1,11 @@
 import { Gift } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton } from "@/components/form-ui";
+import { OrganizerLink } from "@/components/organizer-link";
 import { PageText, PageTitle } from "@/features/account";
 import { CABINET_WALL } from "@/lib/cabinet-routes";
 import { NotFoundForm } from "./not-found-form";
 import type { MyGiftResult } from "./queries";
-
-export const ORGANIZER_TELEGRAM = "https://t.me/ludvik4";
 
 /**
  * «Мой подарок»: status, place, code and note of the gift that waits for the
@@ -87,16 +86,7 @@ export async function MyGiftCard({
         </dl>
       ) : null}
 
-      {gift.status === "notFound" ? (
-        <a
-          href={ORGANIZER_TELEGRAM}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-santa-green text-[13px] font-semibold underline-offset-4 hover:underline"
-        >
-          {t("writeOrganizer")}
-        </a>
-      ) : null}
+      {gift.status === "notFound" ? <OrganizerLink /> : null}
 
       {gift.status === "left" && canReport ? (
         <>

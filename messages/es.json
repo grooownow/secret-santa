@@ -409,8 +409,8 @@
     "home": {
       "chipWaiting": "Regalos desde el {date}",
       "chipGifts": "Es hora de regalar",
-      "chipReveal": "Santas reveladas",
-      "titleWaiting": "Ahora eres el Santa de alguien",
+      "chipReveal": "Revelación de los Santas",
+      "titleWaiting": "Ahora tienes a alguien a quien regalar",
       "titleGifts": "Hora de hacer magia",
       "titleReveal": "Descubre quién es tu Santa",
       "switch": "Cambiar de participante (ahora: {name})",
@@ -460,7 +460,7 @@
       "chip": "A quién regalas",
       "changedChip": "La persona cambió",
       "changedTitle": "Tienes a alguien nuevo a quien regalar",
-      "changedBox": "Ahora eres el Santa de {name}",
+      "changedBox": "Ahora preparas un regalo para {name}",
       "changedText": "La persona anterior se dio de baja. La dirección y los deseos de abajo ya son los nuevos. También te enviamos un correo.",
       "photoAlt": "Foto de {name}",
       "address": "Edificio {building} · piso {apartment}",
@@ -532,7 +532,6 @@
       "note": "Nota",
       "leftOn": "dejado el {date}",
       "edited": "Tu Santa corrigió los datos; estos son los más recientes.",
-      "writeOrganizer": "Escribir a Kate por Telegram",
       "notFoundButton": "No encontré el regalo",
       "notFoundHint": "Pulsa si no hay nada en ese lugar. La organización recibirá el aviso.",
       "wall": "Al muro de agradecimientos"
@@ -547,6 +546,13 @@
     "beforeDraw": {
       "title": "La persona a la que regalarás aparecerá tras el sorteo del {date}",
       "text": "Cuando termine, recibirás un correo y aquí aparecerá la ficha."
+    },
+    "notInDraw": {
+      "title": "No estás en el sorteo",
+      "text": "El sorteo se hizo antes de que el perfil de esta persona entrara en el juego, así que no hay a quién regalar ni Santa. Escribe a la organización para ver qué se puede hacer."
     }
+  },
+  "organizer": {
+    "write": "Escribir a Kate por Telegram"
   }
 }

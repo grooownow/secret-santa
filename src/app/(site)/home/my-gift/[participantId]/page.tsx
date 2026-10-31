@@ -7,6 +7,7 @@ import {
   BeforeDraw,
   getMyGift,
   MyGiftCard,
+  NotInDraw,
   participantIdSchema,
 } from "@/features/gift";
 
@@ -31,6 +32,7 @@ export default async function MyGiftPage({
   if (gift.state === "notDrawn") {
     return <BeforeDraw drawOn={settings.drawOn} />;
   }
+  if (gift.state === "notInDraw") return <NotInDraw />;
   const locale = await getLocale();
   return (
     <MyGiftCard

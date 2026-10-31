@@ -11,16 +11,17 @@ import {
   getPhase,
   getSettings,
   HomeView,
-  ParticipantSwitcher,
   registrationOpen,
 } from "@/features/game";
-import { getMyGift, getRecipient } from "@/features/gift";
+import { getMyGift, getRecipient, NotInDraw } from "@/features/gift";
 import {
+  CurrentSwitch,
+  getCurrentParticipant,
   HomeCollect,
   listParticipants,
   UnverifiedNotice,
 } from "@/features/profile";
-import { homeOf } from "@/lib/cabinet-routes";
+import { OrganizerLink } from "@/components/organizer-link";
 import { todayInMadrid } from "@/lib/game-time";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,23 +30,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // "Дом": one screen that changes with the phase. Collect is `HomeCollect`;
-// the later phases are `HomeView`. An account with several participants picks
-// whose cabinet to open with `?p=<participantId>`.
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ p?: string }>;
-}) {
+// the later phases are `HomeView`. The cabinet of the remembered participant
+// (default: the account owner) is shown; «Сменить участника» opens the switcher.
+export default async function Home() {
   const account = await requireAccount();
   if (!account.emailVerified) {
     return <UnverifiedNotice email={account.email} />;
   }
 
   const now = new Date();
-  const [settings, people, query, locale] = await Promise.all([
+  const [settings, people, locale] = await Promise.all([
     getSettings(),
     listParticipants(account.id),
-    searchParams,
     getLocale(),
   ]);
   const phase = getPhase(now, settings);
@@ -69,53 +65,56 @@ export default async function Home({
       <>
         <PageTitle>{t("noProfileTitle")}</PageTitle>
         <PageText>{t("noProfileText")}</PageText>
+        <OrganizerLink />
       </>
     );
   }
 
-  const chosen =
-    people.find((person) => person.id === query.p) ??
-    (people.length === 1 ? people[0] : undefined);
-  if (!chosen) {
-    return (
-      <ParticipantSwitcher
-        people={people}
-        building={account.building}
-        apartment={account.apartment}
-        hrefFor={homeOf}
-      />
-    );
-  }
+  const chosen = await getCurrentParticipant(account.id, people);
+  if (!chosen) return null;
 
   const [recipient, myGift] = await Promise.all([
     getRecipient(account.id, chosen.id),
     getMyGift(account.id, chosen.id),
   ]);
+  const switcher = (
+    <CurrentSwitch userId={account.id} personId={chosen.id} to="home" />
+  );
+  if (recipient?.state === "notInDraw") {
+    return (
+      <>
+        {switcher}
+        <NotInDraw />
+      </>
+    );
+  }
   return (
-    <HomeView
-      phase={phase}
-      person={{ id: chosen.id, name: chosen.name }}
-      recipient={
-        recipient?.state === "ready"
-          ? {
-              state: "ready",
-              name: recipient.recipient.name,
-              building: recipient.recipient.building,
-              apartment: recipient.recipient.apartment,
-              reassigned: recipient.reassigned,
-              giftLeft: recipient.gift.leftAt !== null,
-            }
-          : { state: "none" }
-      }
-      myGift={myGift?.state === "ready" ? myGift.status : "waiting"}
-      daysToGifts={daysBetween(todayInMadrid(now), settings.giftsStartOn)}
-      canMark={canMarkGift(now, settings)}
-      canGuess={canGuess(now, settings)}
-      dates={{
-        giftsStart: formatGameDay(settings.giftsStartOn, locale),
-        giftsEnd: formatGameDay(settings.giftsEndOn, locale),
-      }}
-      several={people.length > 1}
-    />
+    <>
+      {switcher}
+      <HomeView
+        phase={phase}
+        person={{ id: chosen.id, name: chosen.name }}
+        recipient={
+          recipient?.state === "ready"
+            ? {
+                state: "ready",
+                name: recipient.recipient.name,
+                building: recipient.recipient.building,
+                apartment: recipient.recipient.apartment,
+                reassigned: recipient.reassigned,
+                giftLeft: recipient.gift.leftAt !== null,
+              }
+            : { state: "none" }
+        }
+        myGift={myGift?.state === "ready" ? myGift.status : "waiting"}
+        daysToGifts={daysBetween(todayInMadrid(now), settings.giftsStartOn)}
+        canMark={canMarkGift(now, settings)}
+        canGuess={canGuess(now, settings)}
+        dates={{
+          giftsStart: formatGameDay(settings.giftsStartOn, locale),
+          giftsEnd: formatGameDay(settings.giftsEndOn, locale),
+        }}
+      />
+    </>
   );
 }

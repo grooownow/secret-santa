@@ -13,3 +13,4 @@ export { NothingToGive } from "./nothing-to-give";
 export { GiftForm } from "./gift-form";
 export { MyGiftCard } from "./my-gift-card";
 export { BeforeDraw } from "./before-draw";
+export { NotInDraw } from "./not-in-draw";

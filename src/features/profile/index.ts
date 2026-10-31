@@ -11,3 +11,8 @@ export { UnverifiedNotice } from "./unverified-notice";
 export { canCreate, canEdit } from "./edit-gate";
 export { idSchema } from "./schemas";
 export { CABINET_HOME } from "./routes";
+export {
+  CurrentSwitch,
+  getCurrentParticipant,
+  rememberParticipant,
+} from "./current-participant";

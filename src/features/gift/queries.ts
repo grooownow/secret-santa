@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { assignments, participants, users } from "@/db/schema";
 import { getSettings } from "@/features/game";
@@ -27,10 +27,27 @@ export interface GiverGift {
   version: number;
 }
 
+/** Whether the participant appears in the draw result in either role. */
+async function inDraw(participantId: string): Promise<boolean> {
+  const [row] = await getDb()
+    .select({ receiverId: assignments.receiverId })
+    .from(assignments)
+    .where(
+      or(
+        eq(assignments.receiverId, participantId),
+        eq(assignments.giverId, participantId),
+      ),
+    )
+    .limit(1);
+  return !!row;
+}
+
 export type RecipientResult =
   | { state: "notDrawn" }
   /** Drawn, but nobody is left to give to (after a drop-out). */
   | { state: "none" }
+  /** Drawn, but this participant is not in the draw at all (joined later). */
+  | { state: "notInDraw" }
   | {
       state: "ready";
       recipient: RecipientInfo;
@@ -66,7 +83,11 @@ export async function getRecipient(
     .innerJoin(users, eq(users.id, participants.userId))
     .where(eq(assignments.giverId, participantId))
     .limit(1);
-  if (!row) return { state: "none" };
+  if (!row) {
+    return (await inDraw(participantId))
+      ? { state: "none" }
+      : { state: "notInDraw" };
+  }
 
   const { recipient, assignment } = row;
   return {
@@ -98,6 +119,7 @@ export type GiftStatus = "waiting" | "left" | "notFound";
 
 export type MyGiftResult =
   | { state: "notDrawn" }
+  | { state: "notInDraw" }
   | {
       state: "ready";
       status: GiftStatus;
@@ -130,9 +152,13 @@ export async function getMyGift(
       notFoundAt: assignments.notFoundAt,
     })
     .from(assignments)
-    .where(and(eq(assignments.receiverId, participantId)))
+    .where(eq(assignments.receiverId, participantId))
     .limit(1);
-  if (!row) return { state: "notDrawn" };
+  if (!row) {
+    return (await getSettings()).drawnAt
+      ? { state: "notInDraw" }
+      : { state: "notDrawn" };
+  }
 
   const left = row.giftLeftAt !== null;
   return {

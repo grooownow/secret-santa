@@ -532,7 +532,6 @@
       "note": "Note",
       "leftOn": "left on {date}",
       "edited": "Your Santa corrected the details; these are the latest.",
-      "writeOrganizer": "Write to Kate on Telegram",
       "notFoundButton": "I could not find the gift",
       "notFoundHint": "Press if there is nothing at this place. The organizer will be notified.",
       "wall": "To the wall of thanks"
@@ -547,6 +546,13 @@
     "beforeDraw": {
       "title": "Your recipient will appear after the draw on {date}",
       "text": "When it is done you get an email and the recipient's card shows up here."
+    },
+    "notInDraw": {
+      "title": "You are not part of the draw",
+      "text": "The draw took place before this participant's profile joined the game, so there is no recipient and no Santa. Write to the organizer to see what can be done."
     }
+  },
+  "organizer": {
+    "write": "Write to Kate on Telegram"
   }
 }
