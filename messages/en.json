@@ -594,5 +594,52 @@
       "wall": "To the thank-you wall",
       "myGift": "My gift"
     }
+  },
+  "wall": {
+    "title": "Thank-you wall",
+    "closed": {
+      "title": "The wall opens on {date}",
+      "text": "Once gifts start arriving, posts from participants will appear here."
+    },
+    "add": {
+      "open": "Add a post",
+      "as": "The post will appear as: {name}",
+      "text": "Your post",
+      "placeholder": "Tell us how the gift went",
+      "submit": "Post",
+      "posting": "Posting…",
+      "cancel": "Cancel"
+    },
+    "photo": {
+      "title": "Gift photo, optional",
+      "hint": "Any photo works, including from an iPhone. It is compressed automatically.",
+      "failed": "This photo could not be opened. Pick another or post without a photo; your text is kept.",
+      "upload": "Upload a photo",
+      "change": "Change photo",
+      "preparing": "Preparing the photo…",
+      "remove": "Remove the saved photo"
+    },
+    "feed": {
+      "emptyTitle": "The wall is empty for now",
+      "emptyText": "Be the first: tell us how the gift went.",
+      "photoAlt": "Photo from {name}"
+    },
+    "delete": {
+      "action": "Delete",
+      "title": "Delete this post?",
+      "text": "The post and its photo will disappear from the wall.",
+      "confirm": "Yes, delete",
+      "cancel": "Cancel",
+      "failed": "Could not delete. Please try again."
+    },
+    "errors": {
+      "invalid": "Write between 1 and 1000 characters.",
+      "photo": "The photo could not be saved. Pick another or post without a photo; your text is kept.",
+      "photoTooLarge": "The photo is too large.",
+      "closed": "The wall is closed right now.",
+      "noParticipant": "Fill in your profile first.",
+      "notFound": "Post not found.",
+      "failed": "Could not post. Please try again."
+    }
   }
 }

@@ -1,6 +1,7 @@
 export { requireUser } from "./require-user";
 export type { SessionUser } from "./require-user";
 export {
+  isOrganizer,
   requireAccount,
   requireOrganizer,
   requireVerifiedAccount,

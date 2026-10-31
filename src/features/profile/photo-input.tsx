@@ -16,6 +16,8 @@ interface PhotoInputProps {
   onBusyChange?: (busy: boolean) => void;
   /** Name of the checkbox that asks the server to drop the saved photo. */
   removeName?: string;
+  /** Message namespace with the same keys as `profile.photo`. */
+  namespace?: "profile.photo" | "wall.photo";
 }
 
 /**
@@ -27,8 +29,9 @@ export function PhotoInput({
   onChange,
   onBusyChange,
   removeName,
+  namespace = "profile.photo",
 }: PhotoInputProps) {
-  const t = useTranslations("profile.photo");
+  const t = useTranslations(namespace);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);

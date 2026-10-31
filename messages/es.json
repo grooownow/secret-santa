@@ -594,5 +594,52 @@
       "wall": "Al muro de gracias",
       "myGift": "Mi regalo"
     }
+  },
+  "wall": {
+    "title": "Muro de agradecimientos",
+    "closed": {
+      "title": "El muro se abrirá el {date}",
+      "text": "Cuando empiecen a llegar los regalos, aquí aparecerán las publicaciones de los participantes."
+    },
+    "add": {
+      "open": "Añadir una publicación",
+      "as": "La publicación aparecerá a nombre de: {name}",
+      "text": "Tu publicación",
+      "placeholder": "Cuéntanos cómo fue el regalo",
+      "submit": "Publicar",
+      "posting": "Publicando…",
+      "cancel": "Cancelar"
+    },
+    "photo": {
+      "title": "Foto del regalo, opcional",
+      "hint": "Sirve cualquier foto, también del iPhone. Se comprime sola.",
+      "failed": "No se pudo abrir esta foto. Elige otra o publica sin foto; el texto se conserva.",
+      "upload": "Subir una foto",
+      "change": "Cambiar la foto",
+      "preparing": "Preparando la foto…",
+      "remove": "Quitar la foto guardada"
+    },
+    "feed": {
+      "emptyTitle": "El muro está vacío por ahora",
+      "emptyText": "Sé el primero: cuenta cómo fue el regalo.",
+      "photoAlt": "Foto de {name}"
+    },
+    "delete": {
+      "action": "Eliminar",
+      "title": "¿Eliminar esta publicación?",
+      "text": "La publicación y su foto desaparecerán del muro.",
+      "confirm": "Sí, eliminar",
+      "cancel": "Cancelar",
+      "failed": "No se pudo eliminar. Inténtalo de nuevo."
+    },
+    "errors": {
+      "invalid": "Escribe entre 1 y 1000 caracteres.",
+      "photo": "No se pudo guardar la foto. Elige otra o publica sin foto; el texto se conserva.",
+      "photoTooLarge": "La foto es demasiado grande.",
+      "closed": "El muro está cerrado ahora.",
+      "noParticipant": "Primero rellena tu ficha.",
+      "notFound": "Publicación no encontrada.",
+      "failed": "No se pudo publicar. Inténtalo de nuevo."
+    }
   }
 }

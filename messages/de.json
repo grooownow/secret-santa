@@ -594,5 +594,52 @@
       "wall": "Zur Dankeswand",
       "myGift": "Mein Geschenk"
     }
+  },
+  "wall": {
+    "title": "Dankeswand",
+    "closed": {
+      "title": "Die Wand öffnet am {date}",
+      "text": "Sobald die Geschenke ankommen, erscheinen hier die Beiträge der Teilnehmenden."
+    },
+    "add": {
+      "open": "Beitrag hinzufügen",
+      "as": "Der Beitrag erscheint unter dem Namen: {name}",
+      "text": "Dein Beitrag",
+      "placeholder": "Erzähl, wie das Geschenk war",
+      "submit": "Veröffentlichen",
+      "posting": "Wird veröffentlicht…",
+      "cancel": "Abbrechen"
+    },
+    "photo": {
+      "title": "Foto vom Geschenk, optional",
+      "hint": "Jedes Foto passt, auch vom iPhone. Es wird automatisch verkleinert.",
+      "failed": "Dieses Foto konnte nicht geöffnet werden. Wähle ein anderes oder veröffentliche ohne Foto; der Text bleibt erhalten.",
+      "upload": "Foto hochladen",
+      "change": "Foto ändern",
+      "preparing": "Foto wird vorbereitet…",
+      "remove": "Gespeichertes Foto entfernen"
+    },
+    "feed": {
+      "emptyTitle": "Die Wand ist noch leer",
+      "emptyText": "Sei die erste Person: Erzähl, wie das Geschenk war.",
+      "photoAlt": "Foto von {name}"
+    },
+    "delete": {
+      "action": "Löschen",
+      "title": "Diesen Beitrag löschen?",
+      "text": "Der Beitrag und sein Foto verschwinden von der Wand.",
+      "confirm": "Ja, löschen",
+      "cancel": "Abbrechen",
+      "failed": "Löschen ist fehlgeschlagen. Bitte versuche es noch einmal."
+    },
+    "errors": {
+      "invalid": "Schreibe zwischen 1 und 1000 Zeichen.",
+      "photo": "Das Foto konnte nicht gespeichert werden. Wähle ein anderes oder veröffentliche ohne Foto; der Text bleibt erhalten.",
+      "photoTooLarge": "Das Foto ist zu groß.",
+      "closed": "Die Wand ist gerade geschlossen.",
+      "noParticipant": "Fülle zuerst deinen Steckbrief aus.",
+      "notFound": "Beitrag nicht gefunden.",
+      "failed": "Veröffentlichen ist fehlgeschlagen. Bitte versuche es noch einmal."
+    }
   }
 }

@@ -52,13 +52,20 @@ export async function requireVerifiedAccount(): Promise<Account> {
  */
 export async function requireOrganizer(): Promise<Account> {
   const account = await requireAccount();
-  const adminEmail = env.ADMIN_EMAIL?.trim().toLowerCase();
-  if (
-    !adminEmail ||
-    !account.emailVerified ||
-    account.email.trim().toLowerCase() !== adminEmail
-  ) {
+  if (!isOrganizer(account)) {
     notFound();
   }
   return account;
+}
+
+/** True for the verified account whose email equals `ADMIN_EMAIL`. */
+export function isOrganizer(
+  account: Pick<Account, "email" | "emailVerified">,
+): boolean {
+  const adminEmail = env.ADMIN_EMAIL?.trim().toLowerCase();
+  return (
+    !!adminEmail &&
+    !!account.emailVerified &&
+    account.email.trim().toLowerCase() === adminEmail
+  );
 }
