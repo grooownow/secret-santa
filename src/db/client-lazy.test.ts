@@ -33,3 +33,30 @@ describe("getDb laziness", () => {
     vi.resetModules();
   });
 });
+
+describe("remote (Neon) connection", () => {
+  it("opens postgres without prepared statements and with one connection", async () => {
+    vi.resetModules();
+    const postgresMock = vi.fn(() => ({}) as never);
+    vi.doMock("postgres", () => ({ default: postgresMock }));
+    vi.doMock("drizzle-orm/postgres-js", () => ({
+      drizzle: vi.fn(() => ({ remote: true })),
+    }));
+    vi.doMock("@/lib/env", () => ({ env: {} }));
+
+    const { createDb } = await import("./client");
+    createDb({
+      GRIDFIN_DB: "remote",
+      DATABASE_URL: "postgresql://u:p@host/db",
+    } as never);
+    expect(postgresMock).toHaveBeenCalledWith("postgresql://u:p@host/db", {
+      prepare: false,
+      max: 1,
+    });
+
+    vi.doUnmock("postgres");
+    vi.doUnmock("drizzle-orm/postgres-js");
+    vi.doUnmock("@/lib/env");
+    vi.resetModules();
+  });
+});

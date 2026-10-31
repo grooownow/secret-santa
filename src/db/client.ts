@@ -7,7 +7,13 @@ import * as schema from "./schema";
 
 export function createDb(config: Env) {
   if (config.GRIDFIN_DB === "remote") {
-    const sql = postgres(config.DATABASE_URL as string);
+    // Neon's pooled endpoint (PgBouncer, transaction mode) cannot keep
+    // prepared statements, and each serverless instance needs only one
+    // connection.
+    const sql = postgres(config.DATABASE_URL as string, {
+      prepare: false,
+      max: 1,
+    });
     return drizzlePostgres(sql, { schema });
   }
   const client = new PGlite(config.PGLITE_DATA_DIR);
