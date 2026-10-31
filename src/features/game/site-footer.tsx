@@ -17,7 +17,10 @@ export async function SiteFooter({
       labels={{
         rules: t("rules"),
         madeBy: t("madeBy"),
+        contact: t("contact"),
+        social: t("social"),
         threads: t("threads"),
+        order: t("order"),
       }}
     />
   );

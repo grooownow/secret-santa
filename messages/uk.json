@@ -16,7 +16,10 @@
   "footer": {
     "rules": "Правила та дані",
     "madeBy": "Зроблено",
-    "threads": "Threads"
+    "contact": "Зв’язатися",
+    "social": "Соцмережі",
+    "threads": "Threads",
+    "order": "Замовити сайт або застосунок"
   },
   "translate": {
     "button": "Перекласти",

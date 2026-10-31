@@ -16,7 +16,10 @@
   "footer": {
     "rules": "Regeln und Daten",
     "madeBy": "Umgesetzt von",
-    "threads": "Threads"
+    "contact": "Kontakt",
+    "social": "Soziale Netze",
+    "threads": "Threads",
+    "order": "Website oder App bestellen"
   },
   "translate": {
     "button": "Übersetzen",

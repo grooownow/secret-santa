@@ -16,7 +16,10 @@
   "footer": {
     "rules": "Правила и данные",
     "madeBy": "Сделано",
-    "threads": "Threads"
+    "contact": "Связаться",
+    "social": "Соцсети",
+    "threads": "Threads",
+    "order": "Заказать сайт или приложение"
   },
   "translate": {
     "button": "Перевести",

@@ -16,7 +16,10 @@
   "footer": {
     "rules": "Reglas y datos",
     "madeBy": "Creado por",
-    "threads": "Threads"
+    "contact": "Contacto",
+    "social": "Redes",
+    "threads": "Threads",
+    "order": "Encargar un sitio web o una aplicación"
   },
   "translate": {
     "button": "Traducir",
