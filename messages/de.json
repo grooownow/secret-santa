@@ -256,8 +256,7 @@
       "home": "Start",
       "gift": "Geschenk",
       "wall": "Wand",
-      "settings": "Einstellungen",
-      "signOut": "Abmelden"
+      "settings": "Einstellungen"
     },
     "home": {
       "phase": "Anmeldung bis {date}",

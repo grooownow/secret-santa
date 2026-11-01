@@ -256,8 +256,7 @@
       "home": "Home",
       "gift": "Gift",
       "wall": "Wall",
-      "settings": "Settings",
-      "signOut": "Sign out"
+      "settings": "Settings"
     },
     "home": {
       "phase": "Sign-ups until {date}",

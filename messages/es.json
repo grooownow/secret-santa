@@ -256,8 +256,7 @@
       "home": "Inicio",
       "gift": "Regalo",
       "wall": "Muro",
-      "settings": "Ajustes",
-      "signOut": "Salir"
+      "settings": "Ajustes"
     },
     "home": {
       "phase": "Inscripciones hasta el {date}",
