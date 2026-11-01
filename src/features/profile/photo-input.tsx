@@ -69,36 +69,48 @@ export function PhotoInput({
   const shown = preview ?? currentUrl ?? null;
 
   return (
-    <div className="bg-santa-mint flex flex-col gap-3 rounded-2xl p-4">
-      <p className="text-santa-green text-xs font-semibold">{t("title")}</p>
-      <div className="flex items-center gap-4">
-        <div className="bg-santa-white text-santa-green flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full">
-          {shown ? (
-            // Previews are local or Blob URLs of already compressed photos.
-            <Image
-              src={shown}
-              alt=""
-              width={64}
-              height={64}
-              unoptimized
-              className="size-full object-cover"
-            />
-          ) : (
-            <Camera className="size-6" aria-hidden />
-          )}
-        </div>
-        <label className="text-santa-green cursor-pointer text-sm font-semibold underline-offset-4 hover:underline">
-          {busy ? t("preparing") : shown ? t("change") : t("upload")}
-          <input
-            type="file"
-            accept="image/*,.heic,.heif"
-            className="sr-only"
-            data-testid="photo-file"
-            onChange={pick}
-          />
-        </label>
-      </div>
-      <p className="text-santa-muted text-xs leading-relaxed">{t("hint")}</p>
+    <div className="flex flex-col gap-2">
+      {/* The whole mint block is the upload control: a label around the
+          (visually hidden, still focusable) file input. */}
+      <label
+        data-testid="photo-block"
+        className="bg-santa-mint hover:border-santa-green has-[input:focus-visible]:outline-santa-green flex cursor-pointer flex-col gap-3 rounded-2xl border border-transparent p-4 transition-colors has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2"
+      >
+        <span className="text-santa-green text-xs font-semibold">
+          {t("title")}
+        </span>
+        <span className="flex items-center gap-4">
+          <span className="bg-santa-white text-santa-green flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full">
+            {shown ? (
+              // Previews are local or Blob URLs of already compressed photos.
+              <Image
+                src={shown}
+                alt=""
+                width={64}
+                height={64}
+                unoptimized
+                className="size-full object-cover"
+              />
+            ) : (
+              <Camera className="size-6" aria-hidden />
+            )}
+          </span>
+          <span className="text-santa-green text-sm font-semibold">
+            {busy ? t("preparing") : shown ? t("change") : t("upload")}
+          </span>
+        </span>
+        <span className="text-santa-muted text-xs leading-relaxed">
+          {t("hint")}
+        </span>
+        <input
+          type="file"
+          accept="image/*,.heic,.heif"
+          className="sr-only"
+          data-testid="photo-file"
+          aria-label={busy ? t("preparing") : shown ? t("change") : t("upload")}
+          onChange={pick}
+        />
+      </label>
       {failed ? (
         <p role="alert" className="text-santa-danger text-sm">
           {t("failed")}

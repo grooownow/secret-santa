@@ -133,3 +133,19 @@ describe("PhotoInput", () => {
     expect(onPhoto).toHaveBeenLastCalledWith(null);
   });
 });
+
+describe("PhotoInput block", () => {
+  it("the whole mint block opens the file chooser, not only the link text", async () => {
+    render(<PhotoInput onChange={vi.fn()} />);
+    const input = screen.getByTestId("photo-file");
+    const opened = vi.fn();
+    input.addEventListener("click", opened);
+
+    // The block's title and hint are part of the control too.
+    await userEvent.click(screen.getByText("title"));
+    await userEvent.click(screen.getByText("hint"));
+    expect(opened).toHaveBeenCalledTimes(2);
+    // Its accessible name says what it does.
+    expect(screen.getByLabelText(/upload/)).toBe(input);
+  });
+});
