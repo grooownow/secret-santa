@@ -117,4 +117,12 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
     await page.mouse.click(4, box.y + box.height / 2);
     await expect(dialog).toHaveCount(0);
   });
+
+  // The game flow later draws exactly its own participants, so this account
+  // leaves again — through the settings link checked above.
+  await test.step("the leave link deletes the account", async () => {
+    await page.getByRole("link", { name: "Leave the game" }).click();
+    await page.getByRole("button", { name: "Yes, delete the account" }).click();
+    await expect(page).toHaveURL(/\/$/);
+  });
 });
