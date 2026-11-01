@@ -9,6 +9,7 @@ export interface ShareLabels {
   qrAlt: string;
   copy: string;
   copied: string;
+  copyFailed: string;
 }
 
 const COPIED_MS = 2000;
@@ -17,7 +18,8 @@ const COPIED_MS = 2000;
  * «Поделиться игрой» in the cabinet header: an icon button opening a popover
  * with the site QR code, the address and «Копировать». Behaves like the
  * language menu: closes on a click outside and on Esc, and Esc returns focus
- * to the button. «Скопировано» shows for about two seconds in a live region.
+ * to the button. «Скопировано» shows for about two seconds in a live region;
+ * a refused clipboard shows «Не получилось скопировать…» there instead.
  */
 export function ShareMenu({
   url,
@@ -31,7 +33,7 @@ export function ShareMenu({
 }) {
   const id = useId();
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copy, setCopy] = useState<"idle" | "copied" | "failed">("idle");
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -54,18 +56,18 @@ export function ShareMenu({
   }, [open]);
 
   useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), COPIED_MS);
+    if (copy !== "copied") return;
+    const timer = setTimeout(() => setCopy("idle"), COPIED_MS);
     return () => clearTimeout(timer);
-  }, [copied]);
+  }, [copy]);
 
-  async function copy() {
+  async function copyUrl() {
     try {
       await navigator.clipboard.writeText(url);
-      setCopied(true);
+      setCopy("copied");
     } catch {
-      // No clipboard access: the address stays visible to copy by hand.
-      setCopied(false);
+      // No clipboard access: say so; the address stays visible to select.
+      setCopy("failed");
     }
   }
 
@@ -102,18 +104,25 @@ export function ShareMenu({
           </p>
           <button
             type="button"
-            onClick={copy}
+            onClick={copyUrl}
             className="bg-santa-green text-santa-white flex h-11 w-full items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold"
           >
-            {copied ? (
+            {copy === "copied" ? (
               <Check className="size-4" aria-hidden />
             ) : (
               <Copy className="size-4" aria-hidden />
             )}
             {labels.copy}
           </button>
-          <p aria-live="polite" className="text-santa-green min-h-5 text-sm">
-            {copied ? labels.copied : ""}
+          <p
+            aria-live="polite"
+            className={`min-h-5 text-center text-sm ${copy === "failed" ? "text-santa-danger" : "text-santa-green"}`}
+          >
+            {copy === "copied"
+              ? labels.copied
+              : copy === "failed"
+                ? labels.copyFailed
+                : ""}
           </p>
         </dialog>
       ) : null}

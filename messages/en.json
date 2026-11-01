@@ -954,6 +954,7 @@
     "title": "Invite your neighbours",
     "qrAlt": "QR code with the link to the game",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "copyFailed": "Could not copy, select the link by hand"
   }
 }

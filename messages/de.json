@@ -954,6 +954,7 @@
     "title": "Lade deine Nachbarschaft ein",
     "qrAlt": "QR-Code mit dem Link zum Spiel",
     "copy": "Kopieren",
-    "copied": "Kopiert"
+    "copied": "Kopiert",
+    "copyFailed": "Kopieren hat nicht geklappt, markiere den Link von Hand"
   }
 }

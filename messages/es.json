@@ -954,6 +954,7 @@
     "title": "Invita a tu vecindario",
     "qrAlt": "Código QR con el enlace al juego",
     "copy": "Copiar",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "copyFailed": "No se pudo copiar, selecciona el enlace a mano"
   }
 }

@@ -18,6 +18,7 @@ export async function ShareGame() {
         qrAlt: t("qrAlt"),
         copy: t("copy"),
         copied: t("copied"),
+        copyFailed: t("copyFailed"),
       }}
     />
   );
