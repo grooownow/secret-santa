@@ -5,11 +5,11 @@ import { useActionState, useState } from "react";
 import {
   Field,
   FormAlert,
-  SelectInput,
   SubmitButton,
   TextAreaInput,
   TextInput,
 } from "@/components/form-ui";
+import { ListboxSelect } from "@/components/listbox-select";
 import { BUILDINGS } from "./apartment";
 import { PhotoInput } from "./photo-input";
 import { saveAdultAction } from "./save-adult-action";
@@ -60,20 +60,12 @@ export function AdultForm({
         />
       </Field>
       <Field label={t("building")}>
-        <SelectInput
+        <ListboxSelect
           name="building"
-          required
+          placeholder={t("buildingPlaceholder")}
           defaultValue={v?.building ?? defaults.building}
-        >
-          <option value="" disabled>
-            {t("buildingPlaceholder")}
-          </option>
-          {BUILDINGS.map((b) => (
-            <option key={b} value={b}>
-              {b}
-            </option>
-          ))}
-        </SelectInput>
+          options={BUILDINGS.map((b) => ({ value: b, label: b }))}
+        />
       </Field>
       <Field label={t("apartment")} hint={t("apartmentHint")}>
         <TextInput

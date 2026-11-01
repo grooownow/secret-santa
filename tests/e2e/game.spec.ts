@@ -81,7 +81,9 @@ const LEAVER: Neighbour = {
 async function fillOwnProfile(page: Page, who: Neighbour) {
   await page.getByRole("link", { name: "Fill in your profile" }).click();
   await page.getByLabel("Name", { exact: true }).fill(who.name);
-  await page.getByLabel("Building").selectOption(who.building);
+  // The house picker is our own listbox, not a native select.
+  await page.getByRole("combobox", { name: /Building/ }).click();
+  await page.getByRole("option", { name: who.building, exact: true }).click();
   await page.getByLabel("Flat").fill(who.flat);
   await page.getByLabel("What would delight you").fill("Sweets and books");
   await page.getByLabel("What not to give").fill("Nothing with nuts");
