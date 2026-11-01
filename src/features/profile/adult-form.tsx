@@ -67,7 +67,7 @@ export function AdultForm({
           options={BUILDINGS.map((b) => ({ value: b, label: b }))}
         />
       </Field>
-      <Field label={t("apartment")} hint={t("apartmentHint")}>
+      <Field label={t("apartment")}>
         <TextInput
           name="apartment"
           maxLength={10}
