@@ -1,6 +1,5 @@
-import QRCode from "qrcode";
 import { getTranslations } from "next-intl/server";
-import { env } from "@/lib/env";
+import { siteQr } from "@/lib/site-qr";
 import { PrintButton } from "./print-button";
 
 /**
@@ -9,10 +8,9 @@ import { PrintButton } from "./print-button";
  */
 export async function InviteQr() {
   const t = await getTranslations("admin.settings");
-  const url = env.NEXT_PUBLIC_APP_URL;
-  const [preview, sheet] = await Promise.all([
-    QRCode.toDataURL(url, { width: 360, margin: 2 }),
-    QRCode.toDataURL(url, { width: 900, margin: 2 }),
+  const [{ url, dataUrl: preview }, { dataUrl: sheet }] = await Promise.all([
+    siteQr(360),
+    siteQr(900),
   ]);
 
   return (

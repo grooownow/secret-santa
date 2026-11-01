@@ -947,5 +947,12 @@
       "text": "Before the draw, delete your account or profile yourself in your account. After the draw, deletion goes through the organizer, like dropping out of the game: write to Kate, which is possible until {lastExit}. From {giftsStart} the deletion is carried out on {closeDay}."
     },
     "version": "Text version: {version}"
+  },
+  "share": {
+    "button": "Share the game",
+    "title": "Invite your neighbours",
+    "qrAlt": "QR code with the link to the game",
+    "copy": "Copy",
+    "copied": "Copied"
   }
 }

@@ -947,5 +947,12 @@
       "text": "Antes del sorteo, borra tu cuenta o tu ficha desde tu cuenta. Después del sorteo, el borrado se hace a través de la organización, como una baja del juego: escribe a Kate; se puede hasta el {lastExit}. A partir del {giftsStart} el borrado se ejecuta el {closeDay}."
     },
     "version": "Versión del texto: {version}"
+  },
+  "share": {
+    "button": "Compartir el juego",
+    "title": "Invita a tu vecindario",
+    "qrAlt": "Código QR con el enlace al juego",
+    "copy": "Copiar",
+    "copied": "Copiado"
   }
 }

@@ -947,5 +947,12 @@
       "text": "Vor der Auslosung löschst du dein Konto oder deinen Steckbrief selbst in deinem Konto. Nach der Auslosung läuft das Löschen über die Organisation, wie ein Ausstieg aus dem Spiel: Schreibe Kate, das ist bis {lastExit} möglich. Ab dem {giftsStart} wird das Löschen am {closeDay} ausgeführt."
     },
     "version": "Textversion: {version}"
+  },
+  "share": {
+    "button": "Spiel teilen",
+    "title": "Lade deine Nachbarschaft ein",
+    "qrAlt": "QR-Code mit dem Link zum Spiel",
+    "copy": "Kopieren",
+    "copied": "Kopiert"
   }
 }

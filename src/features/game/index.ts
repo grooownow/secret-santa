@@ -24,3 +24,4 @@ export { formatGameDay, daysBetween } from "@/lib/game-time";
 export { runDaily, addDays } from "./daily";
 export type { DailyReport } from "./daily";
 export { purgeAll } from "./purge";
+export { ShareGame } from "./share-game";

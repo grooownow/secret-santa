@@ -10,6 +10,7 @@ vi.mock("@/features/game", () => ({
   SiteHeader: ({ action }: { action?: React.ReactNode }) => (
     <header>{action}</header>
   ),
+  ShareGame: () => <i>share-game</i>,
 }));
 vi.mock("@/features/profile", () => ({ CabinetNav: () => <nav /> }));
 
@@ -23,5 +24,14 @@ describe("cabinet layout", () => {
     const header = out.slice(out.indexOf("<header"), out.indexOf("</header>"));
     expect(header).not.toContain("signOut");
     expect(header).not.toContain("<form");
+  });
+
+  it("puts «share the game» where sign-out used to be", async () => {
+    const out = await html(
+      <CabinetLayout>
+        <p>page</p>
+      </CabinetLayout>,
+    );
+    expect(out).toContain("<header><i>share-game</i></header>");
   });
 });
