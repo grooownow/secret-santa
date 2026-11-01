@@ -264,7 +264,7 @@
       "childAge": "{age, plural, one {# Jahr} other {# Jahre}}",
       "address": "Haus {building} · Wohnung {apartment}",
       "filled": "Steckbrief ausgefüllt",
-      "edit": "Steckbrief bearbeiten",
+      "edit": "Steckbrief bearbeiten: {name}",
       "addChild": "Kind hinzufügen",
       "fillProfile": "Steckbrief ausfüllen",
       "drawLine": "Die Auslosung ist am {draw}.",

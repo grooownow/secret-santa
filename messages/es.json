@@ -264,7 +264,7 @@
       "childAge": "{age, plural, one {# año} other {# años}}",
       "address": "Edificio {building} · piso {apartment}",
       "filled": "Ficha completada",
-      "edit": "Editar ficha",
+      "edit": "Editar ficha: {name}",
       "addChild": "Añadir un menor",
       "fillProfile": "Rellenar mi ficha",
       "drawLine": "El sorteo es el {draw}.",

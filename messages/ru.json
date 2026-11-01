@@ -264,7 +264,7 @@
       "childAge": "{age, plural, one {# год} few {# года} many {# лет} other {# лет}}",
       "address": "Дом {building} · квартира {apartment}",
       "filled": "Анкета заполнена",
-      "edit": "Редактировать анкету",
+      "edit": "Редактировать анкету: {name}",
       "addChild": "Добавить ребёнка",
       "fillProfile": "Заполнить анкету",
       "drawLine": "Жеребьёвка — {draw}.",

@@ -82,7 +82,9 @@ describe("ParticipantCards", () => {
     ] as const) {
       const one = card(out, kind);
       expect(one).toContain(`href="/home/participants/${id}"`);
-      expect(one).toContain('aria-label="profile.home.edit"');
+      expect(one).toContain(
+        `aria-label="profile.home.edit(${kind === "adult" ? "Alice" : "Kid"})"`,
+      );
       expect(one).toContain("lucide-pencil");
     }
   });

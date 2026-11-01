@@ -264,7 +264,7 @@
       "childAge": "{age, plural, one {# рік} few {# роки} many {# років} other {# року}}",
       "address": "Будинок {building} · квартира {apartment}",
       "filled": "Анкету заповнено",
-      "edit": "Редагувати анкету",
+      "edit": "Редагувати анкету: {name}",
       "addChild": "Додати дитину",
       "fillProfile": "Заповнити анкету",
       "drawLine": "Жеребкування — {draw}.",

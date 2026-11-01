@@ -124,7 +124,7 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
     ).toBeVisible();
     await expect(card).toContainText("Building D · flat 42");
     await expect(
-      card.getByRole("link", { name: "Edit profile" }),
+      card.getByRole("link", { name: `Edit profile: ${name}` }),
     ).toBeVisible();
   });
 

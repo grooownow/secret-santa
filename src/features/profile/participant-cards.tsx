@@ -93,7 +93,7 @@ export async function ParticipantCards({
               {editable ? (
                 <Link
                   href={participantPath(person.id)}
-                  aria-label={t("edit")}
+                  aria-label={t("edit", { name: person.name })}
                   className={cn(
                     "text-santa-green hover:bg-santa-lime flex size-11 shrink-0 items-center justify-center rounded-full transition-colors",
                     adult ? "bg-santa-mint" : "bg-santa-white",
