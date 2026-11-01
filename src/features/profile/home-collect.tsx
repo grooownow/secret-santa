@@ -116,15 +116,11 @@ export async function HomeCollect({
         </LinkButton>
       ) : null}
 
-      <section className="flex flex-col gap-2">
-        <h2 className="text-santa-ink text-base font-bold">{t("hintTitle")}</h2>
-        <PageText>{t("hintText")}</PageText>
-        {owner ? null : (
-          <p className="text-santa-muted border-santa-line border-t pt-3 text-sm">
-            {t("drawLine", { draw: drawDay })}
-          </p>
-        )}
-      </section>
+      {owner ? null : (
+        <p className="text-santa-muted border-santa-line border-t pt-3 text-sm">
+          {t("drawLine", { draw: drawDay })}
+        </p>
+      )}
     </div>
   );
 }
