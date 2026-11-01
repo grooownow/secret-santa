@@ -27,6 +27,23 @@ const NAV_LABEL = {
  * the settings link and the «share the game» popover. Runs in both auth
  * projects (desktop and Pixel 7) while sign-ups are open.
  */
+// One account per attempt and a draw-count-sensitive game flow afterwards:
+// never retry, and always delete the account, even when a step failed.
+test.describe.configure({ retries: 0 });
+
+test.afterEach(async ({ page, context, baseURL }) => {
+  await context.addCookies([
+    { name: "locale", value: "en", url: baseURL as string },
+  ]);
+  await page.goto("/home/settings/delete");
+  const confirm = page.getByRole("button", { name: "Yes, delete the account" });
+  // Already deleted by the last step (or never signed in): nothing to do.
+  if (await confirm.isVisible()) {
+    await confirm.click();
+    await expect(page).toHaveURL(/\/$/);
+  }
+});
+
 test("cabinet: menu, house listbox, photo, profile cards, settings, share", async ({
   page,
   context,
