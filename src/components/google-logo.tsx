@@ -1,8 +1,9 @@
 /**
  * The official four-colour Google "G" mark. Google's brand guidelines require
  * these exact colours, so this is the one component allowed to carry raw
- * brand hex values instead of the santa-* design tokens (see the exemption in
- * src/tokens.test.ts and docs/rules/frontend.md).
+ * brand hex values instead of the santa-* design tokens. The exception is
+ * documented in docs/rules/frontend.md ("Design tokens"); src/tokens.test.ts
+ * only bans Tailwind palette classes, so it needs no entry for this file.
  */
 export function GoogleLogo({ className }: { className?: string }) {
   return (

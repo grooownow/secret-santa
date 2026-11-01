@@ -61,6 +61,12 @@ by the hook; review catches those.
   a hand-written `prefers-color-scheme` media query, because it replaces the
   root layout when the tree above it (including `globals.css`/`ThemeProvider`)
   may itself be the thing that failed. Do not copy that pattern anywhere else.
+- **Documented exception:** `src/components/google-logo.tsx` carries the four
+  official Google brand hex colours as SVG `fill`s, because Google's brand
+  guidelines require the exact "G" mark. Only that one file; any other brand
+  icon uses `currentColor` (e.g. the Threads mark in `site-footer-view.tsx`).
+  `src/tokens.test.ts` checks Tailwind palette classes, not hex, so it needs
+  no exemption entry.
 - Both themes (light/dark) come from the same token set — a page that only
   uses tokens gets dark mode for free; never hardcode a light-only color.
 
@@ -96,5 +102,6 @@ building a new user-facing surface, and after building one to run the
 - [ ] No network/db call added to `src/middleware.ts` or `auth.config.ts`
 - [ ] New mutation follows the optimistic pattern or documents why not
 - [ ] Route with async data has a `loading.tsx`
-- [ ] No raw hex/arbitrary color classes outside `global-error.tsx`
+- [ ] No raw hex/arbitrary color classes outside `global-error.tsx` and the
+      brand mark `src/components/google-logo.tsx`
 - [ ] `pnpm exec lhci autorun` / CI `lighthouse` job green

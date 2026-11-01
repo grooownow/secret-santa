@@ -336,8 +336,8 @@
 - **Кнопка:** Стать Сантой
 
 ### Низ страницы
-Организатор игры: Kate, написать в Telegram. Правила и данные.
+Автор приложения
 
-Сделано ludvik4.dev · Threads
+ludvik4.dev · [иконка Telegram] · [иконка Threads]
 
-Ссылки: `Telegram` ведёт на https://t.me/ludvik4, `ludvik4.dev` на https://ludvik4.dev, `Threads` на https://www.threads.com/@ludvik.coffee.
+Ссылки (новая вкладка): `ludvik4.dev` ведёт на https://ludvik4.dev/, иконка Telegram на https://t.me/ludvik4, иконка Threads на https://www.threads.com/@ludvik.coffee. Строки организатора и «Правила и данные» в подвале нет (см. «Подпись разработчика»); «Правила и данные» открываются из текста согласия и из «Настроек».
