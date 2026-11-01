@@ -247,7 +247,8 @@
       "home": "Inicio",
       "gift": "Regalo",
       "wall": "Muro",
-      "settings": "Ajustes"
+      "settings": "Ajustes",
+      "profile": "Ficha"
     },
     "home": {
       "phase": "Inscripciones hasta el {date}",
@@ -269,7 +270,8 @@
       "drawLine": "El sorteo es el {draw}.",
       "solo": "Estás en el juego",
       "child": "menor",
-      "photoAlt": "Foto: {name}"
+      "photoAlt": "Foto: {name}",
+      "toProfile": "Abrir las fichas"
     },
     "unverified": {
       "title": "Solo falta un paso",

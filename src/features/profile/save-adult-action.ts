@@ -2,10 +2,10 @@
 
 import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { CABINET_PROFILE } from "@/lib/cabinet-routes";
 import { getDb } from "@/db/client";
 import { participants, users } from "@/db/schema";
 import { requireVerifiedAccount } from "@/features/auth";
-import { HOME } from "@/features/account";
 import { renderEmail, sendOnce } from "@/features/mail";
 import { isLocale } from "@/i18n/locale";
 import { logger } from "@/lib/logger";
@@ -131,5 +131,5 @@ export async function saveAdultAction(
     });
   }
 
-  redirect(HOME);
+  redirect(CABINET_PROFILE);
 }

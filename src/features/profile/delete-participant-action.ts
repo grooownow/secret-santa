@@ -2,10 +2,10 @@
 
 import { and, eq, inArray } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { CABINET_PROFILE } from "@/lib/cabinet-routes";
 import { getDb } from "@/db/client";
 import { participants, wallPosts } from "@/db/schema";
 import { requireVerifiedAccount } from "@/features/auth";
-import { HOME } from "@/features/account";
 import {
   deleteTranslations,
   participantKeys,
@@ -86,5 +86,5 @@ export async function deleteParticipantAction(
 
   const photos = removed.flatMap((r) => (r.photoUrl ? [r.photoUrl] : []));
   await deletePhotos(photos).catch(() => {});
-  redirect(HOME);
+  redirect(CABINET_PROFILE);
 }

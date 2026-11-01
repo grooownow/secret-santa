@@ -247,7 +247,8 @@
       "home": "Home",
       "gift": "Gift",
       "wall": "Wall",
-      "settings": "Settings"
+      "settings": "Settings",
+      "profile": "Profile"
     },
     "home": {
       "phase": "Sign-ups until {date}",
@@ -269,7 +270,8 @@
       "drawLine": "The draw is on {draw}.",
       "solo": "You are in the game",
       "child": "child",
-      "photoAlt": "Photo: {name}"
+      "photoAlt": "Photo: {name}",
+      "toProfile": "Open the profiles"
     },
     "unverified": {
       "title": "One step left",

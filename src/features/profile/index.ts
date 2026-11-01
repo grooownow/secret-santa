@@ -7,10 +7,11 @@ export { ChildForm } from "./child-form";
 export { DeleteParticipantForm } from "./delete-participant-form";
 export { CabinetNav } from "./cabinet-nav";
 export { HomeCollect } from "./home-collect";
+export { ProfileOverview } from "./profile-overview";
 export { UnverifiedNotice } from "./unverified-notice";
 export { canCreate, canEdit } from "./edit-gate";
 export { idSchema } from "./schemas";
-export { CABINET_HOME } from "./routes";
+export { CABINET_HOME, CABINET_PROFILE } from "./routes";
 export {
   CurrentSwitch,
   getCurrentParticipant,

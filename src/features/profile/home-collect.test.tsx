@@ -36,15 +36,7 @@ function person(over: Partial<Participant>): Participant {
 }
 
 const render = (people: Participant[]) =>
-  html(
-    <HomeCollect
-      people={people}
-      settings={settings}
-      building="K"
-      apartment="12"
-      registrationOpen
-    />,
-  );
+  html(<HomeCollect people={people} settings={settings} registrationOpen />);
 
 describe("HomeCollect", () => {
   it("has no «what would delight your Santa» hint block", async () => {
@@ -54,5 +46,20 @@ describe("HomeCollect", () => {
       expect(out).not.toContain("profile.home.hintTitle");
       expect(out).not.toContain("profile.home.hintText");
     }
+  });
+});
+
+describe("HomeCollect on «Главная»", () => {
+  it("is only the status: the cards moved to «Анкета», linked from here", async () => {
+    const out = await render([person({})]);
+    expect(out).toContain('href="/home/profile"');
+    expect(out).toContain("profile.home.toProfile");
+    expect(out).not.toContain("/home/participants/");
+    expect(out).not.toContain("profile.home.solo");
+  });
+
+  it("without the owner's profile it offers to fill it in", async () => {
+    const out = await render([]);
+    expect(out).toContain('href="/home/participants/new"');
   });
 });

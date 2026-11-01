@@ -165,7 +165,7 @@ async function childRow() {
 describe("owner profile", () => {
   it("saves the profile and the address on the account", async () => {
     const user = await signedInUser();
-    expect(await redirectTarget(() => saveAdult())).toBe("/home");
+    expect(await redirectTarget(() => saveAdult())).toBe("/home/profile");
 
     const [person] = await db.select().from(participants);
     expect(person).toMatchObject({

@@ -12,7 +12,9 @@ import {
   getSettings,
   HomeView,
   registrationOpen,
+  type GameSettings,
 } from "@/features/game";
+import { AboutSections, SantaIllustration } from "@/features/landing";
 import { getMyGift, getRecipient, NotInDraw } from "@/features/gift";
 import {
   CurrentSwitch,
@@ -24,26 +26,60 @@ import {
 import { OrganizerLink } from "@/components/organizer-link";
 import { todayInMadrid } from "@/lib/game-time";
 
+type Account = Awaited<ReturnType<typeof requireAccount>>;
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("profile.nav");
   return { title: t("home") };
 }
 
-// "Дом": one screen that changes with the phase. Collect is `HomeCollect`;
-// the later phases are `HomeView`. The cabinet of the remembered participant
-// (default: the account owner) is shown; «Сменить участника» opens the switcher.
+// «Главная»: the status card of the current phase on top (collect is
+// `HomeCollect`, later phases `HomeView`, for the remembered participant;
+// «Сменить участника» opens the switcher), then the explaining part of the
+// public landing (`CabinetAbout`). The participant cards are on «Анкета».
 export default async function Home() {
   const account = await requireAccount();
   if (!account.emailVerified) {
     return <UnverifiedNotice email={account.email} />;
   }
+  const [settings, locale] = await Promise.all([getSettings(), getLocale()]);
+  return (
+    <>
+      <HomeStatus account={account} settings={settings} locale={locale} />
+      <CabinetAbout settings={settings} locale={locale} />
+    </>
+  );
+}
 
+/** Santa illustration and the landing's «what / how / dates / FAQ». */
+function CabinetAbout({
+  settings,
+  locale,
+}: {
+  settings: GameSettings;
+  locale: string;
+}) {
+  return (
+    <div className="-mx-[26px] -mb-8 flex flex-col">
+      <div className="border-santa-line mt-4 flex justify-center border-t pt-6">
+        <SantaIllustration />
+      </div>
+      <AboutSections settings={settings} locale={locale} />
+    </div>
+  );
+}
+
+async function HomeStatus({
+  account,
+  settings,
+  locale,
+}: {
+  account: Account;
+  settings: GameSettings;
+  locale: string;
+}) {
   const now = new Date();
-  const [settings, people, locale] = await Promise.all([
-    getSettings(),
-    listParticipants(account.id),
-    getLocale(),
-  ]);
+  const people = await listParticipants(account.id);
   const phase = getPhase(now, settings);
 
   if (phase === "closed") redirect("/closed");
@@ -52,8 +88,6 @@ export default async function Home() {
       <HomeCollect
         people={people}
         settings={settings}
-        building={account.building}
-        apartment={account.apartment}
         registrationOpen={registrationOpen(now, settings)}
       />
     );

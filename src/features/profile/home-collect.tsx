@@ -1,10 +1,9 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import { LinkButton } from "@/components/form-ui";
+import { LinkButton, TextLink } from "@/components/form-ui";
 import { PageText, PageTitle } from "@/features/account";
 import type { GameSettings } from "@/features/game";
 import type { Participant } from "./queries";
-import { ParticipantCards } from "./participant-cards";
-import { NEW_PARTICIPANT } from "./routes";
+import { CABINET_PROFILE, NEW_PARTICIPANT } from "./routes";
 
 function formatDay(date: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, {
@@ -15,21 +14,18 @@ function formatDay(date: string, locale: string): string {
 }
 
 /**
- * The "Дом" page during the collect phase: profile statuses, draw date, add a
- * child, and a hint while the owner's profile is not filled in. Later phases
- * add their own sections next to this one in `/home`.
+ * The status card of «Главная» during the collect phase: whether the owner's
+ * profile is in, the draw date, and the way to fill in the profile. The cards
+ * themselves live on «Анкета» (`ProfileOverview`). Later phases use
+ * `HomeView` in the game feature instead.
  */
 export async function HomeCollect({
   people,
   settings,
-  building,
-  apartment,
   registrationOpen,
 }: {
   people: Participant[];
   settings: GameSettings;
-  building: string | null;
-  apartment: string | null;
   registrationOpen: boolean;
 }) {
   const [t, locale] = await Promise.all([
@@ -75,12 +71,7 @@ export async function HomeCollect({
       ) : null}
 
       {owner ? (
-        <ParticipantCards
-          people={people}
-          building={building}
-          apartment={apartment}
-          editable={registrationOpen}
-        />
+        <TextLink href={CABINET_PROFILE}>{t("toProfile")}</TextLink>
       ) : registrationOpen ? (
         <LinkButton href={NEW_PARTICIPANT}>{t("fillProfile")}</LinkButton>
       ) : null}

@@ -7,6 +7,8 @@ import type { Route } from "next";
  * not known to typedRoutes yet; drop the casts once they exist.
  */
 export const CABINET_HOME = "/home" as Route;
+/** «Анкета»: the account's participant cards (edit, add a child). */
+export const CABINET_PROFILE = "/home/profile" as Route;
 export const CABINET_GIFT = "/home/gift" as Route;
 export const CABINET_WALL = "/home/wall" as Route;
 export const CABINET_SETTINGS = "/home/settings" as Route;

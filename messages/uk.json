@@ -244,10 +244,11 @@
   "profile": {
     "nav": {
       "label": "Меню кабінету",
-      "home": "Дім",
+      "home": "Головна",
       "gift": "Подарунок",
       "wall": "Стіна",
-      "settings": "Налаштування"
+      "settings": "Налаштування",
+      "profile": "Анкета"
     },
     "home": {
       "phase": "Збір заявок до {date}",
@@ -269,7 +270,8 @@
       "drawLine": "Жеребкування — {draw}.",
       "solo": "Ти в грі",
       "child": "дитина",
-      "photoAlt": "Фото: {name}"
+      "photoAlt": "Фото: {name}",
+      "toProfile": "Відкрити анкети"
     },
     "unverified": {
       "title": "Залишився один крок",

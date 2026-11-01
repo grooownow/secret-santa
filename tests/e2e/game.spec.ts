@@ -88,7 +88,12 @@ async function fillOwnProfile(page: Page, who: Neighbour) {
   await page.getByLabel("What would delight you").fill("Sweets and books");
   await page.getByLabel("What not to give").fill("Nothing with nuts");
   await page.getByRole("button", { name: "Save profile" }).click();
-  await expect(page.getByText(`You are in, ${who.name}!`)).toBeVisible();
+  // Saving lands on «Profile», the participant cards.
+  await expect(page).toHaveURL(/\/home\/profile$/);
+  await expect(
+    page.getByRole("heading", { name: "You are in the game" }),
+  ).toBeVisible();
+  await expect(page.getByText(who.name)).toBeVisible();
 }
 
 async function addChild(page: Page, name: string) {

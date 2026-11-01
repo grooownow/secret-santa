@@ -2,10 +2,10 @@
 
 import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { CABINET_PROFILE } from "@/lib/cabinet-routes";
 import { getDb } from "@/db/client";
 import { participants } from "@/db/schema";
 import { requireVerifiedAccount } from "@/features/auth";
-import { HOME } from "@/features/account";
 import { logger } from "@/lib/logger";
 import {
   assertGateOpen,
@@ -119,5 +119,5 @@ export async function saveChildAction(
   }
   await saveTexts(id, data);
 
-  redirect(HOME);
+  redirect(CABINET_PROFILE);
 }

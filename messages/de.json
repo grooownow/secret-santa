@@ -247,7 +247,8 @@
       "home": "Start",
       "gift": "Geschenk",
       "wall": "Wand",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "profile": "Steckbrief"
     },
     "home": {
       "phase": "Anmeldung bis {date}",
@@ -269,7 +270,8 @@
       "drawLine": "Die Auslosung ist am {draw}.",
       "solo": "Du bist dabei",
       "child": "Kind",
-      "photoAlt": "Foto: {name}"
+      "photoAlt": "Foto: {name}",
+      "toProfile": "Steckbriefe öffnen"
     },
     "unverified": {
       "title": "Noch ein Schritt",

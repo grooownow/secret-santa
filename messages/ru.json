@@ -244,10 +244,11 @@
   "profile": {
     "nav": {
       "label": "Меню кабинета",
-      "home": "Дом",
+      "home": "Главная",
       "gift": "Подарок",
       "wall": "Стена",
-      "settings": "Настройки"
+      "settings": "Настройки",
+      "profile": "Анкета"
     },
     "home": {
       "phase": "Сбор заявок до {date}",
@@ -269,7 +270,8 @@
       "drawLine": "Жеребьёвка — {draw}.",
       "solo": "Ты в игре",
       "child": "ребёнок",
-      "photoAlt": "Фото: {name}"
+      "photoAlt": "Фото: {name}",
+      "toProfile": "Открыть анкеты"
     },
     "unverified": {
       "title": "Остался один шаг",

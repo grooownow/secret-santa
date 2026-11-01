@@ -32,6 +32,126 @@ function LinkButton({
   );
 }
 
+/** The Santa illustration of the hero (frame nFiq7). */
+export function SantaIllustration({ priority }: { priority?: boolean }) {
+  return (
+    <Image
+      src={santa}
+      alt=""
+      width={280}
+      height={240}
+      priority={priority}
+      sizes="280px"
+      className="h-[240px] w-[280px] object-contain"
+    />
+  );
+}
+
+/**
+ * The explaining part of the landing: «Что такое Тайный Санта», «Как это
+ * работает», the key rule, «Даты» and FAQ. Shared by the public landing and
+ * the cabinet «Главная», so the copy lives in one place (`landing` messages).
+ */
+export async function AboutSections({
+  settings,
+  locale,
+}: {
+  settings: GameSettings;
+  locale: string;
+}) {
+  const t = await getTranslations("landing");
+  const d = gameDates(settings, locale);
+  return (
+    <>
+      <section className="flex flex-col gap-3.5 px-[26px] py-[30px]">
+        <h2 className={H2}>{t("what.title")}</h2>
+        <p className="text-santa-muted text-sm leading-relaxed">
+          {t("what.text", d)}
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-1.5 px-[26px] pb-6">
+        <h2 className={H2}>{t("how.title")}</h2>
+        <ol className="flex flex-col">
+          {STEPS.map((n) => (
+            <li key={n} className="flex gap-[13px] py-5">
+              <span
+                className={`text-santa-green flex size-[31px] shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                  Number(n) % 2 ? "bg-santa-lime" : "bg-santa-yellow"
+                }`}
+              >
+                {n}
+              </span>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-heading text-base font-bold break-words">
+                  {t(`how.steps.${n}.title`, d)}
+                </h3>
+                <p className="text-santa-muted text-[13px] leading-relaxed">
+                  {t(`how.steps.${n}.text`, d)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="bg-santa-mint mx-[26px] mb-6 flex flex-col gap-2 rounded-2xl p-[18px]">
+        <h2 className="font-heading text-santa-green text-[17px] font-bold">
+          {t("key.title")}
+        </h2>
+        <p className="text-santa-ink text-[13px] leading-relaxed">
+          {t("key.text", d)}
+        </p>
+      </section>
+
+      <section className="bg-santa-mint flex flex-col gap-[18px] px-[26px] pt-7 pb-[30px]">
+        <h2 className={H2}>{t("dates.title")}</h2>
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-[11px] font-semibold">
+              <th className="text-santa-ink w-[124px] py-3.5 pr-4 font-semibold">
+                {t("dates.when")}
+              </th>
+              <th className="text-santa-muted py-3.5 font-semibold">
+                {t("dates.what")}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {ROWS.map((n) => (
+              <tr key={n} className="border-santa-line border-t align-top">
+                <td className="text-santa-ink py-3.5 pr-4 text-[13px] font-semibold">
+                  {t(`dates.rows.${n}.when`, d)}
+                </td>
+                <td className="text-santa-muted py-3.5 text-[13px]">
+                  {t(`dates.rows.${n}.what`, d)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="flex flex-col gap-1.5 px-[26px] py-[30px]">
+        <h2 className={H2}>{t("faq.title")}</h2>
+        {FAQ.map((n) => (
+          <div
+            key={n}
+            className="border-santa-line flex flex-col gap-2 border-b py-[18px] last:border-b-0"
+          >
+            <h3 className="font-heading text-base font-bold break-words">
+              {t(`faq.items.${n}.q`)}
+            </h3>
+            <p className="text-santa-muted text-[13px] leading-relaxed">
+              {t(`faq.items.${n}.a`, d)}
+            </p>
+          </div>
+        ))}
+      </section>
+    </>
+  );
+}
+
 export interface LandingPageProps {
   settings: GameSettings;
   now: Date;
@@ -88,15 +208,7 @@ export async function LandingPage({
             </p>
           </div>
           <div className="relative flex w-full flex-col items-center pt-4">
-            <Image
-              src={santa}
-              alt=""
-              width={280}
-              height={240}
-              priority
-              sizes="280px"
-              className="h-[240px] w-[280px] object-contain"
-            />
+            <SantaIllustration priority />
             <p className="bg-santa-yellow text-santa-ink flex h-11 w-full items-center justify-center px-6 text-[13px] font-semibold">
               {open
                 ? t("hero.deadline", { close: d.close })
@@ -116,91 +228,7 @@ export async function LandingPage({
           )}
         </section>
 
-        <section className="flex flex-col gap-3.5 px-[26px] py-[30px]">
-          <h2 className={H2}>{t("what.title")}</h2>
-          <p className="text-santa-muted text-sm leading-relaxed">
-            {t("what.text", d)}
-          </p>
-        </section>
-
-        <section className="flex flex-col gap-1.5 px-[26px] pb-6">
-          <h2 className={H2}>{t("how.title")}</h2>
-          <ol className="flex flex-col">
-            {STEPS.map((n) => (
-              <li key={n} className="flex gap-[13px] py-5">
-                <span
-                  className={`text-santa-green flex size-[31px] shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-                    Number(n) % 2 ? "bg-santa-lime" : "bg-santa-yellow"
-                  }`}
-                >
-                  {n}
-                </span>
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-heading text-base font-bold break-words">
-                    {t(`how.steps.${n}.title`, d)}
-                  </h3>
-                  <p className="text-santa-muted text-[13px] leading-relaxed">
-                    {t(`how.steps.${n}.text`, d)}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section className="bg-santa-mint mx-[26px] mb-6 flex flex-col gap-2 rounded-2xl p-[18px]">
-          <h2 className="font-heading text-santa-green text-[17px] font-bold">
-            {t("key.title")}
-          </h2>
-          <p className="text-santa-ink text-[13px] leading-relaxed">
-            {t("key.text", d)}
-          </p>
-        </section>
-
-        <section className="bg-santa-mint flex flex-col gap-[18px] px-[26px] pt-7 pb-[30px]">
-          <h2 className={H2}>{t("dates.title")}</h2>
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-[11px] font-semibold">
-                <th className="text-santa-ink w-[124px] py-3.5 pr-4 font-semibold">
-                  {t("dates.when")}
-                </th>
-                <th className="text-santa-muted py-3.5 font-semibold">
-                  {t("dates.what")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map((n) => (
-                <tr key={n} className="border-santa-line border-t align-top">
-                  <td className="text-santa-ink py-3.5 pr-4 text-[13px] font-semibold">
-                    {t(`dates.rows.${n}.when`, d)}
-                  </td>
-                  <td className="text-santa-muted py-3.5 text-[13px]">
-                    {t(`dates.rows.${n}.what`, d)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-
-        <section className="flex flex-col gap-1.5 px-[26px] py-[30px]">
-          <h2 className={H2}>{t("faq.title")}</h2>
-          {FAQ.map((n) => (
-            <div
-              key={n}
-              className="border-santa-line flex flex-col gap-2 border-b py-[18px] last:border-b-0"
-            >
-              <h3 className="font-heading text-base font-bold break-words">
-                {t(`faq.items.${n}.q`)}
-              </h3>
-              <p className="text-santa-muted text-[13px] leading-relaxed">
-                {t(`faq.items.${n}.a`, d)}
-              </p>
-            </div>
-          ))}
-        </section>
+        <AboutSections settings={settings} locale={locale} />
 
         <section className="bg-santa-mint flex flex-col gap-4 px-[26px] py-8">
           {/* After the deadline the block no longer invites to join. */}
