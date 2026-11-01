@@ -1,4 +1,9 @@
 import { expect, test } from "@playwright/test";
+import de from "../../messages/de.json";
+import en from "../../messages/en.json";
+import es from "../../messages/es.json";
+import ru from "../../messages/ru.json";
+import uk from "../../messages/uk.json";
 import { registerAndConfirm, useOwnIp } from "./helpers";
 
 // A 1×1 PNG: enough for the browser to decode and compress.
@@ -6,6 +11,14 @@ const PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
   "base64",
 );
+
+const NAV_LABEL = {
+  ru: ru.profile.nav.label,
+  uk: uk.profile.nav.label,
+  es: es.profile.nav.label,
+  de: de.profile.nav.label,
+  en: en.profile.nav.label,
+};
 
 /**
  * The cabinet after the owner's UI wave: five-item menu that fits 360px, the
@@ -26,9 +39,9 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
   const name = `Cabi ${testInfo.project.name}`;
   await registerAndConfirm(page, { email, password: "a-long-password" });
 
-  await test.step("the menu has five items and fits a 360px screen", async () => {
+  await test.step("the menu has five items and fits 360px in every language", async () => {
     await page.setViewportSize({ width: 360, height: 740 });
-    const menu = page.getByRole("navigation", { name: "Account menu" });
+    const menu = page.getByRole("navigation", { name: NAV_LABEL.en });
     await expect(menu.getByRole("link")).toHaveText([
       "Home",
       "Profile",
@@ -36,10 +49,30 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
       "Wall",
       "Settings",
     ]);
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > window.innerWidth,
-    );
-    expect(overflow).toBe(false);
+    // Settings is the longest label in uk/de, and the active one is bold.
+    for (const locale of ["ru", "uk", "es", "de", "en"] as const) {
+      // oxlint-disable-next-line no-await-in-loop
+      await context.addCookies([
+        { name: "locale", value: locale, url: baseURL as string },
+      ]);
+      // oxlint-disable-next-line no-await-in-loop
+      await page.goto("/home/settings");
+      const nav = page.getByRole("navigation", { name: NAV_LABEL[locale] });
+      // oxlint-disable-next-line no-await-in-loop
+      await expect(nav.getByRole("link")).toHaveCount(5);
+      // oxlint-disable-next-line no-await-in-loop
+      const fits = await page.evaluate(() => {
+        const links = [...document.querySelectorAll("nav a")];
+        return (
+          document.documentElement.scrollWidth <= window.innerWidth &&
+          links.every(
+            (a) => a.getBoundingClientRect().right <= window.innerWidth,
+          )
+        );
+      });
+      expect(fits, `menu fits 360px in ${locale}`).toBe(true);
+    }
+    await page.goto("/home");
   });
 
   await test.step("house listbox: keyboard, then mouse", async () => {

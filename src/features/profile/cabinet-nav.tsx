@@ -68,14 +68,19 @@ export function CabinetNav() {
             href={href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex min-w-0 flex-1 flex-col items-center gap-1 text-center text-[11px] leading-tight",
+              "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",
               active
                 ? "text-santa-green font-semibold"
                 : "text-santa-muted font-normal",
             )}
           >
-            <Icon className="size-6" aria-hidden />
-            {t(key)}
+            <Icon className="size-6 shrink-0" aria-hidden />
+            {/* A long single word (uk «Налаштування», Cyrillic falls back to
+                the system font) wraps within the fifth, so the bar never
+                widens the page at 360px. */}
+            <span data-nav-label className="w-full wrap-anywhere hyphens-auto">
+              {t(key)}
+            </span>
           </Link>
         );
       })}

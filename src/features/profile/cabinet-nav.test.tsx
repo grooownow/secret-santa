@@ -45,3 +45,18 @@ describe("CabinetNav", () => {
     }
   });
 });
+
+describe("CabinetNav labels", () => {
+  it("a long single-word label (uk «Налаштування») wraps inside its fifth instead of widening the bar", () => {
+    render(<CabinetNav />);
+    for (const link of screen.getAllByRole("link")) {
+      const label = link.querySelector("[data-nav-label]");
+      expect(label).not.toBeNull();
+      // Breaks (with a hyphen where the browser can) at any point if needed.
+      expect(label).toHaveClass("wrap-anywhere", "hyphens-auto", "w-full");
+      // Readable: never below 10px, and the icon stays.
+      expect(link.className).toMatch(/text-\[(1[0-2])px\]|text-xs/);
+      expect(link.querySelector("svg")).not.toBeNull();
+    }
+  });
+});
