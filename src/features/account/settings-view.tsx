@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { OrganizerLink } from "@/components/organizer-link";
 import { TextLink } from "@/components/form-ui";
 import { signOutAction } from "./sign-out-action";
-import { LanguageForm } from "@/features/game";
 import { CABINET_SETTINGS_DELETE } from "@/lib/cabinet-routes";
 
 const DEVELOPER_URL = "https://ludvik4.dev";
@@ -47,7 +46,7 @@ function Section({
 }
 
 /**
- * Account settings (frame dyqXx): email, language, deleting the account (in
+ * Account settings (frame dyqXx): email, deleting the account (in
  * collect) or asking the organizer (after the draw), sign out and the
  * developer block. There is no password change.
  */
@@ -66,9 +65,6 @@ export async function SettingsView({
       </h1>
       <Section title={t("email")}>
         <p className="text-santa-muted text-sm break-all">{email}</p>
-      </Section>
-      <Section title={t("language")}>
-        <LanguageForm variant="select" />
       </Section>
       <Section title={t("dataTitle")}>
         <p className="text-santa-muted text-sm leading-relaxed">

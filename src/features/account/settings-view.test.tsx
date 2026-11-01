@@ -20,7 +20,6 @@ vi.mock("next-intl/server", async () => {
     },
   };
 });
-vi.mock("@/features/game", () => ({ LanguageForm: () => <i>language</i> }));
 vi.mock("./sign-out-action", () => ({ signOutAction: vi.fn() }));
 vi.mock("@/components/organizer-link", () => ({
   OrganizerLink: () => <i>organizer-link</i>,
@@ -40,7 +39,9 @@ describe("SettingsView", () => {
     }
     expect(out).toContain(en.settings.author.order);
     expect(out).toContain("a@b.dev");
-    expect(out).toContain("language");
+    // The header switcher already saves the language: no second picker here.
+    expect(out).not.toContain("<i>language</i>");
+    expect(out).not.toContain("Interface language");
     expect(out).not.toMatch(/password/i);
   });
 

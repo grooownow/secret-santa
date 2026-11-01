@@ -7,11 +7,7 @@
     "signIn": "Sign in"
   },
   "language": {
-    "label": "Language",
-    "switch": "Choose a language",
-    "title": "Which language works best?",
-    "hint": "The chosen language is used in the interface and in emails.",
-    "save": "Save language"
+    "switch": "Choose a language"
   },
   "footer": {
     "rules": "Rules and data",
@@ -751,7 +747,6 @@
   "settings": {
     "title": "Your settings",
     "email": "Email",
-    "language": "Interface language",
     "dataTitle": "Participation and data",
     "dataCollect": "Before the draw you can delete your account yourself. After it, only through the organizer.",
     "dataLater": "After the draw you can leave the game only through the organizer.",

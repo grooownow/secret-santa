@@ -7,11 +7,7 @@
     "signIn": "Anmelden"
   },
   "language": {
-    "label": "Sprache",
-    "switch": "Sprache wählen",
-    "title": "Welche Sprache passt am besten?",
-    "hint": "Die gewählte Sprache wird in der Oberfläche und in E-Mails verwendet.",
-    "save": "Sprache speichern"
+    "switch": "Sprache wählen"
   },
   "footer": {
     "rules": "Regeln und Daten",
@@ -751,7 +747,6 @@
   "settings": {
     "title": "Deine Einstellungen",
     "email": "E-Mail",
-    "language": "Sprache der Oberfläche",
     "dataTitle": "Teilnahme und Daten",
     "dataCollect": "Vor der Auslosung kannst du dein Konto selbst löschen. Danach nur über die Organisation.",
     "dataLater": "Nach der Auslosung ist ein Ausstieg nur über die Organisation möglich.",

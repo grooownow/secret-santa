@@ -7,11 +7,7 @@
     "signIn": "Entrar"
   },
   "language": {
-    "label": "Idioma",
-    "switch": "Elegir idioma",
-    "title": "¿En qué idioma te viene mejor?",
-    "hint": "El idioma elegido se usa en la interfaz y en los correos.",
-    "save": "Guardar idioma"
+    "switch": "Elegir idioma"
   },
   "footer": {
     "rules": "Reglas y datos",
@@ -751,7 +747,6 @@
   "settings": {
     "title": "Tus ajustes",
     "email": "Correo electrónico",
-    "language": "Idioma de la interfaz",
     "dataTitle": "Participación y datos",
     "dataCollect": "Antes del sorteo puedes eliminar tu cuenta sin ayuda. Después, solo a través de la organización.",
     "dataLater": "Después del sorteo solo se puede salir del juego a través de la organización.",
