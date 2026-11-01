@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { cloneElement, isValidElement, useId } from "react";
@@ -66,8 +66,28 @@ export function TextInput(props: React.ComponentProps<"input">) {
   return <input {...props} className={cn(controlClass, props.className)} />;
 }
 
+/**
+ * Native select with its own chevron: the browser arrow is hidden, a muted
+ * chevron sits on the right and the right padding (pr-12) keeps long option
+ * text from running under it.
+ */
 export function SelectInput(props: React.ComponentProps<"select">) {
-  return <select {...props} className={cn(controlClass, props.className)} />;
+  return (
+    <span className="relative flex w-full">
+      <select
+        {...props}
+        className={cn(
+          controlClass,
+          "cursor-pointer appearance-none pr-12",
+          props.className,
+        )}
+      />
+      <ChevronDown
+        aria-hidden
+        className="text-santa-muted pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2"
+      />
+    </span>
+  );
 }
 
 export function TextAreaInput(props: React.ComponentProps<"textarea">) {

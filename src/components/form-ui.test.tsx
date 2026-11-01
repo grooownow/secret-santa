@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Field, TextInput } from "./form-ui";
+import { Field, SelectInput, TextInput } from "./form-ui";
 
 describe("Field", () => {
   it("ties the hint and the error to the input and marks it invalid", () => {
@@ -39,5 +39,25 @@ describe("focus ring", () => {
     expect(css).toMatch(
       /:focus-visible\s*{\s*outline:\s*2px solid var\(--santa-green\)/,
     );
+  });
+});
+
+describe("SelectInput", () => {
+  it("draws its own muted chevron and keeps the text clear of it", () => {
+    render(
+      <Field label="Place">
+        <SelectInput name="place" defaultValue="a">
+          <option value="a">A very long option label</option>
+        </SelectInput>
+      </Field>,
+    );
+    const select = screen.getByLabelText("Place");
+    // The native arrow is hidden, so only our chevron shows.
+    expect(select).toHaveClass("appearance-none");
+    // Right padding leaves room for the chevron (px-4 text + 2rem icon).
+    expect(select).toHaveClass("pr-12");
+    const chevron = select.parentElement?.querySelector("svg");
+    expect(chevron).toHaveClass("text-santa-muted");
+    expect(chevron).toHaveClass("pointer-events-none");
   });
 });
