@@ -40,29 +40,36 @@ test.describe("golden path smoke", () => {
     ).toBeVisible();
   });
 
-  test("landing footer: organizer, author block and the rules link", async ({
+  test("landing footer: only the author heading and its three links", async ({
     page,
   }) => {
     await page.goto("/");
     const footer = page.getByRole("contentinfo");
 
-    await expect(footer).toContainText(
-      "Game organizer: Kate, write on Telegram.",
-    );
-    await expect(footer.getByText("Made by — Ludvik4")).toBeVisible();
+    await expect(
+      footer.getByRole("heading", { name: "App author" }),
+    ).toBeVisible();
+    const links = footer.getByRole("link");
+    await expect(links).toHaveCount(3);
     for (const [name, href] of [
-      ["write on Telegram", "https://t.me/ludvik4"],
-      ["t.me/ludvik4", "https://t.me/ludvik4"],
-      ["Threads", "https://www.threads.com/@ludvik.coffee"],
       ["ludvik4.dev", "https://ludvik4.dev/"],
+      ["Telegram", "https://t.me/ludvik4"],
+      ["Threads", "https://www.threads.com/@ludvik.coffee"],
     ] as const) {
       const link = footer.getByRole("link", { name, exact: true });
       await expect(link).toHaveAttribute("href", href);
       await expect(link).toHaveAttribute("target", "_blank");
     }
-    await expect(footer).not.toContainText("RU · UA · EN · ES · DE");
+    await expect(footer).not.toContainText("Game organizer");
+    await expect(footer).not.toContainText("Rules and data");
+  });
 
-    await footer.getByRole("link", { name: "Rules and data" }).click();
-    await expect(page).toHaveURL(/\/rules$/);
+  test("other public pages have no footer", async ({ page }) => {
+    for (const path of ["/rules", "/signin", "/register", "/nonexistent"]) {
+      // oxlint-disable-next-line no-await-in-loop
+      await page.goto(path);
+      // oxlint-disable-next-line no-await-in-loop
+      await expect(page.getByRole("contentinfo")).toHaveCount(0);
+    }
   });
 });

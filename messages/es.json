@@ -10,12 +10,7 @@
     "switch": "Elegir idioma"
   },
   "footer": {
-    "rules": "Reglas y datos",
-    "madeBy": "Creado por",
-    "contact": "Contacto",
-    "social": "Redes",
-    "threads": "Threads",
-    "order": "Encargar un sitio web o una aplicación"
+    "title": "Autoría de la app"
   },
   "translate": {
     "button": "Traducir",
@@ -773,15 +768,9 @@
       "toCabinet": "Volver al área personal"
     },
     "signOut": "Cerrar sesión",
-    "author": {
-      "title": "Sobre el autor",
-      "madeBy": "Hecho por",
-      "contact": "Contacto",
-      "social": "Redes",
-      "order": "Encargar un sitio web o una aplicación"
-    },
     "deleteLink": "Salir del juego",
-    "leaveLink": "Cómo salir del juego"
+    "leaveLink": "Cómo salir del juego",
+    "rulesLink": "Reglas y datos"
   },
   "meta": {
     "siteName": "Amigo Invisible Bialto",
@@ -907,8 +896,7 @@
       "textClosed": "Las inscripciones han terminado. Si ya participas, entra en tu cuenta.",
       "titleClosed": "Inscripciones cerradas",
       "ctaClosed": "Entrar"
-    },
-    "organizer": "Organiza el juego: Kate, <link>escríbele por Telegram</link>."
+    }
   },
   "rules": {
     "badge": "Juego 2026–2027",

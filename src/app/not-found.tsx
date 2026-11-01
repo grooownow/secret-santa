@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { SiteFooter, SiteHeader } from "@/features/game";
+import { SiteHeader } from "@/features/game";
 
 export default async function NotFound() {
   const t = await getTranslations("notFound");
@@ -17,7 +17,6 @@ export default async function NotFound() {
           {t("home")}
         </Link>
       </main>
-      <SiteFooter />
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { SiteFooter, SiteHeader } from "@/features/game";
+import { SiteHeader } from "@/features/game";
 
 /**
- * Frame of every account page: header, a narrow column, public footer. The
+ * Frame of every account page: header and a narrow column (no footer: it is
+ * on the landing and in Settings only). The
  * badge is the round icon from the mockups (omitted on the form pages).
  */
 export async function AuthShell({
@@ -31,7 +32,6 @@ export async function AuthShell({
         ) : null}
         {children}
       </main>
-      <SiteFooter />
     </div>
   );
 }

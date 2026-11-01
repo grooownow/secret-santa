@@ -53,7 +53,6 @@ export default function GlobalError({
           labels={{
             appName: m.app.name,
             ...m.error,
-            footer: m.footer,
           }}
         />
       </body>

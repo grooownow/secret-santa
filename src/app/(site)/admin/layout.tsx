@@ -3,14 +3,14 @@ import { getTranslations } from "next-intl/server";
 import { signOutAction } from "@/features/account";
 import { AdminNav } from "@/features/admin";
 import { requireOrganizer } from "@/features/auth";
-import { SiteFooter, SiteHeader } from "@/features/game";
+import { SiteHeader } from "@/features/game";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("admin");
   return { title: t("title") };
 }
 
-// The organizer's area: header, section tabs, content, developer footer.
+// The organizer's area: header, section tabs, content.
 // Anyone but the organizer gets a 404 from the guard.
 export default async function AdminLayout({
   children,
@@ -41,9 +41,6 @@ export default async function AdminLayout({
         </div>
         {children}
       </main>
-      <div className="print:hidden">
-        <SiteFooter />
-      </div>
     </div>
   );
 }

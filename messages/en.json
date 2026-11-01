@@ -10,12 +10,7 @@
     "switch": "Choose a language"
   },
   "footer": {
-    "rules": "Rules and data",
-    "madeBy": "Made by",
-    "contact": "Contact",
-    "social": "Social",
-    "threads": "Threads",
-    "order": "Order a website or an app"
+    "title": "App author"
   },
   "translate": {
     "button": "Translate",
@@ -773,15 +768,9 @@
       "toCabinet": "Back to your account"
     },
     "signOut": "Sign out",
-    "author": {
-      "title": "About the author",
-      "madeBy": "Made by",
-      "contact": "Contact",
-      "social": "Social",
-      "order": "Order a website or an app"
-    },
     "deleteLink": "Leave the game",
-    "leaveLink": "How to leave the game"
+    "leaveLink": "How to leave the game",
+    "rulesLink": "Rules and data"
   },
   "meta": {
     "siteName": "Secret Santa Bialto",
@@ -907,8 +896,7 @@
       "textClosed": "Sign-ups have ended. If you are already in the game, sign in to your account.",
       "titleClosed": "Sign-ups are closed",
       "ctaClosed": "Sign in"
-    },
-    "organizer": "Game organizer: Kate, <link>write on Telegram</link>."
+    }
   },
   "rules": {
     "badge": "Game 2026–2027",

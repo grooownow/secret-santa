@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { SiteFooter, SiteHeader, registrationOpen } from "@/features/game";
 import type { GameSettings } from "@/features/game";
-import { ORGANIZER_TELEGRAM } from "@/lib/organizer";
 import santa from "../../../images/generated-2.webp";
 import { gameDates } from "./dates";
 
@@ -61,16 +60,6 @@ export async function LandingPage({
     <Link href="/signin" className="font-semibold underline">
       {chunks}
     </Link>
-  );
-  const telegram = (chunks: ReactNode) => (
-    <a
-      href={ORGANIZER_TELEGRAM}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-santa-green font-semibold underline"
-    >
-      {chunks}
-    </a>
   );
 
   return (
@@ -230,7 +219,7 @@ export async function LandingPage({
           </LinkButton>
         </section>
       </main>
-      <SiteFooter organizer={t.rich("organizer", { link: telegram })} />
+      <SiteFooter />
     </div>
   );
 }

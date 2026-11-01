@@ -20,16 +20,23 @@ vi.mock("next-intl/server", async () => {
     },
   };
 });
+// The game index pulls in the database; the footer itself is the real view.
+vi.mock("@/features/game", async () => {
+  const { SiteFooterView } = await import("@/components/site-footer-view");
+  return {
+    SiteFooter: () => <SiteFooterView labels={{ title: "App author" }} />,
+  };
+});
 vi.mock("./sign-out-action", () => ({ signOutAction: vi.fn() }));
 vi.mock("@/components/organizer-link", () => ({
   OrganizerLink: () => <i>organizer-link</i>,
 }));
 
 describe("SettingsView", () => {
-  it("has the author block with new-tab links and no password change", async () => {
+  it("ends with the shared author footer and has the rules link, no password change", async () => {
     const out = await html(<SettingsView email="a@b.dev" canDelete />);
     for (const href of [
-      "https://ludvik4.dev",
+      "https://ludvik4.dev/",
       "https://t.me/ludvik4",
       "https://www.threads.com/@ludvik.coffee",
     ]) {
@@ -37,7 +44,12 @@ describe("SettingsView", () => {
         `href="${href}" target="_blank" rel="noopener noreferrer"`,
       );
     }
-    expect(out).toContain(en.settings.author.order);
+    expect(out).toContain(
+      '<h2 class="text-santa-ink text-base font-bold">App author</h2>',
+    );
+    expect(out).toContain(`href="/rules">${en.settings.rulesLink}</a>`);
+    // No "order a site" line and no old «Об авторе» rows any more.
+    expect(out).not.toMatch(/order a site|Get in touch|Social/i);
     expect(out).toContain("a@b.dev");
     // The header switcher already saves the language: no second picker here.
     expect(out).not.toContain("<i>language</i>");

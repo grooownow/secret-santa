@@ -28,14 +28,6 @@ export default function ErrorPage({
         retry: t("error.retry"),
         home: t("error.home"),
         reference: t("error.reference"),
-        footer: {
-          rules: t("footer.rules"),
-          madeBy: t("footer.madeBy"),
-          contact: t("footer.contact"),
-          social: t("footer.social"),
-          threads: t("footer.threads"),
-          order: t("footer.order"),
-        },
       }}
     />
   );

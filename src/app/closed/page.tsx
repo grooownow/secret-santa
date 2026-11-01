@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { SiteFooter, SiteHeader, getSettings } from "@/features/game";
+import { SiteHeader, getSettings } from "@/features/game";
 
 const TELEGRAM_URL = "https://t.me/ludvik4";
 
@@ -46,7 +46,6 @@ export default async function ClosedPage() {
           })}
         </p>
       </main>
-      <SiteFooter />
     </div>
   );
 }

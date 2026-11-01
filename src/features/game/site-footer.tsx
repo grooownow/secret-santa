@@ -2,26 +2,12 @@ import { getTranslations } from "next-intl/server";
 import { SiteFooterView } from "@/components/site-footer-view";
 
 /**
- * Rules link and developer line. Used on public pages and in the admin area,
- * never in the participant cabinet.
+ * The author footer with its translation. Shown on the landing and in the
+ * cabinet Settings only; no other page has a footer.
  */
-export async function SiteFooter({
-  organizer,
-}: {
-  organizer?: React.ReactNode;
-} = {}) {
+export async function SiteFooter({ className }: { className?: string } = {}) {
   const t = await getTranslations("footer");
   return (
-    <SiteFooterView
-      organizer={organizer}
-      labels={{
-        rules: t("rules"),
-        madeBy: t("madeBy"),
-        contact: t("contact"),
-        social: t("social"),
-        threads: t("threads"),
-        order: t("order"),
-      }}
-    />
+    <SiteFooterView className={className} labels={{ title: t("title") }} />
   );
 }

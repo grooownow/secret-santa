@@ -1,9 +1,5 @@
 import { CloudOff } from "lucide-react";
 import Link from "next/link";
-import {
-  SiteFooterView,
-  type SiteFooterLabels,
-} from "@/components/site-footer-view";
 
 export interface ErrorScreenLabels {
   appName: string;
@@ -14,7 +10,6 @@ export interface ErrorScreenLabels {
   retry: string;
   home: string;
   reference: string;
-  footer: SiteFooterLabels;
 }
 
 /**
@@ -77,7 +72,6 @@ export function ErrorScreen({
           </Link>
         ) : null}
       </main>
-      <SiteFooterView labels={labels.footer} />
     </div>
   );
 }

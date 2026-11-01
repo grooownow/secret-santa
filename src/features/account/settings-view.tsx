@@ -1,34 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { OrganizerLink } from "@/components/organizer-link";
+import { SiteFooter } from "@/features/game";
 import { TextLink } from "@/components/form-ui";
 import { signOutAction } from "./sign-out-action";
 import { CABINET_SETTINGS_DELETE } from "@/lib/cabinet-routes";
-
-const DEVELOPER_URL = "https://ludvik4.dev";
-const TELEGRAM_URL = "https://t.me/ludvik4";
-const THREADS_URL = "https://www.threads.com/@ludvik.coffee";
-
-const externalClass =
-  "text-santa-green text-[13px] font-semibold underline-offset-4 hover:underline";
-
-function External({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={externalClass}
-    >
-      {children}
-    </a>
-  );
-}
 
 function Section({
   title,
@@ -47,8 +22,8 @@ function Section({
 
 /**
  * Account settings (frame dyqXx): email, deleting the account (in
- * collect) or asking the organizer (after the draw), sign out and the
- * developer block. There is no password change.
+ * collect) or asking the organizer (after the draw), sign out, the rules
+ * link and the shared author footer. There is no password change.
  */
 export async function SettingsView({
   email,
@@ -87,20 +62,8 @@ export async function SettingsView({
           {t("signOut")}
         </button>
       </form>
-      <Section title={t("author.title")}>
-        <p className="text-santa-ink text-sm">
-          {t("author.madeBy")} —{" "}
-          <External href={DEVELOPER_URL}>ludvik4.dev</External>
-        </p>
-        <p className="text-santa-ink text-sm">
-          {t("author.contact")} —{" "}
-          <External href={TELEGRAM_URL}>Telegram</External>
-        </p>
-        <p className="text-santa-ink text-sm">
-          {t("author.social")} — <External href={THREADS_URL}>Threads</External>
-        </p>
-        <External href={DEVELOPER_URL}>{t("author.order")}</External>
-      </Section>
+      <TextLink href="/rules">{t("rulesLink")}</TextLink>
+      <SiteFooter className="-mx-[26px] mt-2 -mb-8" />
     </div>
   );
 }

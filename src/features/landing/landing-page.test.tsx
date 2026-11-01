@@ -24,8 +24,8 @@ vi.mock("@/features/game", () => ({
   SiteHeader: ({ action }: { action?: React.ReactNode }) => (
     <header>{action}</header>
   ),
-  SiteFooter: ({ organizer }: { organizer?: React.ReactNode }) => (
-    <footer>{organizer}</footer>
+  SiteFooter: (props: Record<string, unknown>) => (
+    <footer data-props={Object.keys(props).join(",")} />
   ),
 }));
 
@@ -89,11 +89,11 @@ describe("LandingPage", () => {
     expect(out).not.toContain("с 25 по 31");
   });
 
-  it("the organizer line sits inside the footer block", async () => {
+  it("ends with the plain author footer, no organizer line in it", async () => {
     const out = await render();
-    const footer = out.slice(out.indexOf("<footer>"));
-    expect(footer).toContain("Kate");
-    expect(footer).toContain("https://t.me/ludvik4");
+    const footer = out.slice(out.indexOf("<footer"));
+    expect(footer).toBe('<footer data-props=""></footer></div>');
+    expect(out).not.toContain("Game organizer");
   });
 
   it("FAQ names the real button label", async () => {

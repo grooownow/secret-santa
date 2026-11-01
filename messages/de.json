@@ -10,12 +10,7 @@
     "switch": "Sprache wählen"
   },
   "footer": {
-    "rules": "Regeln und Daten",
-    "madeBy": "Umgesetzt von",
-    "contact": "Kontakt",
-    "social": "Soziale Netze",
-    "threads": "Threads",
-    "order": "Website oder App bestellen"
+    "title": "Autor der App"
   },
   "translate": {
     "button": "Übersetzen",
@@ -773,15 +768,9 @@
       "toCabinet": "Zurück zum Bereich"
     },
     "signOut": "Abmelden",
-    "author": {
-      "title": "Über den Autor",
-      "madeBy": "Gemacht von",
-      "contact": "Kontakt",
-      "social": "Soziale Netze",
-      "order": "Website oder App bestellen"
-    },
     "deleteLink": "Aus dem Spiel aussteigen",
-    "leaveLink": "So steigst du aus dem Spiel aus"
+    "leaveLink": "So steigst du aus dem Spiel aus",
+    "rulesLink": "Regeln und Daten"
   },
   "meta": {
     "siteName": "Wichteln Bialto",
@@ -907,8 +896,7 @@
       "textClosed": "Die Anmeldung ist vorbei. Wenn du schon mitmachst, melde dich in deinem Konto an.",
       "titleClosed": "Anmeldung geschlossen",
       "ctaClosed": "Anmelden"
-    },
-    "organizer": "Organisation des Spiels: Kate, <link>auf Telegram schreiben</link>."
+    }
   },
   "rules": {
     "badge": "Spiel 2026–2027",

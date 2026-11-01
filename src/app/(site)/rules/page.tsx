@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CONSENT_VERSION } from "@/features/account";
-import { SiteFooter, SiteHeader, getSettings } from "@/features/game";
+import { SiteHeader, getSettings } from "@/features/game";
 import { RulesContent } from "@/features/landing";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,7 +21,6 @@ export default async function RulesPage() {
           version={CONSENT_VERSION}
         />
       </main>
-      <SiteFooter />
     </div>
   );
 }
