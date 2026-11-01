@@ -784,7 +784,9 @@
       "contact": "Kontakt",
       "social": "Soziale Netze",
       "order": "Website oder App bestellen"
-    }
+    },
+    "deleteLink": "Aus dem Spiel aussteigen",
+    "leaveLink": "So steigst du aus dem Spiel aus"
   },
   "meta": {
     "siteName": "Wichteln Bialto",

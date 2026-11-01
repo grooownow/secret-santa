@@ -75,10 +75,10 @@ export async function SettingsView({
           {canDelete ? t("dataCollect") : t("dataLater")}
         </p>
         {canDelete ? (
-          <TextLink href={CABINET_SETTINGS_DELETE}>{t("delete")}</TextLink>
+          <TextLink href={CABINET_SETTINGS_DELETE}>{t("deleteLink")}</TextLink>
         ) : (
           <>
-            <TextLink href={CABINET_SETTINGS_DELETE}>{t("leave")}</TextLink>
+            <TextLink href={CABINET_SETTINGS_DELETE}>{t("leaveLink")}</TextLink>
             <OrganizerLink />
           </>
         )}

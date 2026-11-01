@@ -784,7 +784,9 @@
       "contact": "Contact",
       "social": "Social",
       "order": "Order a website or an app"
-    }
+    },
+    "deleteLink": "Leave the game",
+    "leaveLink": "How to leave the game"
   },
   "meta": {
     "siteName": "Secret Santa Bialto",

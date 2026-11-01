@@ -784,7 +784,9 @@
       "contact": "Contacto",
       "social": "Redes",
       "order": "Encargar un sitio web o una aplicación"
-    }
+    },
+    "deleteLink": "Salir del juego",
+    "leaveLink": "Cómo salir del juego"
   },
   "meta": {
     "siteName": "Amigo Invisible Bialto",
