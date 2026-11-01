@@ -1,13 +1,14 @@
 "use client";
 
 // A native <select> cannot be styled or made to always open downward, which
-// is the reason this component exists: the ARIA combobox + listbox pattern is
-// its replacement. Keys are handled by the listbox (aria-activedescendant);
-// the options are never focused themselves.
+// is the reason this component exists. It follows ONE pattern, the WAI-ARIA
+// APG "select-only combobox": DOM focus stays on the combobox the whole time,
+// which owns all keys and points at the active option with
+// aria-activedescendant; the options are never focused themselves.
 /* oxlint-disable jsx-a11y/prefer-tag-over-role, jsx-a11y/click-events-have-key-events */
 
 import { Check, ChevronDown } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type Ref } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ListboxOption {
@@ -16,24 +17,36 @@ export interface ListboxOption {
 }
 
 /**
- * A select in our own style (ARIA "select-only combobox" pattern): a button
- * shows the choice, a listbox always opens under it. The value goes to the
- * form through a hidden input named `name`, so a server action reads it like
- * a native select. Keyboard: arrows/Home/End move, Enter or Space picks, Esc
- * closes; a click outside closes too. `aria-describedby`/`aria-invalid` come
- * from `Field`, which clones its child.
+ * A select in our own style. The combobox shows the choice; the listbox
+ * always opens under it. The value goes to the form through a hidden input
+ * named `name`, so a server action reads it like a native select.
+ *
+ * Keyboard (focus never leaves the combobox): ↓/↑/Enter/Space/Home/End open;
+ * while open ↓/↑/Home/End move, Enter or Space picks, Esc closes, Tab closes;
+ * typing a letter jumps to the next option starting with it (typeahead).
+ * A click outside or focus leaving the combobox closes the list.
+ *
+ * `aria-labelledby`, `aria-describedby` and `aria-invalid` come from
+ * `Field`, which clones its child (see `labelledByField`).
  */
 export function ListboxSelect({
   name,
   options,
   defaultValue = "",
   placeholder,
+  onValueChange,
+  ref,
   ...aria
 }: {
   name: string;
   options: readonly ListboxOption[];
   defaultValue?: string;
   placeholder: string;
+  /** Called with the new value after a pick. */
+  onValueChange?: (value: string) => void;
+  /** The combobox element, e.g. to focus it on a validation error. */
+  ref?: Ref<HTMLButtonElement>;
+  "aria-labelledby"?: string;
   "aria-describedby"?: string;
   "aria-invalid"?: boolean;
 }) {
@@ -43,13 +56,11 @@ export function ListboxSelect({
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const root = useRef<HTMLDivElement>(null);
-  const button = useRef<HTMLButtonElement>(null);
-  const list = useRef<HTMLDivElement>(null);
   const selected = options.find((o) => o.value === value);
+  const last = options.length - 1;
 
   useEffect(() => {
     if (!open) return;
-    list.current?.focus();
     function onPointerDown(event: PointerEvent) {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
     }
@@ -57,45 +68,64 @@ export function ListboxSelect({
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
-  function show() {
-    const index = options.findIndex((o) => o.value === value);
-    setActive(index < 0 ? 0 : index);
+  function show(index?: number) {
+    const current = options.findIndex((o) => o.value === value);
+    setActive(index ?? (current < 0 ? 0 : current));
     setOpen(true);
   }
 
   function pick(index: number) {
     const option = options[index];
-    if (option) setValue(option.value);
-    setOpen(false);
-    button.current?.focus();
-  }
-
-  function onButtonKey(event: React.KeyboardEvent) {
-    if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
-      event.preventDefault();
-      show();
+    if (option) {
+      setValue(option.value);
+      onValueChange?.(option.value);
     }
+    setOpen(false);
   }
 
-  function onListKey(event: React.KeyboardEvent) {
-    const last = options.length - 1;
+  /** Next option (after the active one, wrapping) that starts with `char`. */
+  function typeahead(char: string): number | undefined {
+    const wanted = char.toLowerCase();
+    for (let step = 1; step <= options.length; step++) {
+      const index = (active + step) % options.length;
+      if (options[index]?.label.toLowerCase().startsWith(wanted)) return index;
+    }
+    return undefined;
+  }
+
+  function onKeyDown(event: React.KeyboardEvent) {
+    const { key } = event;
+    if (key.length === 1 && key !== " " && !event.metaKey && !event.ctrlKey) {
+      const index = typeahead(key);
+      if (index === undefined) return;
+      event.preventDefault();
+      if (open) setActive(index);
+      else show(index);
+      return;
+    }
+    if (!open) {
+      if (["ArrowDown", "ArrowUp", "Enter", " ", "Home", "End"].includes(key)) {
+        event.preventDefault();
+        show(key === "Home" ? 0 : key === "End" ? last : undefined);
+      }
+      return;
+    }
     const moves: Record<string, number> = {
       ArrowDown: Math.min(active + 1, last),
       ArrowUp: Math.max(active - 1, 0),
       Home: 0,
       End: last,
     };
-    if (event.key in moves) {
+    if (key in moves) {
       event.preventDefault();
-      setActive(moves[event.key] as number);
-    } else if (event.key === "Enter" || event.key === " ") {
+      setActive(moves[key] as number);
+    } else if (key === "Enter" || key === " ") {
       event.preventDefault();
       pick(active);
-    } else if (event.key === "Escape") {
+    } else if (key === "Escape") {
       event.preventDefault();
       setOpen(false);
-      button.current?.focus();
-    } else if (event.key === "Tab") {
+    } else if (key === "Tab") {
       setOpen(false);
     }
   }
@@ -104,18 +134,21 @@ export function ListboxSelect({
     <div ref={root} className="relative w-full">
       <input type="hidden" name={name} value={value} />
       <button
-        ref={button}
+        ref={ref}
         type="button"
         role="combobox"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
+        aria-activedescendant={open ? `${id}-opt-${active}` : undefined}
+        aria-labelledby={aria["aria-labelledby"]}
         aria-describedby={aria["aria-describedby"]}
         aria-invalid={aria["aria-invalid"]}
         onClick={() => (open ? setOpen(false) : show())}
-        onKeyDown={onButtonKey}
+        onKeyDown={onKeyDown}
+        onBlur={() => setOpen(false)}
         className={cn(
-          "border-santa-line focus-visible:border-santa-green bg-santa-white focus-visible:outline-santa-green flex h-[52px] w-full items-center justify-between rounded-2xl border pr-4 pl-4 text-left text-base focus-visible:outline-2 focus-visible:outline-offset-2",
+          "border-santa-line focus-visible:border-santa-green bg-santa-white focus-visible:outline-santa-green aria-[invalid=true]:border-santa-danger flex h-[52px] w-full items-center justify-between rounded-2xl border pr-4 pl-4 text-left text-base focus-visible:outline-2 focus-visible:outline-offset-2",
           selected ? "text-santa-ink" : "text-santa-muted",
         )}
       >
@@ -130,13 +163,10 @@ export function ListboxSelect({
       </button>
       {open ? (
         <div
-          ref={list}
           id={listId}
           role="listbox"
-          tabIndex={-1}
-          aria-activedescendant={`${id}-opt-${active}`}
-          onKeyDown={onListKey}
-          className="border-santa-line bg-santa-white absolute top-full right-0 left-0 z-20 mt-2 flex flex-col gap-1 rounded-2xl border p-2 shadow-lg focus:outline-none"
+          aria-labelledby={aria["aria-labelledby"]}
+          className="border-santa-line bg-santa-white absolute top-full right-0 left-0 z-20 mt-2 flex flex-col gap-1 rounded-2xl border p-2 shadow-lg"
         >
           {options.map((option, index) => {
             const isSelected = option.value === value;
@@ -148,9 +178,12 @@ export function ListboxSelect({
                 tabIndex={-1}
                 aria-selected={isSelected}
                 onPointerEnter={() => setActive(index)}
+                // Keeps focus on the combobox, so its blur does not close
+                // the list before the click lands.
+                onMouseDown={(event) => event.preventDefault()}
                 onClick={(event) => {
                   // The listbox sits inside Field's <label>; without this the
-                  // label would forward the click to the button again.
+                  // label would forward the click to the combobox again.
                   event.preventDefault();
                   pick(index);
                 }}
@@ -172,3 +205,6 @@ export function ListboxSelect({
     </div>
   );
 }
+
+/** Tells `Field` to pass its label id as `aria-labelledby`. */
+ListboxSelect.labelledByField = true;

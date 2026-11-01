@@ -296,7 +296,8 @@
       "avoidPlaceholder": "Allergien, Dinge, die dir nicht gefallen",
       "create": "Steckbrief speichern",
       "save": "Steckbrief speichern",
-      "pending": "Wird gespeichert…"
+      "pending": "Wird gespeichert…",
+      "buildingRequired": "Wähle dein Haus."
     },
     "child": {
       "title": "Ein kleiner Mitspieler",

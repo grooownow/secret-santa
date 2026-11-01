@@ -26,7 +26,7 @@ function renderPicker(defaultValue = "") {
   );
   const form = screen.getByRole("form", { name: "profile" }) as HTMLFormElement;
   return {
-    trigger: screen.getByRole("combobox", { name: /Building/ }),
+    trigger: screen.getByRole("combobox", { name: "Building" }),
     value: () => new FormData(form).get("building"),
   };
 }
@@ -50,12 +50,13 @@ describe("ListboxSelect", () => {
     const { trigger, value } = renderPicker("K");
     trigger.focus();
     await userEvent.keyboard("{ArrowDown}");
-    const list = screen.getByRole("listbox");
-    expect(list).toHaveFocus();
-    expect(screen.getByRole("option", { name: "K" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    // Select-only combobox: focus stays on it and points at the option.
+    const list = screen.getByRole("listbox", { name: "Building" });
+    expect(trigger).toHaveFocus();
+    const k = screen.getByRole("option", { name: "K" });
+    expect(k).toHaveAttribute("aria-selected", "true");
+    expect(trigger).toHaveAttribute("aria-activedescendant", k.id);
+    expect(list).toBeInTheDocument();
     await userEvent.keyboard("{ArrowDown}{ArrowDown}{Enter}");
 
     expect(value()).toBe("D");
@@ -73,6 +74,28 @@ describe("ListboxSelect", () => {
     await userEvent.click(trigger);
     expect(screen.getByRole("listbox")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "outside" }));
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(value()).toBe("K");
+  });
+
+  it("typeahead: a letter jumps to the option starting with it", async () => {
+    const { trigger, value } = renderPicker("K");
+    trigger.focus();
+    await userEvent.keyboard("d");
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "D" }).id,
+    );
+    await userEvent.keyboard("b{Enter}");
+    expect(value()).toBe("B");
+  });
+
+  it("closes when focus leaves the combobox", async () => {
+    const { trigger, value } = renderPicker("K");
+    await userEvent.click(trigger);
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    await userEvent.tab();
     expect(screen.queryByRole("listbox")).toBeNull();
     expect(value()).toBe("K");
   });

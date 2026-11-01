@@ -31,13 +31,20 @@ export function Field({
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
   const describedBy = [errorId, hintId].filter(Boolean).join(" ") || undefined;
+  const labelId = `${id}-label`;
   const control = isValidElement<{
     "aria-describedby"?: string;
     "aria-invalid"?: boolean;
+    "aria-labelledby"?: string;
   }>(children)
     ? cloneElement(children, {
         "aria-describedby": describedBy,
         "aria-invalid": error ? true : undefined,
+        // Custom widgets (ListboxSelect) that are not a labelable element
+        // ask for the label by id; native controls get it from <label>.
+        ...((children.type as { labelledByField?: boolean }).labelledByField
+          ? { "aria-labelledby": labelId }
+          : {}),
       })
     : children;
   return (
@@ -45,7 +52,9 @@ export function Field({
     // of the field's name, only as its description.
     <div className="flex flex-col gap-2">
       <label className="flex flex-col gap-2">
-        <span className="text-santa-green text-xs font-semibold">{label}</span>
+        <span id={labelId} className="text-santa-green text-xs font-semibold">
+          {label}
+        </span>
         {control}
       </label>
       {hint ? (

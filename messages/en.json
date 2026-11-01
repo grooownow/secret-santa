@@ -296,7 +296,8 @@
       "avoidPlaceholder": "Allergies, things you dislike",
       "create": "Save profile",
       "save": "Save profile",
-      "pending": "Saving…"
+      "pending": "Saving…",
+      "buildingRequired": "Choose your building."
     },
     "child": {
       "title": "A little player",

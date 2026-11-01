@@ -45,7 +45,15 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
   await test.step("house listbox: keyboard, then mouse", async () => {
     await page.getByRole("link", { name: "Fill in your profile" }).click();
     await page.getByLabel("Name", { exact: true }).fill(name);
-    const house = page.getByRole("combobox", { name: /Building/ });
+    await page.getByLabel("Flat").fill("42");
+    const house = page.getByRole("combobox", { name: "Building" });
+
+    // No house yet: the browser-side check stops the save at the field.
+    await page.getByRole("button", { name: "Save profile" }).click();
+    await expect(house).toHaveAttribute("aria-invalid", "true");
+    await expect(house).toHaveAccessibleDescription("Choose your building.");
+    await expect(page).toHaveURL(/\/home\/participants\/new$/);
+
     await house.focus();
     await page.keyboard.press("ArrowDown");
     await expect(page.getByRole("listbox")).toBeVisible();
@@ -58,7 +66,7 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
     await page.getByRole("option", { name: "D", exact: true }).click();
     await expect(house).toHaveText("D");
     await expect(house).toHaveAttribute("aria-expanded", "false");
-    await page.getByLabel("Flat").fill("42");
+    await expect(house).not.toHaveAttribute("aria-invalid", "true");
   });
 
   await test.step("the whole photo block opens the file chooser", async () => {

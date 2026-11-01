@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import {
   Field,
   FormAlert,
@@ -40,9 +40,20 @@ export function AdultForm({
   const [photo, setPhoto] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const v = state.values;
+  const [building, setBuilding] = useState(v?.building ?? defaults.building);
+  // The house is required, but the listbox posts through a hidden input the
+  // browser does not validate, so the form checks it before submitting.
+  const [buildingMissing, setBuildingMissing] = useState(false);
+  const houseRef = useRef<HTMLButtonElement>(null);
 
   return (
     <form
+      onSubmit={(event) => {
+        if (building) return;
+        event.preventDefault();
+        setBuildingMissing(true);
+        houseRef.current?.focus();
+      }}
       action={(formData) => {
         if (photo) formData.set("photo", photo);
         formAction(formData);
@@ -59,11 +70,19 @@ export function AdultForm({
           defaultValue={v?.name ?? defaults.name}
         />
       </Field>
-      <Field label={t("building")}>
+      <Field
+        label={t("building")}
+        error={buildingMissing ? t("buildingRequired") : undefined}
+      >
         <ListboxSelect
+          ref={houseRef}
           name="building"
           placeholder={t("buildingPlaceholder")}
-          defaultValue={v?.building ?? defaults.building}
+          defaultValue={building}
+          onValueChange={(next) => {
+            setBuilding(next);
+            setBuildingMissing(false);
+          }}
           options={BUILDINGS.map((b) => ({ value: b, label: b }))}
         />
       </Field>

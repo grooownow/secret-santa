@@ -296,7 +296,8 @@
       "avoidPlaceholder": "Alergias, cosas que no te gustan",
       "create": "Guardar ficha",
       "save": "Guardar ficha",
-      "pending": "Guardando…"
+      "pending": "Guardando…",
+      "buildingRequired": "Elige tu edificio."
     },
     "child": {
       "title": "Un pequeño participante",
