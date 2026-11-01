@@ -269,14 +269,17 @@
       "drawOn": "The draw is on {date}",
       "drawText": "We will email you when it is done. Until then profiles can be changed.",
       "family": "Your family in the game",
-      "owner": "your profile",
+      "owner": "this is you",
       "childAge": "{age, plural, one {# year old} other {# years old}}",
       "address": "Building {building} · flat {apartment}",
       "filled": "Profile filled in",
       "edit": "Edit profile",
       "addChild": "Add a child",
       "fillProfile": "Fill in your profile",
-      "drawLine": "The draw is on {draw}."
+      "drawLine": "The draw is on {draw}.",
+      "solo": "You are in the game",
+      "child": "child",
+      "photoAlt": "Photo: {name}"
     },
     "unverified": {
       "title": "One step left",

@@ -269,14 +269,17 @@
       "drawOn": "Die Auslosung ist am {date}",
       "drawText": "Wir schreiben dir, sobald sie stattgefunden hat. Bis dahin lassen sich Steckbriefe ändern.",
       "family": "Deine Familie im Spiel",
-      "owner": "dein Steckbrief",
+      "owner": "das bist du",
       "childAge": "{age, plural, one {# Jahr} other {# Jahre}}",
       "address": "Haus {building} · Wohnung {apartment}",
       "filled": "Steckbrief ausgefüllt",
       "edit": "Steckbrief bearbeiten",
       "addChild": "Kind hinzufügen",
       "fillProfile": "Steckbrief ausfüllen",
-      "drawLine": "Die Auslosung ist am {draw}."
+      "drawLine": "Die Auslosung ist am {draw}.",
+      "solo": "Du bist dabei",
+      "child": "Kind",
+      "photoAlt": "Foto: {name}"
     },
     "unverified": {
       "title": "Noch ein Schritt",

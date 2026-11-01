@@ -269,14 +269,17 @@
       "drawOn": "Жеребкування — {date}",
       "drawText": "Лист прийде, коли воно відбудеться. До цього анкети можна змінювати.",
       "family": "Твоя родина в грі",
-      "owner": "твоя анкета",
+      "owner": "це ти",
       "childAge": "{age, plural, one {# рік} few {# роки} many {# років} other {# року}}",
       "address": "Будинок {building} · квартира {apartment}",
       "filled": "Анкету заповнено",
       "edit": "Редагувати анкету",
       "addChild": "Додати дитину",
       "fillProfile": "Заповнити анкету",
-      "drawLine": "Жеребкування — {draw}."
+      "drawLine": "Жеребкування — {draw}.",
+      "solo": "Ти в грі",
+      "child": "дитина",
+      "photoAlt": "Фото: {name}"
     },
     "unverified": {
       "title": "Залишився один крок",

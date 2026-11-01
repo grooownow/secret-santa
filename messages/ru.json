@@ -269,14 +269,17 @@
       "drawOn": "Жеребьёвка — {date}",
       "drawText": "Письмо придёт, когда она пройдёт. До этого анкеты можно менять.",
       "family": "Твоя семья в игре",
-      "owner": "твоя анкета",
+      "owner": "это ты",
       "childAge": "{age, plural, one {# год} few {# года} many {# лет} other {# лет}}",
       "address": "Дом {building} · квартира {apartment}",
       "filled": "Анкета заполнена",
       "edit": "Редактировать анкету",
       "addChild": "Добавить ребёнка",
       "fillProfile": "Заполнить анкету",
-      "drawLine": "Жеребьёвка — {draw}."
+      "drawLine": "Жеребьёвка — {draw}.",
+      "solo": "Ты в игре",
+      "child": "ребёнок",
+      "photoAlt": "Фото: {name}"
     },
     "unverified": {
       "title": "Остался один шаг",

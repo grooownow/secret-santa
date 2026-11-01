@@ -269,14 +269,17 @@
       "drawOn": "El sorteo es el {date}",
       "drawText": "Te escribiremos cuando se haga. Hasta entonces las fichas se pueden cambiar.",
       "family": "Tu familia en el juego",
-      "owner": "tu ficha",
+      "owner": "eres tú",
       "childAge": "{age, plural, one {# año} other {# años}}",
       "address": "Edificio {building} · piso {apartment}",
       "filled": "Ficha completada",
       "edit": "Editar ficha",
       "addChild": "Añadir un menor",
       "fillProfile": "Rellenar mi ficha",
-      "drawLine": "El sorteo es el {draw}."
+      "drawLine": "El sorteo es el {draw}.",
+      "solo": "Estás en el juego",
+      "child": "menor",
+      "photoAlt": "Foto: {name}"
     },
     "unverified": {
       "title": "Solo falta un paso",

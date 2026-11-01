@@ -1,11 +1,10 @@
-import { Pencil } from "lucide-react";
-import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton } from "@/components/form-ui";
 import { PageText, PageTitle } from "@/features/account";
 import type { GameSettings } from "@/features/game";
 import type { Participant } from "./queries";
-import { NEW_PARTICIPANT, participantPath } from "./routes";
+import { ParticipantCards } from "./participant-cards";
+import { NEW_PARTICIPANT } from "./routes";
 
 function formatDay(date: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, {
@@ -76,48 +75,14 @@ export async function HomeCollect({
       ) : null}
 
       {owner ? (
-        <section className="flex flex-col gap-3" aria-label={t("family")}>
-          <h2 className="text-santa-ink text-base font-bold">{t("family")}</h2>
-          <ul className="flex flex-col gap-3">
-            {people.map((person) => (
-              <li
-                key={person.id}
-                className="border-santa-line flex items-center gap-3 rounded-2xl border p-4"
-              >
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <p className="text-santa-ink text-base font-bold">
-                    {person.name} ·{" "}
-                    {person.kind === "adult"
-                      ? t("owner")
-                      : t("childAge", { age: person.age ?? 0 })}
-                  </p>
-                  <p className="text-santa-muted text-sm">
-                    {t("address", {
-                      building: building ?? "",
-                      apartment: apartment ?? "",
-                    })}
-                  </p>
-                  <p className="text-santa-muted text-sm">{t("filled")}</p>
-                </div>
-                {registrationOpen ? (
-                  <Link
-                    href={participantPath(person.id)}
-                    aria-label={t("edit")}
-                    className="bg-santa-mint text-santa-green hover:bg-santa-lime flex size-11 shrink-0 items-center justify-center rounded-full transition-colors"
-                  >
-                    <Pencil className="size-5" aria-hidden />
-                  </Link>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
-      {registrationOpen ? (
-        <LinkButton href={NEW_PARTICIPANT}>
-          {owner ? t("addChild") : t("fillProfile")}
-        </LinkButton>
+        <ParticipantCards
+          people={people}
+          building={building}
+          apartment={apartment}
+          editable={registrationOpen}
+        />
+      ) : registrationOpen ? (
+        <LinkButton href={NEW_PARTICIPANT}>{t("fillProfile")}</LinkButton>
       ) : null}
 
       {owner ? null : (
