@@ -1248,18 +1248,16 @@ describe("google sign-in", () => {
 
     // Giving consent needs both boxes.
     expect(
-      await acceptConsentAction(
-        {},
-        form({ locale: "es", consent: "on", age14: "" }),
-      ),
+      await acceptConsentAction({}, form({ consent: "on", age14: "" })),
     ).toEqual({ error: "age" });
     expect(
-      await acceptConsentAction(
-        {},
-        form({ locale: "es", consent: "", age14: "on" }),
-      ),
+      await acceptConsentAction({}, form({ consent: "", age14: "on" })),
     ).toEqual({ error: "consent" });
 
+    // No language picker on /welcome: the language the page is shown in
+    // (cookie, else the browser's) is stored; a posted field is ignored.
+    cookieStore.delete("locale");
+    requestHeaders = new Headers({ "accept-language": "uk-UA,uk;q=0.9" });
     expect(
       await redirectTarget(() =>
         acceptConsentAction(
@@ -1269,9 +1267,9 @@ describe("google sign-in", () => {
       ),
     ).toBe("/home");
     const [row] = await allUsers();
-    expect(row).toMatchObject({ locale: "es", consentVersion: "2026-10-31" });
+    expect(row).toMatchObject({ locale: "uk", consentVersion: "2026-10-31" });
     expect(row?.consentAt).toBeInstanceOf(Date);
-    expect(cookieStore.get("locale")).toBe("es");
+    expect(cookieStore.get("locale")).toBe("uk");
 
     await expect(requireAccount()).resolves.toMatchObject({ id: user?.id });
   });

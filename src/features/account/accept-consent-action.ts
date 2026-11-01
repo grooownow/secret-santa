@@ -1,6 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getDb } from "@/db/client";
@@ -8,7 +9,8 @@ import { users } from "@/db/schema";
 import { getSessionUser } from "@/lib/session";
 import { HOME } from "./routes";
 import { setLocaleCookie } from "./locale-cookie";
-import { checkedSchema, localeSchema } from "./schemas";
+import { LOCALE_COOKIE, pickLocale } from "@/i18n/locale";
+import { checkedSchema } from "./schemas";
 import { CONSENT_VERSION } from "./tokens";
 
 export interface ConsentState {
@@ -16,14 +18,16 @@ export interface ConsentState {
 }
 
 const schema = z.object({
-  locale: localeSchema,
   consent: checkedSchema,
   age14: checkedSchema,
 });
 
 /**
- * The one-time step after the first Google sign-in: language, consent and the
- * 14+ confirmation. Stores the consent with its date and text version.
+ * The one-time step after the first Google sign-in: consent and the 14+
+ * confirmation. Stores the consent with its date and text version, and the
+ * language the page was shown in (the header switcher's cookie, else the
+ * browser's), resolved exactly like `src/i18n/request.ts` does. There is no
+ * language field: a posted `locale` is ignored.
  */
 export async function acceptConsentAction(
   _prev: ConsentState,
@@ -33,7 +37,6 @@ export async function acceptConsentAction(
   if (!user) redirect("/signin");
 
   const parsed = schema.safeParse({
-    locale: formData.get("locale"),
     consent: formData.get("consent"),
     age14: formData.get("age14"),
   });
@@ -48,14 +51,20 @@ export async function acceptConsentAction(
     };
   }
 
+  const [cookieStore, headerList] = await Promise.all([cookies(), headers()]);
+  const locale = pickLocale(
+    cookieStore.get(LOCALE_COOKIE)?.value,
+    headerList.get("accept-language"),
+  );
+
   await getDb()
     .update(users)
     .set({
-      locale: parsed.data.locale,
+      locale,
       consentVersion: CONSENT_VERSION,
       consentAt: new Date(),
     })
     .where(eq(users.id, user.id));
-  await setLocaleCookie(parsed.data.locale);
+  await setLocaleCookie(locale);
   redirect(HOME);
 }

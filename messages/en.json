@@ -225,7 +225,7 @@
     },
     "welcome": {
       "title": "Welcome!",
-      "text": "Pick a language and give your consent. You only do this once.",
+      "text": "Just give your consent. You only do this once.",
       "submit": "Continue",
       "pending": "Saving…",
       "errors": {

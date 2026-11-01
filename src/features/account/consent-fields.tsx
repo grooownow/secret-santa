@@ -9,26 +9,32 @@ import {
   TextLink,
 } from "@/components/form-ui";
 
-/** Language select, consent and 14+ checkboxes, shared by register and /welcome. */
+/**
+ * Consent and 14+ checkboxes, shared by register and /welcome. Register also
+ * shows the language select (pass `defaultLocale`); /welcome stores the
+ * language the page is already shown in, so it passes none.
+ */
 export function ConsentFields({
   defaultLocale,
   invalid,
 }: {
-  defaultLocale: string;
+  defaultLocale?: string;
   invalid?: "consent" | "age";
 }) {
   const t = useTranslations("account.consent");
   return (
     <>
-      <Field label={t("language")}>
-        <SelectInput name="locale" defaultValue={defaultLocale}>
-          {LOCALES.map((locale) => (
-            <option key={locale} value={locale}>
-              {LOCALE_NAMES[locale]}
-            </option>
-          ))}
-        </SelectInput>
-      </Field>
+      {defaultLocale ? (
+        <Field label={t("language")}>
+          <SelectInput name="locale" defaultValue={defaultLocale}>
+            {LOCALES.map((locale) => (
+              <option key={locale} value={locale}>
+                {LOCALE_NAMES[locale]}
+              </option>
+            ))}
+          </SelectInput>
+        </Field>
+      ) : null}
       <div className="flex flex-col gap-4">
         <CheckboxRow name="consent" invalid={invalid === "consent"}>
           {t("consent")}

@@ -225,7 +225,7 @@
     },
     "welcome": {
       "title": "¡Te damos la bienvenida!",
-      "text": "Solo falta elegir idioma y dar el consentimiento. Se hace una sola vez.",
+      "text": "Solo falta dar el consentimiento. Se hace una sola vez.",
       "submit": "Continuar",
       "pending": "Guardando…",
       "errors": {

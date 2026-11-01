@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import {
   AuthShell,
   HOME,
@@ -21,15 +21,12 @@ export default async function Welcome() {
   const account = await requireAccount({ allowWithoutConsent: true });
   if (account.consentAt) redirect(HOME);
 
-  const [t, locale] = await Promise.all([
-    getTranslations("account.welcome"),
-    getLocale(),
-  ]);
+  const t = await getTranslations("account.welcome");
   return (
     <AuthShell>
       <PageTitle>{t("title")}</PageTitle>
       <PageText>{t("text")}</PageText>
-      <WelcomeForm defaultLocale={account.locale || locale} />
+      <WelcomeForm />
     </AuthShell>
   );
 }

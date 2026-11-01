@@ -225,7 +225,7 @@
     },
     "welcome": {
       "title": "Willkommen!",
-      "text": "Wähle noch eine Sprache und gib deine Einwilligung. Das ist nur einmal nötig.",
+      "text": "Gib noch deine Einwilligung. Das ist nur einmal nötig.",
       "submit": "Weiter",
       "pending": "Wird gespeichert…",
       "errors": {

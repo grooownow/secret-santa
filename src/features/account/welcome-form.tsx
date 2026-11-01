@@ -11,14 +11,13 @@ import { FormAlert, SubmitButton } from "@/components/form-ui";
 
 const initial: ConsentState = {};
 
-export function WelcomeForm({ defaultLocale }: { defaultLocale: string }) {
+export function WelcomeForm() {
   const t = useTranslations("account.welcome");
   const [state, formAction] = useActionState(acceptConsentAction, initial);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <ConsentFields
-        defaultLocale={defaultLocale}
         invalid={
           state.error === "age"
             ? "age"
