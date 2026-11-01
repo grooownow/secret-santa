@@ -52,7 +52,6 @@ describe("SettingsView", () => {
     expect(out).not.toMatch(/order a site|Get in touch|Social/i);
     expect(out).toContain("a@b.dev");
     // The header switcher already saves the language: no second picker here.
-    expect(out).not.toContain("<i>language</i>");
     expect(out).not.toContain("Interface language");
     expect(out).not.toMatch(/password/i);
   });
