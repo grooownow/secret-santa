@@ -20,8 +20,9 @@ export function isAllowedPhotoType(type: string): boolean {
 
 /**
  * Stores a photo and returns its URL. Uses Vercel Blob when
- * `BLOB_READ_WRITE_TOKEN` is set; otherwise (never in production) the photo
- * becomes a `data:` URL so local runs and tests need no storage.
+ * `BLOB_READ_WRITE_TOKEN` is set; otherwise (never on a real deployment; the
+ * local e2e production build is allowed) the photo becomes a `data:` URL so
+ * local runs and tests need no storage.
  */
 export async function storePhoto(file: File): Promise<string> {
   const extension = EXTENSIONS[file.type];
@@ -36,7 +37,9 @@ export async function storePhoto(file: File): Promise<string> {
     });
     return blob.url;
   }
-  if (env.NODE_ENV === "production") {
+  // The local e2e run is a production build without Blob; E2E_MAIL_OUTBOX
+  // marks it and src/lib/env.ts refuses it on any real deployment.
+  if (env.NODE_ENV === "production" && !env.E2E_MAIL_OUTBOX) {
     throw new Error("BLOB_READ_WRITE_TOKEN is not set");
   }
   const bytes = Buffer.from(await file.arrayBuffer()).toString("base64");

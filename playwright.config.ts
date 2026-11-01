@@ -34,7 +34,7 @@ export default defineConfig({
     {
       name: "desktop-chromium",
       dependencies: ["setup"],
-      testMatch: /auth\.spec\.ts/,
+      testMatch: /(auth|cabinet)\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 720 },
@@ -43,7 +43,7 @@ export default defineConfig({
     {
       name: "mobile-chromium",
       dependencies: ["setup"],
-      testMatch: /auth\.spec\.ts/,
+      testMatch: /(auth|cabinet)\.spec\.ts/,
       use: { ...devices["Pixel 7"] },
     },
     {

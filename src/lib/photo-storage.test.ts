@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const env = vi.hoisted(() => ({
   BLOB_READ_WRITE_TOKEN: "tok" as string | undefined,
   NODE_ENV: "production",
+  E2E_MAIL_OUTBOX: undefined as string | undefined,
 }));
 const blob = vi.hoisted(() => ({
   del: vi.fn(async (_urls: string[], _o: unknown) => {}),
@@ -13,11 +14,12 @@ const blob = vi.hoisted(() => ({
 vi.mock("@/lib/env", () => ({ env }));
 vi.mock("@vercel/blob", () => blob);
 
-import { deleteAllPhotos, deletePhotos } from "./photo-storage";
+import { deleteAllPhotos, deletePhotos, storePhoto } from "./photo-storage";
 
 beforeEach(() => {
   env.BLOB_READ_WRITE_TOKEN = "tok";
   env.NODE_ENV = "production";
+  env.E2E_MAIL_OUTBOX = undefined;
   blob.del.mockClear();
   blob.list.mockReset();
 });
@@ -74,5 +76,21 @@ describe("deleteAllPhotos", () => {
   it("fails in production without a token", async () => {
     env.BLOB_READ_WRITE_TOKEN = undefined;
     await expect(deleteAllPhotos([])).rejects.toThrow(/TOKEN/);
+  });
+});
+
+describe("storePhoto without a Blob token", () => {
+  const photo = () =>
+    new File([new Uint8Array([1, 2, 3])], "a.jpg", { type: "image/jpeg" });
+
+  it("refuses on a real production deployment", async () => {
+    env.BLOB_READ_WRITE_TOKEN = undefined;
+    await expect(storePhoto(photo())).rejects.toThrow(/TOKEN/);
+  });
+
+  it("the local e2e production build keeps the photo as a data URL", async () => {
+    env.BLOB_READ_WRITE_TOKEN = undefined;
+    env.E2E_MAIL_OUTBOX = "/tmp/mail.jsonl";
+    expect(await storePhoto(photo())).toBe("data:image/jpeg;base64,AQID");
   });
 });
