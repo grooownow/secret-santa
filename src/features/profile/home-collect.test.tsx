@@ -56,3 +56,14 @@ describe("HomeCollect", () => {
     }
   });
 });
+
+describe("participant card edit button", () => {
+  it("is a round pencil icon link named «edit», not a text link", async () => {
+    const out = await render([person({})]);
+    expect(out).toMatch(
+      /<a[^>]*aria-label="profile\.home\.edit"[^>]*href="\/home\/participants\/11111111-1111-4111-8111-111111111111"|<a[^>]*href="\/home\/participants\/11111111-1111-4111-8111-111111111111"[^>]*aria-label="profile\.home\.edit"/,
+    );
+    expect(out).toContain("lucide-pencil");
+    expect(out).not.toContain(">profile.home.edit<");
+  });
+});

@@ -1,3 +1,4 @@
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton } from "@/components/form-ui";
@@ -81,27 +82,30 @@ export async function HomeCollect({
             {people.map((person) => (
               <li
                 key={person.id}
-                className="border-santa-line flex flex-col gap-1 rounded-2xl border p-4"
+                className="border-santa-line flex items-center gap-3 rounded-2xl border p-4"
               >
-                <p className="text-santa-ink text-base font-bold">
-                  {person.name} ·{" "}
-                  {person.kind === "adult"
-                    ? t("owner")
-                    : t("childAge", { age: person.age ?? 0 })}
-                </p>
-                <p className="text-santa-muted text-sm">
-                  {t("address", {
-                    building: building ?? "",
-                    apartment: apartment ?? "",
-                  })}
-                </p>
-                <p className="text-santa-muted text-sm">{t("filled")}</p>
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <p className="text-santa-ink text-base font-bold">
+                    {person.name} ·{" "}
+                    {person.kind === "adult"
+                      ? t("owner")
+                      : t("childAge", { age: person.age ?? 0 })}
+                  </p>
+                  <p className="text-santa-muted text-sm">
+                    {t("address", {
+                      building: building ?? "",
+                      apartment: apartment ?? "",
+                    })}
+                  </p>
+                  <p className="text-santa-muted text-sm">{t("filled")}</p>
+                </div>
                 {registrationOpen ? (
                   <Link
                     href={participantPath(person.id)}
-                    className="text-santa-green text-[13px] font-semibold underline-offset-4 hover:underline"
+                    aria-label={t("edit")}
+                    className="bg-santa-mint text-santa-green hover:bg-santa-lime flex size-11 shrink-0 items-center justify-center rounded-full transition-colors"
                   >
-                    {t("edit")}
+                    <Pencil className="size-5" aria-hidden />
                   </Link>
                 ) : null}
               </li>
