@@ -54,6 +54,21 @@ describe("register page", () => {
     }
   });
 
+  it("the Google button carries the G logo left of its label", async () => {
+    const { RegisterPage } = await import("./register-page");
+    const markup = await html(await RegisterPage());
+    const button = markup.slice(
+      markup.indexOf('data-testid="google-button"'),
+      markup.indexOf(
+        "</button>",
+        markup.indexOf('data-testid="google-button"'),
+      ),
+    );
+    const logo = button.indexOf('data-testid="google-logo"');
+    expect(logo).toBeGreaterThan(-1);
+    expect(logo).toBeLessThan(button.indexOf("account.common.google"));
+  });
+
   it("shows neither the Google button nor the divider when Google is not configured", async () => {
     providers.ids = [];
     const { RegisterPage } = await import("./register-page");

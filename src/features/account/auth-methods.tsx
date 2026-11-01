@@ -1,4 +1,5 @@
 import { OrDivider } from "@/components/form-ui";
+import { GoogleLogo } from "@/components/google-logo";
 
 /**
  * The shared layout of the register and sign-in pages: the Google button on
@@ -25,9 +26,10 @@ export function AuthMethods({
             <button
               type="submit"
               data-testid="google-button"
-              className="border-santa-line text-santa-ink bg-santa-white flex h-14 w-full items-center justify-center rounded-full border px-6 text-base font-semibold"
+              className="border-santa-line text-santa-ink bg-santa-white flex h-14 w-full items-center justify-center gap-3 rounded-full border px-6 text-base font-semibold"
             >
-              {googleLabel}
+              <GoogleLogo className="size-5 shrink-0" />
+              <span>{googleLabel}</span>
             </button>
           </form>
           <OrDivider label={orLabel} />
