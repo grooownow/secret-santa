@@ -41,12 +41,15 @@ describe("CabinetNav", () => {
         .getAllByRole("link")
         .filter((l) => l.getAttribute("aria-current") === "page");
       expect(current.map((l) => l.textContent)).toEqual([active]);
-      // Clearly visible: a filled green pill, the others stay plain.
-      expect(current[0]).toHaveClass("bg-santa-green", "text-santa-white");
+      // A light green pill behind the icon only; the others stay plain.
+      const pill = (l: HTMLElement) => l.querySelector("[data-nav-icon]");
+      expect(pill(current[0]!)).toHaveClass("bg-santa-lime");
+      expect(current[0]).not.toHaveClass("bg-santa-green");
+      expect(current[0]).toHaveClass("text-santa-green");
       for (const other of screen
         .getAllByRole("link")
         .filter((l) => l !== current[0])) {
-        expect(other).not.toHaveClass("bg-santa-green");
+        expect(pill(other)).not.toHaveClass("bg-santa-lime");
       }
       unmount();
     }

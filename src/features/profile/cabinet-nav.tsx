@@ -76,15 +76,23 @@ export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
             href={href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-0.5 py-1.5 text-center text-[11px] leading-tight",
-              // The active tab is a filled green pill: colour alone (green
-              // vs grey text) was too weak to see which tab is open.
+              "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",
               active
-                ? "bg-santa-green text-santa-white font-semibold"
+                ? "text-santa-green font-semibold"
                 : "text-santa-muted font-normal",
             )}
           >
-            <Icon className="size-6 shrink-0" aria-hidden />
+            {/* The active tab: a light green pill behind the icon only
+                (owner, 2 Nov), so it reads at a glance without a heavy block. */}
+            <span
+              data-nav-icon
+              className={cn(
+                "flex h-8 w-12 items-center justify-center rounded-full transition-colors",
+                active && "bg-santa-lime",
+              )}
+            >
+              <Icon className="size-6 shrink-0" aria-hidden />
+            </span>
             {/* A long single word (uk «Налаштування», Cyrillic falls back to
                 the system font) wraps within the fifth, so the bar never
                 widens the page at 360px. */}
