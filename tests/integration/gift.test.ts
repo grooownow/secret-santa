@@ -257,7 +257,6 @@ describe("getMyGift", () => {
     ).markGift({
       participantId: giver.p.id,
       place: "locker",
-      code: "42",
       note: "enjoy",
     });
     const { getMyGift } = await actions();
@@ -266,8 +265,6 @@ describe("getMyGift", () => {
       state: "ready",
       status: "left",
       place: "locker",
-      // There is no number/code field any more: nothing is stored.
-      code: null,
       note: "enjoy",
     });
     const dump = JSON.stringify(mine);
@@ -314,8 +311,6 @@ describe("markGift", () => {
     const [mail] = sent;
     expect(mail?.to).toBe("rob@example.dev");
     expect(mail?.text).toContain("enjoy");
-    // A code sent by an old client is ignored, never mailed.
-    expect(mail?.text).not.toContain("42");
     expect(mail?.text).toContain("Recipient Rob");
     expect(mail?.text).not.toContain("Giver Gina");
     expect(mail?.html).not.toContain("Giver Gina");
@@ -426,7 +421,6 @@ function input(id: string, extra: Record<string, unknown> = {}) {
   return {
     participantId: id,
     place: "locker",
-    code: "42",
     note: "enjoy",
     ...extra,
   };

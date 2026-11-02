@@ -23,7 +23,6 @@ export interface RecipientInfo {
 
 export interface GiverGift {
   place: "locker" | "mailbox" | null;
-  code: string | null;
   note: string | null;
   leftAt: Date | null;
   version: number;
@@ -110,7 +109,6 @@ export async function getRecipient(
     reassigned: assignment.reassignedAt !== null,
     gift: {
       place: assignment.giftPlace,
-      code: assignment.giftCode,
       note: assignment.giftNote,
       leftAt: assignment.giftLeftAt,
       version: assignment.giftVersion,
@@ -127,11 +125,8 @@ export type MyGiftResult =
       state: "ready";
       status: GiftStatus;
       place: "locker" | "mailbox" | null;
-      code: string | null;
       note: string | null;
       leftAt: Date | null;
-      /** The giver corrected the place or details after marking. */
-      edited: boolean;
     };
 
 /**
@@ -148,10 +143,8 @@ export async function getMyGift(
   const [row] = await getDb()
     .select({
       giftPlace: assignments.giftPlace,
-      giftCode: assignments.giftCode,
       giftNote: assignments.giftNote,
       giftLeftAt: assignments.giftLeftAt,
-      giftVersion: assignments.giftVersion,
       notFoundAt: assignments.notFoundAt,
     })
     .from(assignments)
@@ -168,9 +161,7 @@ export async function getMyGift(
     state: "ready",
     status: !left ? "waiting" : row.notFoundAt ? "notFound" : "left",
     place: row.giftPlace,
-    code: row.giftCode,
     note: row.giftNote,
     leftAt: row.giftLeftAt,
-    edited: row.giftVersion > 1,
   };
 }

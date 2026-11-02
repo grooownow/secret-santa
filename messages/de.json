@@ -109,7 +109,6 @@
       "place": "Ort",
       "locker": "Schließfach",
       "mailbox": "Briefkasten",
-      "code": "Nummer oder Code",
       "note": "Notiz"
     },
     "exitRequest": {
@@ -569,40 +568,17 @@
       "switch": "Person wechseln (jetzt: {name})",
       "daysTitle": "Bis zu den Geschenken — {days, plural, one {# Tag} other {# Tage}}",
       "daysText": "Das Geschenk kannst du ab {date} hinterlegen. Bis dahin kannst du den Steckbrief lesen und deinen eigenen Santa erraten.",
-      "notLeftTitle": "Dein Geschenk ist noch nicht hinterlegt",
-      "notLeftText": "{name} wartet auf eine Überraschung. Lege das Geschenk in ein Schließfach oder einen Briefkasten und markiere es hier.",
-      "leftTitle": "Dein Geschenk ist hinterlegt",
-      "leftText": "Hat sich der Ort geändert, korrigiere ihn bis Ende {date}: Die beschenkte Person bekommt eine neue E-Mail.",
       "whoIsSanta": "Herausfinden, wer mein Santa ist",
       "recipient": "Dein Wichtelkind: {name}",
       "address": "Haus {building} · Wohnung {apartment}",
       "changed": "Dein Wichtelkind hat sich nach einem Austritt geändert.",
-      "editGift": "Wo das Geschenk liegt",
-      "leaveGift": "Geschenk hinterlegt",
-      "seeRecipient": "Wichtelkind ansehen",
       "noneTitle": "Es gibt niemanden mehr zu beschenken",
       "noneText": "Deine beschenkte Person ist ausgestiegen und eine neue kann nicht zugewiesen werden. Das Geschenk von deinem Santa bekommst du trotzdem.",
-      "myGift": {
-        "waiting": {
-          "title": "Dein Geschenk ist noch unterwegs",
-          "text": "Dein Santa legt das Geschenk in ein Schließfach oder einen Briefkasten. Wir schreiben dir, sobald es da ist."
-        },
-        "left": {
-          "title": "Dein Geschenk wartet auf dich",
-          "text": "Dein Santa hat das Geschenk hinterlegt. Ort, Nummer und Zettel findest du unter «Mein Geschenk»."
-        },
-        "notFound": {
-          "title": "Wir suchen dein Geschenk",
-          "text": "Die Organisation weiß, dass das Geschenk nicht da ist, und hilft dir."
-        }
-      },
-      "myGiftLink": "Mein Geschenk",
       "wallTitle": "Danke sagen tut gut",
       "wallText": "Erzähl an der Dankeswand, wie das Geschenk war.",
       "wallLink": "Zur Dankeswand",
       "guessTitle": "Und wer ist dein Santa?",
       "guessText": "Rate bis Ende {date}; die Antwort erfährst du bei der Enthüllung.",
-      "guessLink": "Santa erraten",
       "guessLinkUntil": "Santa erraten bis {date}",
       "noProfileTitle": "Kein Steckbrief",
       "noProfileText": "Die Auslosung ist vorbei und dieses Konto hat keinen Steckbrief. Falls das ein Fehler ist, schreib der Organisation.",
@@ -681,7 +657,7 @@
     },
     "mine": {
       "errors": {
-        "invalid": "Prüfe die Felder: Nummer bis 50 Zeichen, Zettel bis 200.",
+        "invalid": "Notiz bis 200 Zeichen.",
         "notFound": "Beschenkte Person nicht gefunden.",
         "closed": "Das Geschenk kann gerade nicht markiert werden.",
         "notMarked": "Das Geschenk ist noch nicht markiert.",
@@ -703,10 +679,8 @@
       "place": "Ort",
       "locker": "Schließfach",
       "mailbox": "Briefkasten",
-      "code": "Nummer oder Code",
       "note": "Zettel",
       "leftOn": "hinterlegt am {date}",
-      "edited": "Dein Santa hat die Angaben korrigiert; das sind die neuesten.",
       "notFoundButton": "Das Geschenk ist nicht da",
       "notFoundHint": "Drücke, wenn dort nichts liegt. Die Organisation wird benachrichtigt.",
       "wall": "Zur Dankeswand"
@@ -1007,7 +981,7 @@
         },
         "8": {
           "q": "Und wenn ich es mir anders überlege?",
-          "a": "Lösche deinen Steckbrief bis {close} selbst. Später schreib der Organisation, das ist bis {lastExit} möglich."
+          "a": "Lösche deinen Steckbrief bis {close} selbst. Später drücke „Ich kann nicht mitmachen“ in den Einstellungen, das ist bis {lastExit} möglich."
         },
         "9": {
           "q": "Was passiert nach dem Spiel mit meinen Daten?",
@@ -1068,7 +1042,7 @@
     },
     "rights": {
       "title": "Wie du aussteigst und Daten löschst",
-      "text": "Vor der Auslosung löschst du dein Konto oder deinen Steckbrief selbst in deinem Konto. Nach der Auslosung läuft das Löschen über die Organisation, wie ein Ausstieg aus dem Spiel: Schreibe Kate, das ist bis {lastExit} möglich. Ab dem {giftsStart} wird das Löschen am {closeDay} ausgeführt."
+      "text": "Vor der Auslosung löschst du dein Konto oder deinen Steckbrief selbst in deinem Konto. Nach der Auslosung läuft das Löschen über die Organisation, wie ein Ausstieg aus dem Spiel: Drücke „Ich kann nicht mitmachen“ in den Einstellungen, das ist bis {lastExit} möglich. Ab dem {giftsStart} wird das Löschen am {closeDay} ausgeführt."
     },
     "version": "Textversion: {version}"
   },

@@ -8,7 +8,7 @@ import { NotFoundForm } from "./not-found-form";
 import type { MyGiftResult } from "./queries";
 
 /**
- * «Мой подарок»: status, place, code and note of the gift that waits for the
+ * «Мой подарок»: status, place and note of the gift that waits for the
  * participant, and «Не нашёл подарок» while it can still be reported.
  */
 export async function MyGiftCard({
@@ -60,16 +60,6 @@ export async function MyGiftCard({
               ) : null}
             </dd>
           </div>
-          {gift.code ? (
-            <div className="flex flex-col gap-1">
-              <dt className="text-santa-green text-xs font-semibold">
-                {t("code")}
-              </dt>
-              <dd className="text-santa-ink text-base font-bold">
-                {gift.code}
-              </dd>
-            </div>
-          ) : null}
           {gift.note ? (
             <div className="flex flex-col gap-1">
               <dt className="text-santa-green text-xs font-semibold">
@@ -79,9 +69,6 @@ export async function MyGiftCard({
                 {gift.note}
               </dd>
             </div>
-          ) : null}
-          {gift.edited ? (
-            <p className="text-santa-muted text-xs">{t("edited")}</p>
           ) : null}
         </dl>
       ) : null}

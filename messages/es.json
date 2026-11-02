@@ -109,7 +109,6 @@
       "place": "Lugar",
       "locker": "Taquilla",
       "mailbox": "Buzón",
-      "code": "Número o código",
       "note": "Nota"
     },
     "exitRequest": {
@@ -569,40 +568,17 @@
       "switch": "Cambiar de participante (ahora: {name})",
       "daysTitle": "Faltan {days, plural, one {# día} other {# días}} para los regalos",
       "daysText": "Podrás dejar el regalo desde el {date}. Mientras tanto, lee la ficha de la persona a la que regalas y adivina quién es tu Santa.",
-      "notLeftTitle": "Tu regalo aún no está dejado",
-      "notLeftText": "{name} espera una sorpresa. Deja el regalo en una taquilla o buzón y márcalo aquí.",
-      "leftTitle": "Tu regalo está dejado",
-      "leftText": "Si cambió el lugar, corrígelo hasta el final del {date}: la persona recibirá un nuevo correo.",
       "whoIsSanta": "Descubrir quién es mi Santa",
       "recipient": "Tu destinatario: {name}",
       "address": "Edificio {building} · piso {apartment}",
       "changed": "Tu destinatario cambió tras una baja.",
-      "editGift": "Dónde quedó el regalo",
-      "leaveGift": "Regalo dejado",
-      "seeRecipient": "Ver al destinatario",
       "noneTitle": "Ya no hay a quién regalar",
       "noneText": "La persona a la que regalabas se dio de baja y no se puede asignar otra. El regalo de tu Santa te llegará igualmente.",
-      "myGift": {
-        "waiting": {
-          "title": "Tu regalo aún está en camino",
-          "text": "Tu Santa dejará el regalo en una taquilla o buzón. Te escribiremos cuando esté en su sitio."
-        },
-        "left": {
-          "title": "Tu regalo te espera",
-          "text": "Tu Santa dejó el regalo. El lugar, el número y la nota están en «Mi regalo»."
-        },
-        "notFound": {
-          "title": "Buscamos tu regalo",
-          "text": "La organización sabe que el regalo no está y te ayudará."
-        }
-      },
-      "myGiftLink": "Mi regalo",
       "wallTitle": "Dar las gracias sienta bien",
       "wallText": "Cuenta en el muro de agradecimientos cómo fue el regalo.",
       "wallLink": "Al muro de agradecimientos",
       "guessTitle": "¿Y quién es tu Santa?",
       "guessText": "Intenta adivinar hasta el final del {date}; la respuesta llegará con la revelación.",
-      "guessLink": "Adivinar a tu Santa",
       "guessLinkUntil": "Adivina a tu Santa hasta el {date}",
       "noProfileTitle": "No hay ficha",
       "noProfileText": "El sorteo ya se hizo y esta cuenta no tiene ficha. Si es un error, escribe a la organización.",
@@ -681,7 +657,7 @@
     },
     "mine": {
       "errors": {
-        "invalid": "Revisa los campos: número hasta 50 caracteres, nota hasta 200.",
+        "invalid": "Nota de hasta 200 caracteres.",
         "notFound": "No se encontró a la persona.",
         "closed": "Ahora no se puede marcar el regalo.",
         "notMarked": "El regalo aún no está marcado.",
@@ -703,10 +679,8 @@
       "place": "Lugar",
       "locker": "Taquilla",
       "mailbox": "Buzón",
-      "code": "Número o código",
       "note": "Nota",
       "leftOn": "dejado el {date}",
-      "edited": "Tu Santa corrigió los datos; estos son los más recientes.",
       "notFoundButton": "El regalo no está en su sitio",
       "notFoundHint": "Pulsa si no hay nada en ese lugar. La organización recibirá el aviso.",
       "wall": "Al muro de agradecimientos"
@@ -1007,7 +981,7 @@
         },
         "8": {
           "q": "¿Y si cambio de opinión?",
-          "a": "Borra tu ficha antes del {close}. Después, escribe a la organización; se puede hasta el {lastExit}."
+          "a": "Borra tu ficha antes del {close}. Después, pulsa «No puedo participar» en tus ajustes; se puede hasta el {lastExit}."
         },
         "9": {
           "q": "¿Qué pasa con mis datos después del juego?",
@@ -1068,7 +1042,7 @@
     },
     "rights": {
       "title": "Cómo salir y borrar tus datos",
-      "text": "Antes del sorteo, borra tu cuenta o tu ficha desde tu cuenta. Después del sorteo, el borrado se hace a través de la organización, como una baja del juego: escribe a Kate; se puede hasta el {lastExit}. A partir del {giftsStart} el borrado se ejecuta el {closeDay}."
+      "text": "Antes del sorteo, borra tu cuenta o tu ficha desde tu cuenta. Después del sorteo, el borrado se hace a través de la organización, como una baja del juego: pulsa «No puedo participar» en tus ajustes; se puede hasta el {lastExit}. A partir del {giftsStart} el borrado se ejecuta el {closeDay}."
     },
     "version": "Versión del texto: {version}"
   },

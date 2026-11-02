@@ -365,7 +365,7 @@ describe("withdrawParticipant", () => {
     await link([a.id, d.id, r.id]);
     await db
       .update(assignments)
-      .set({ giftLeftAt: new Date(), giftPlace: "locker", giftCode: "7" })
+      .set({ giftLeftAt: new Date(), giftPlace: "locker" })
       .where(eq(assignments.receiverId, r.id));
     expect(await withdraw(d.id)).toEqual({ ok: false, reason: "closed" });
     expect((await giverOf(r.id))?.giverId).toBe(d.id);

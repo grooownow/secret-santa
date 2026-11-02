@@ -25,16 +25,13 @@ class AlreadyLeftError extends Error {}
  * inside the transaction under a shared lock on the settings row. The mark is
  * final (owner's call, 2 Nov: "leave it and forget it"): a second save is
  * refused with `alreadyLeft`. The receiver gets one email
- * (`gift:<receiver>:<n>`) that mentions only the receiver. There is no number
- * or code field any more (the lockers and mailboxes have none); `code` is
- * stored as null.
+ * (`gift:<receiver>:<n>`) that mentions only the receiver.
  */
 export async function markGift(input: unknown): Promise<GiftState> {
   const account = await requireVerifiedAccount();
   const parsed = markGiftSchema.safeParse(input);
   if (!parsed.success) return { error: "invalid" };
   const { participantId, place, note } = parsed.data;
-  const code = null;
 
   if (!(await getOwnParticipant(account.id, participantId))) {
     return { error: "notFound" };
@@ -66,7 +63,6 @@ export async function markGift(input: unknown): Promise<GiftState> {
         .update(assignments)
         .set({
           giftPlace: place,
-          giftCode: code,
           giftNote: note,
           giftLeftAt: sql`now()`,
           giftVersion: sql`${assignments.giftVersion} + 1`,
@@ -110,7 +106,7 @@ export async function markGift(input: unknown): Promise<GiftState> {
       const mail = renderEmail(
         "giftWaiting",
         isLocale(receiver.locale) ? receiver.locale : "en",
-        { names: [receiver.name], place, code, note },
+        { names: [receiver.name], place, note },
       );
       await sendOnce(`gift:${receiverId}:${giftVersion}`, {
         to: receiver.email,

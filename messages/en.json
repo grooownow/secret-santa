@@ -109,7 +109,6 @@
       "place": "Place",
       "locker": "Locker",
       "mailbox": "Mailbox",
-      "code": "Number or code",
       "note": "Note"
     },
     "exitRequest": {
@@ -569,40 +568,17 @@
       "switch": "Switch participant (now: {name})",
       "daysTitle": "Until gifts — {days, plural, one {# day} other {# days}}",
       "daysText": "You can leave the gift from {date}. Until then, read your recipient's profile and guess your own Santa.",
-      "notLeftTitle": "Your gift has not been left yet",
-      "notLeftText": "{name} is waiting for a surprise. Leave the gift in a locker or mailbox and mark it here.",
-      "leftTitle": "Your gift has been left",
-      "leftText": "If the place changed, correct it by the end of {date}: the recipient will get a new email.",
       "whoIsSanta": "Find out who my Santa is",
       "recipient": "Your recipient — {name}",
       "address": "Building {building} · flat {apartment}",
       "changed": "Your recipient changed after someone dropped out.",
-      "editGift": "Where the gift was left",
-      "leaveGift": "Gift left",
-      "seeRecipient": "View the recipient",
       "noneTitle": "Nobody left to give to",
       "noneText": "Your recipient dropped out and no new one can be assigned. Your own Santa's gift will still come to you.",
-      "myGift": {
-        "waiting": {
-          "title": "Your gift is still on its way",
-          "text": "Your Santa will leave the gift in a locker or mailbox. We will email you when it is there."
-        },
-        "left": {
-          "title": "Your gift is waiting for you",
-          "text": "Your Santa left the gift. The place, number and note are in «My gift»."
-        },
-        "notFound": {
-          "title": "We are looking for your gift",
-          "text": "The organizer knows the gift is not there and will help."
-        }
-      },
-      "myGiftLink": "My gift",
       "wallTitle": "Saying thanks feels good",
       "wallText": "Tell the wall of thanks how the gift went.",
       "wallLink": "To the wall of thanks",
       "guessTitle": "And who is your Santa?",
       "guessText": "Try to guess by the end of {date}; you will see the answer at the reveal.",
-      "guessLink": "Guess your Santa",
       "guessLinkUntil": "Guess your Santa until {date}",
       "noProfileTitle": "No profile",
       "noProfileText": "The draw is done and this account has no profile. If this is a mistake, write to the organizer.",
@@ -681,7 +657,7 @@
     },
     "mine": {
       "errors": {
-        "invalid": "Check the fields: number up to 50 characters, note up to 200.",
+        "invalid": "Note up to 200 characters.",
         "notFound": "Recipient not found.",
         "closed": "The gift cannot be marked right now.",
         "notMarked": "The gift is not marked yet.",
@@ -703,10 +679,8 @@
       "place": "Place",
       "locker": "Locker",
       "mailbox": "Mailbox",
-      "code": "Number or code",
       "note": "Note",
       "leftOn": "left on {date}",
-      "edited": "Your Santa corrected the details; these are the latest.",
       "notFoundButton": "The gift is not there",
       "notFoundHint": "Press if there is nothing at this place. The organizer will be notified.",
       "wall": "To the wall of thanks"
@@ -1007,7 +981,7 @@
         },
         "8": {
           "q": "What if I change my mind?",
-          "a": "Delete your profile yourself before {close}. After that, write to the organizer, which is possible until {lastExit}."
+          "a": "Delete your profile yourself before {close}. After that, press «I can’t take part» in your settings, which is possible until {lastExit}."
         },
         "9": {
           "q": "What happens to my data after the game?",
@@ -1068,7 +1042,7 @@
     },
     "rights": {
       "title": "How to leave and delete your data",
-      "text": "Before the draw, delete your account or profile yourself in your account. After the draw, deletion goes through the organizer, like dropping out of the game: write to Kate, which is possible until {lastExit}. From {giftsStart} the deletion is carried out on {closeDay}."
+      "text": "Before the draw, delete your account or profile yourself in your account. After the draw, deletion goes through the organizer, like dropping out of the game: press «I can’t take part» in your settings, which is possible until {lastExit}. From {giftsStart} the deletion is carried out on {closeDay}."
     },
     "version": "Text version: {version}"
   },

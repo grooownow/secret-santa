@@ -31,7 +31,6 @@ export type EmailData = {
   url?: string;
   /** giftWaiting: the receiver's gift details. Never the giver. */
   place?: "locker" | "mailbox";
-  code?: string | null;
   note?: string | null;
   /** reassigned: true when there is nobody left to give to. */
   noReceiver?: boolean;
@@ -122,7 +121,6 @@ export function renderEmail(
   if (type === "giftWaiting") {
     if (data.place)
       lines.push(`${t("gift.place")}: ${t(`gift.${data.place}`)}`);
-    if (data.code) lines.push(`${t("gift.code")}: ${data.code}`);
     if (data.note) lines.push(`${t("gift.note")}: ${data.note}`);
   }
   if (type === "verify" || type === "reset") lines.push(t("ignore"));

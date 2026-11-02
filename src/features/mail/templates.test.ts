@@ -41,7 +41,6 @@ describe("renderEmail", () => {
       names: ["OwnChildMarker"],
       url: "https://santa.example/home",
       place: "locker" as const,
-      code: "CodeMarker77",
       note: "NoteMarker88",
       noReceiver: true,
     };
@@ -49,13 +48,13 @@ describe("renderEmail", () => {
       for (const locale of LOCALES) {
         const out = renderEmail(type, locale, data);
         const all = out.subject + out.text + out.html;
-        expect(all).not.toMatch(/CodeMarker77|NoteMarker88/);
+        expect(all).not.toMatch(/NoteMarker88|NoteMarker88/);
         expect(out.text.match(/OwnChildMarker/g)).toHaveLength(1);
       }
     }
     // Control: the same data does reach a gift-waiting email.
     const waiting = renderEmail("giftWaiting", "en", data);
-    expect(waiting.text).toMatch(/CodeMarker77/);
+    expect(waiting.text).toMatch(/NoteMarker88/);
     expect(waiting.text).toMatch(/NoteMarker88/);
   });
 
@@ -78,15 +77,13 @@ describe("renderEmail", () => {
     expect(out.text).toContain("Ana and Leo");
   });
 
-  it("gift-waiting shows place, code and note, escaping user text in html", () => {
+  it("gift-waiting shows place and note, escaping user text in html", () => {
     const out = renderEmail("giftWaiting", "en", {
       names: ["Ana"],
       place: "mailbox",
-      code: "B-12",
       note: "<b>hi</b>",
     });
     expect(out.text).toContain("Mailbox");
-    expect(out.text).toContain("B-12");
     expect(out.text).toContain("<b>hi</b>");
     expect(out.html).toContain("&lt;b&gt;hi&lt;/b&gt;");
     expect(out.html).not.toContain("<b>hi</b>");

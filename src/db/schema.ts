@@ -124,7 +124,6 @@ export const assignments = pgTable("assignments", {
     .unique()
     .references(() => participants.id, { onDelete: "set null" }),
   giftPlace: giftPlace("gift_place"),
-  giftCode: text("gift_code"),
   giftNote: text("gift_note"),
   // Grows on every mark or edit; part of the email key, so each edit mails
   // the receiver again (`gift:<receiverId>:<version>`).
