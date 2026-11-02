@@ -1,6 +1,6 @@
 # QA Project Profile
 
-> Pre-filled for this project on 2026-07-09. Other qa-pilot skills read this
+> Pre-filled from the template on 2026-07-09, updated 2026-11-02. Other qa-pilot skills read this
 > file instead of re-scanning the repo. Re-run `qa-pilot:onboard` only if the
 > stack or conventions change materially.
 
@@ -21,13 +21,14 @@
 - **Vitest** (`vitest.config.ts`), three projects, one `pnpm test` run:
   - `unit` — `src/**/*.test.ts`, node env, db mocked (e.g. `src/lib/env.test.ts`).
   - `component` — `src/**/*.test.tsx`, jsdom + Testing Library, setup file
-    `vitest.setup.ts` (e.g. `src/features/profile/profile-form.test.tsx`).
+    `vitest.setup.ts` (e.g. `src/features/gift/gift-form.test.tsx`).
   - `integration` — `tests/integration/**/*.test.ts`, node env, real
     in-memory PGlite per test file (`fileParallelism: false` — PGlite doesn't
-    like concurrency), e.g. `tests/integration/profile-action.test.ts`.
+    like concurrency), e.g. `tests/integration/gift.test.ts`.
 - **Playwright e2e** (`playwright.config.ts`), `tests/e2e/**/*.spec.ts`
-  (currently `tests/e2e/smoke.spec.ts`), projects `desktop-chromium` and
-  `mobile-chromium` (Pixel 7 viewport).
+  (`smoke`, `auth`, `cabinet`, and `game.spec.ts`, the whole game from sign-up
+  to reveal), projects `desktop-chromium`, `mobile-chromium` (Pixel 7) and
+  `game-flow`.
 - Full decision table (what belongs at which level) + anti-flaky rules
   (no arbitrary sleeps, deferred-promise pattern for async UI, fake timers
   for time-based logic) + false-green bans (no assertion-free tests, no

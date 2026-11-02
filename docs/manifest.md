@@ -5,9 +5,10 @@ The identity card of this project, read by every agent session (see
 
 ## Product
 
-Secret Santa: a web app for running a gift exchange. Participants register,
-the organiser draws the pairs, and each giver sends a gift and mail updates.
-The spec of record lives in `docs/superpowers/specs/`.
+Secret Santa for the Bialto neighbours: a one-off free New Year game. People
+register, the organiser runs the draw, each Santa leaves a gift for their
+recipient in a locker or mailbox, and on 1 January the Santas are revealed. The
+business logic lives in `docs/superpowers/specs/2026-10-31-secret-santa-design.md`.
 
 ## Chat language
 

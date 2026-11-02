@@ -24,7 +24,6 @@ docs/research/
 # Gate-run ledger: what a local run actually did. A record of a machine
 # run on one box, not a project artifact — CI is the shared source of truth.
 .gridfin/
-marketing/landing/dist/
 
 # Playwright MCP browser-session snapshots — tool litter, never source
 .playwright-mcp/

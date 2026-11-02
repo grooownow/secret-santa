@@ -1,12 +1,14 @@
 # Secret Santa
 
-A web app for running a Secret Santa gift exchange: participants sign in,
-the organiser draws the pairs, and mail and a wall keep everyone in the loop.
+Новогодняя игра для соседей Bialto (K, B, D): участники регистрируются,
+организатор запускает жеребьёвку, каждый оставляет подарок получателю в локере
+или почтовом ящике, а 1 января Санты раскрываются. Пять языков, письма, стена
+благодарностей, запасные Санты.
 Built with Next.js (App Router), TypeScript strict, Tailwind + shadcn/ui,
 Drizzle ORM (PGlite locally, Postgres in production) and next-auth.
 
-The spec of record is `docs/superpowers/specs/2026-10-31-secret-santa-design.md`;
-what is next lives in `docs/roadmap.md`.
+Вся бизнес-логика описана в `docs/superpowers/specs/2026-10-31-secret-santa-design.md`
+(это источник правды); что сделано и что дальше — в `docs/roadmap.md`.
 
 ## Quickstart
 
@@ -45,7 +47,7 @@ Underneath them, the shell commands the skills (and you) run:
 | `pnpm build` / `start` | Production build (followed by the function-trace size check) / serve it                                                                                                                |
 | `pnpm db:reset`        | Rebuild the local db (migrate + seed)                                                                                                                                                  |
 
-For occasional flows (deploy, Vercel setup, analytics, compliance) see
+For occasional flows (deploy, Vercel setup, compliance) see
 `docs/playbooks/`.
 
 ## Under the hood

@@ -26,8 +26,12 @@ _Nothing recorded yet._
 
 ## Shipped
 
-A running log of completed features, most recent first — one line each, link
-to the spec/PR that landed it. Gives the next session a quick "what already
-exists" scan without reading `git log`.
+A running log of completed features, most recent first — one line each. The
+behaviour itself is described in the spec.
 
-_Nothing recorded yet._
+- 2026-11-02: «Не могу участвовать», ручное добавление в «Помощь», добровольные запасные Санты.
+- 2026-11-02: пол ребёнка, разделы «Профиль» и «Я дарю», «получатель» вместо «подопечного», окончательная отметка подарка.
+- 2026-11-02: дети дарят детям, угадайка с 25 декабря, письмо жеребьёвки с Сантой.
+- 2026-11-02: мгновенные переходы (регион fra1, предзагрузка, кэш), спиннеры, анимация кнопок, шрифты с кириллицей, фавиконка.
+- 2026-11-01: меню кабинета, поделиться с QR, подвал автора, выбор дома.
+- 2026-10-31: первая версия игры: регистрация, анкеты, жеребьёвка, подарки, стена, раскрытие, админка, письма, пять языков.
