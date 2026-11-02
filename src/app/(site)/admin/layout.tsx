@@ -33,9 +33,11 @@ export default async function AdminLayout({
         />
       </div>
       <main className="flex flex-1 flex-col gap-5 px-[26px] py-8">
-        <span className="bg-santa-mint text-santa-green self-start rounded-full px-3 py-[7px] text-[11px] font-semibold print:hidden">
+        {/* Section name, not a control: plain text, so it is not mistaken
+            for a button. Each page keeps its own <h1> below the tabs. */}
+        <p className="font-heading text-santa-ink text-xl font-bold print:hidden">
           {t("title")}
-        </span>
+        </p>
         <div className="print:hidden">
           <AdminNav />
         </div>
