@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { PageText, PageTitle } from "@/features/account";
 import { cn } from "@/lib/utils";
+import { PendingSpinner } from "@/components/spinner";
 
 export interface SwitcherPerson {
   id: string;
@@ -76,7 +77,10 @@ export async function ParticipantSwitcher({
                     type="submit"
                     className="border-santa-green text-santa-green bg-santa-white h-11 w-full rounded-full border px-4 text-sm font-semibold"
                   >
-                    {t("open", { name: person.name })}
+                    <span className="flex items-center justify-center gap-2">
+                      {t("open", { name: person.name })}
+                      <PendingSpinner className="size-4" />
+                    </span>
                   </button>
                 </form>
               )}

@@ -6,6 +6,7 @@ import {
   deleteAccountAction,
   type DeleteAccountState,
 } from "./delete-account-action";
+import { Spinner } from "@/components/spinner";
 
 const initial: DeleteAccountState = {};
 
@@ -22,9 +23,11 @@ export function DeleteAccountForm() {
       <button
         type="submit"
         disabled={pending}
-        className="text-santa-danger self-start text-[13px] font-semibold underline-offset-4 hover:underline disabled:opacity-60"
+        aria-busy={pending || undefined}
+        className="text-santa-danger flex items-center gap-1.5 self-start text-[13px] font-semibold underline-offset-4 hover:underline disabled:opacity-60"
       >
         {pending ? t("deleting") : t("confirm")}
+        {pending ? <Spinner className="size-3.5" /> : null}
       </button>
       {state.error ? (
         <p role="alert" className="text-santa-danger text-sm">

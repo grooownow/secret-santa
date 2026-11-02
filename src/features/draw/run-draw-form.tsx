@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { LinkButton } from "@/components/form-ui";
+import { Spinner } from "@/components/spinner";
 import { runDraw, type DrawResult } from "./run-draw-action";
 
 type Failure = Extract<DrawResult, { ok: false }>;
@@ -177,10 +178,15 @@ export function RunDrawForm({
             type="button"
             disabled={pending}
             onClick={confirm}
+            aria-busy={pending || undefined}
             className={primaryClass}
           >
             <span>{pending ? t("running") : t("confirm")}</span>
-            <ArrowUpRight className="size-[18px]" aria-hidden />
+            {pending ? (
+              <Spinner />
+            ) : (
+              <ArrowUpRight className="size-[18px]" aria-hidden />
+            )}
           </button>
           <button
             type="button"

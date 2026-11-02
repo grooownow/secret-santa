@@ -9,6 +9,7 @@ import type { ParticipantRow } from "./queries";
 import { withdrawPath } from "./routes";
 import { UnnotifiedNotice } from "./unnotified-notice";
 import { withdrawAction } from "./withdraw-action";
+import { Spinner } from "@/components/spinner";
 
 export type TablePhase = "collect" | "waiting" | "later";
 
@@ -32,7 +33,8 @@ function RemoveButton({ id }: { id: string }) {
       <button
         type="button"
         disabled={pending}
-        className="text-santa-danger self-start text-[13px] font-semibold underline-offset-4 hover:underline disabled:opacity-60"
+        aria-busy={pending || undefined}
+        className="text-santa-danger flex items-center gap-1.5 self-start text-[13px] font-semibold underline-offset-4 hover:underline disabled:opacity-60"
         onClick={() => {
           if (!window.confirm(t("removeConfirm"))) return;
           startTransition(async () => {
@@ -53,6 +55,7 @@ function RemoveButton({ id }: { id: string }) {
         }}
       >
         {t("remove")}
+        {pending ? <Spinner className="size-3.5" /> : null}
       </button>
       {error ? (
         <p role="alert" className="text-santa-danger text-sm">

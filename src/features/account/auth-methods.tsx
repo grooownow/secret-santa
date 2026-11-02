@@ -1,5 +1,6 @@
 import { OrDivider } from "@/components/form-ui";
 import { GoogleLogo } from "@/components/google-logo";
+import { PendingSpinner } from "@/components/spinner";
 
 /**
  * The shared layout of the register and sign-in pages: the Google button on
@@ -30,6 +31,7 @@ export function AuthMethods({
             >
               <GoogleLogo className="size-5 shrink-0" />
               <span>{googleLabel}</span>
+              <PendingSpinner />
             </button>
           </form>
           <OrDivider label={orLabel} />

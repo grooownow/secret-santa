@@ -5,6 +5,7 @@ import { AdminNav } from "@/features/admin";
 import { requireOrganizer } from "@/features/auth";
 import { SiteHeader } from "@/features/game";
 import { CabinetNav } from "@/features/profile";
+import { PendingSpinner } from "@/components/spinner";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("admin");
@@ -26,8 +27,12 @@ export default async function AdminLayout({
         <SiteHeader
           action={
             <form action={signOutAction}>
-              <button type="submit" className="text-santa-ink text-[13px]">
+              <button
+                type="submit"
+                className="text-santa-ink flex items-center gap-1.5 text-[13px]"
+              >
                 {t("signOut")}
+                <PendingSpinner className="size-3.5" />
               </button>
             </form>
           }

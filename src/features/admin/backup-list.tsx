@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import type { BackupEntry } from "./backup";
 import { organizeBackup } from "./organize-backup-action";
+import { Spinner } from "@/components/spinner";
 
 function OrganizeButton({ id }: { id: string }) {
   const t = useTranslations("admin.backup");
@@ -20,9 +21,11 @@ function OrganizeButton({ id }: { id: string }) {
             setFailed(!result?.ok);
           })
         }
-        className="text-santa-green self-start text-[13px] font-semibold underline-offset-4 hover:underline disabled:opacity-60"
+        aria-busy={pending || undefined}
+        className="text-santa-green flex items-center gap-1.5 self-start text-[13px] font-semibold underline-offset-4 hover:underline disabled:opacity-60"
       >
         {t("organize")}
+        {pending ? <Spinner className="size-3.5" /> : null}
       </button>
       {failed ? (
         <p role="alert" className="text-santa-danger text-sm">

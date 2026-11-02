@@ -106,6 +106,52 @@
 }
 
 @layer base {
+  /* Buttons and pill/card links answer the pointer: a slightly darker shade
+     on hover, a small press on click. Low specificity (:where) so a
+     component's own hover colour still wins. Off for reduced motion. */
+  :where(
+    button:not(:disabled),
+    [role="button"],
+    a.rounded-full,
+    a.rounded-2xl,
+    a.rounded-xl,
+    summary
+  ) {
+    cursor: pointer;
+    transition:
+      scale 120ms ease,
+      filter 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      border-color 150ms ease;
+  }
+  :where(
+    button:not(:disabled),
+    [role="button"],
+    a.rounded-full,
+    a.rounded-2xl,
+    a.rounded-xl
+  ):hover {
+    filter: brightness(0.95);
+  }
+  :where(
+    button:not(:disabled),
+    [role="button"],
+    a.rounded-full,
+    a.rounded-2xl,
+    a.rounded-xl
+  ):active {
+    scale: 0.97;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(button, [role="button"], a, summary) {
+      transition: none;
+    }
+    :where(button, [role="button"], a):active {
+      scale: none;
+    }
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

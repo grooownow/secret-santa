@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { deletePost } from "./delete-post-action";
+import { Spinner } from "@/components/spinner";
 
 /** "Удалить" with a confirm step (frame L7mxJF) before anything is removed. */
 export function DeletePostButton({ id }: { id: string }) {
@@ -65,9 +66,11 @@ export function DeletePostButton({ id }: { id: string }) {
         type="button"
         disabled={pending}
         onClick={remove}
-        className="text-santa-danger self-start text-[13px] font-semibold disabled:opacity-60"
+        aria-busy={pending || undefined}
+        className="text-santa-danger flex items-center gap-1.5 self-start text-[13px] font-semibold disabled:opacity-60"
       >
         {t("confirm")}
+        {pending ? <Spinner className="size-3.5" /> : null}
       </button>
     </div>
   );

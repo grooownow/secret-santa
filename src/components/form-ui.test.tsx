@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Field, SelectInput, TextInput } from "./form-ui";
+import { act } from "react";
+import { Field, SelectInput, SubmitButton, TextInput } from "./form-ui";
 
 describe("Field", () => {
   it("ties the hint and the error to the input and marks it invalid", () => {
@@ -59,5 +60,29 @@ describe("SelectInput", () => {
     const chevron = select.parentElement?.querySelector("svg");
     expect(chevron).toHaveClass("text-santa-muted");
     expect(chevron).toHaveClass("pointer-events-none");
+  });
+});
+
+describe("SubmitButton while the form is sending", () => {
+  it("shows a spinner instead of the arrow and marks itself busy", async () => {
+    let release: () => void = () => {};
+    const action = () =>
+      new Promise<void>((resolve) => {
+        release = resolve;
+      });
+    render(
+      <form action={action}>
+        <SubmitButton pendingLabel="Сохраняем…">Сохранить</SubmitButton>
+      </form>,
+    );
+    const button = screen.getByRole("button", { name: "Сохранить" });
+    expect(button.querySelector("[data-spinner]")).toBeNull();
+    await act(async () => {
+      button.click();
+    });
+    const busy = screen.getByRole("button", { name: "Сохраняем…" });
+    expect(busy.getAttribute("aria-busy")).toBe("true");
+    expect(busy.querySelector("[data-spinner]")).not.toBeNull();
+    await act(async () => release());
   });
 });

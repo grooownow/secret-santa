@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { deleteParticipantAction } from "./delete-participant-action";
 import type { ProfileState } from "./state";
+import { PendingSpinner } from "@/components/spinner";
 
 const initial: ProfileState = {};
 
@@ -24,7 +25,7 @@ export function DeleteParticipantForm({
       <input type="hidden" name="id" value={id} />
       <button
         type="submit"
-        className="text-santa-danger self-start text-[13px] font-semibold underline-offset-4 hover:underline"
+        className="text-santa-danger flex items-center gap-1.5 self-start text-[13px] font-semibold underline-offset-4 hover:underline"
         onClick={(event) => {
           if (
             !window.confirm(withChildren ? t("confirmOwner") : t("confirm"))
@@ -34,6 +35,7 @@ export function DeleteParticipantForm({
         }}
       >
         {t("action")}
+        <PendingSpinner className="size-3.5" />
       </button>
       {state.error ? (
         <p role="alert" className="text-santa-danger text-sm">

@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 import { FormAlert, TextInput } from "@/components/form-ui";
 import { saveGuess, type GuessState } from "./guess-action";
 import type { GuessOption } from "./queries";
+import { Spinner } from "@/components/spinner";
 
 /**
  * "Кто же твой Санта?" (frame zY7JF) and the saved state (frame YMQby). The
@@ -157,7 +158,11 @@ export function GuessForm({
         className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold disabled:opacity-60"
       >
         <span>{pending ? t("pending") : t("submit")}</span>
-        <ArrowUpRight className="size-[18px]" aria-hidden />
+        {pending ? (
+          <Spinner />
+        ) : (
+          <ArrowUpRight className="size-[18px]" aria-hidden />
+        )}
       </button>
       <p className="text-santa-muted text-xs leading-relaxed">{t("hint")}</p>
     </form>

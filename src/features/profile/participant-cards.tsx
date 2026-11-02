@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import type { Participant } from "./queries";
 import { NEW_PARTICIPANT, participantPath } from "./routes";
+import { PendingSpinner } from "@/components/spinner";
 
 /**
  * The account's participants as cards: «Ты в игре» for the adult alone,
@@ -142,7 +143,10 @@ export async function ParticipantCards({
                       type="submit"
                       className="border-santa-green text-santa-green bg-santa-white h-10 w-full rounded-full border px-4 text-sm font-semibold"
                     >
-                      {t("playAs", { name: person.name })}
+                      <span className="flex items-center justify-center gap-2">
+                        {t("playAs", { name: person.name })}
+                        <PendingSpinner className="size-4" />
+                      </span>
                     </button>
                   </form>
                 )

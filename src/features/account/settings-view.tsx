@@ -4,6 +4,7 @@ import { SiteFooter } from "@/features/game";
 import { TextLink } from "@/components/form-ui";
 import { signOutAction } from "./sign-out-action";
 import { CABINET_SETTINGS_DELETE } from "@/lib/cabinet-routes";
+import { PendingSpinner } from "@/components/spinner";
 
 function Section({
   title,
@@ -57,9 +58,10 @@ export async function SettingsView({
       <form action={signOutAction}>
         <button
           type="submit"
-          className="text-santa-danger text-[13px] font-semibold underline-offset-4 hover:underline"
+          className="text-santa-danger flex items-center gap-1.5 text-[13px] font-semibold underline-offset-4 hover:underline"
         >
           {t("signOut")}
+          <PendingSpinner className="size-3.5" />
         </button>
       </form>
       <TextLink href="/rules">{t("rulesLink")}</TextLink>

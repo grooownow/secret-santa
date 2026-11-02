@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { UnnotifiedNotice } from "./unnotified-notice";
 import { withdrawAction } from "./withdraw-action";
+import { Spinner } from "@/components/spinner";
 
 /** "Подтвердить выбытие" (frame ksxL7). Redirects are not errors. */
 export function WithdrawConfirm({
@@ -59,9 +60,11 @@ export function WithdrawConfirm({
             }
           })
         }
-        className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-center rounded-full px-6 text-base font-semibold disabled:opacity-60"
+        aria-busy={pending || undefined}
+        className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold disabled:opacity-60"
       >
         {pending ? t("running") : t("confirm")}
+        {pending ? <Spinner /> : null}
       </button>
       {error ? (
         <p role="alert" className="text-santa-danger text-sm">

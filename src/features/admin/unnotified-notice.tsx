@@ -7,6 +7,7 @@ import { FormAlert } from "@/components/form-ui";
 import { ORGANIZER_TELEGRAM } from "@/lib/organizer";
 import { ADMIN_PARTICIPANTS } from "./routes";
 import { retryNotify } from "./withdraw-action";
+import { Spinner } from "@/components/spinner";
 
 /**
  * Shown when the withdrawal went through but some givers did not get their
@@ -61,9 +62,11 @@ export function UnnotifiedNotice({
             }
           })
         }
-        className="border-santa-green text-santa-green flex h-12 w-full items-center justify-center rounded-full border px-6 text-base font-semibold disabled:opacity-60"
+        aria-busy={pending || undefined}
+        className="border-santa-green text-santa-green flex h-12 w-full items-center justify-center gap-2 rounded-full border px-6 text-base font-semibold disabled:opacity-60"
       >
         {pending ? t("retrying") : t("retry")}
+        {pending ? <Spinner /> : null}
       </button>
       {failed ? (
         <p role="alert" className="text-santa-danger text-sm">

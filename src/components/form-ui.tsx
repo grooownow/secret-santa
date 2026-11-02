@@ -6,6 +6,7 @@ import Link from "next/link";
 import { cloneElement, isValidElement, useId } from "react";
 import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
+import { Spinner } from "./spinner";
 
 const controlClass =
   "border-santa-line text-santa-ink placeholder:text-santa-muted focus-visible:border-santa-green h-[52px] w-full rounded-2xl border bg-santa-white px-4 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-santa-green";
@@ -151,10 +152,16 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={pending || disabled}
+      aria-busy={pending || undefined}
       className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold disabled:opacity-60"
     >
       <span>{pending && pendingLabel ? pendingLabel : children}</span>
-      <ArrowUpRight className="size-[18px]" aria-hidden />
+      {/* While the request runs the arrow turns into a spinner. */}
+      {pending ? (
+        <Spinner />
+      ) : (
+        <ArrowUpRight className="size-[18px]" aria-hidden />
+      )}
     </button>
   );
 }
