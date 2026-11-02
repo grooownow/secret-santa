@@ -311,6 +311,8 @@ describe("overview and resend", () => {
       "backupNeeded",
       "backupOrganized",
       "broadcasts",
+      // A count of children in the chain: no names, ids or pairs.
+      "children",
       "excluded",
       "giftsMarked",
       "participants",

@@ -22,11 +22,15 @@ vi.mock("./resend-broadcast-form", () => ({
   ),
 }));
 vi.mock("./withdraw-action", () => ({ withdrawAction: vi.fn() }));
+vi.mock("./refresh-while-sending", () => ({
+  RefreshWhileSending: () => <i>live-refresh</i>,
+}));
 
 const none = { total: 0, sent: 0 };
 const overview = (patch: Partial<Overview>): Overview => ({
   phase: "collect",
   participants: 10,
+  children: 0,
   excluded: 2,
   giftsMarked: 4,
   broadcasts: {
@@ -74,6 +78,64 @@ describe("OverviewView per phase", () => {
     expect(out).toContain("resend:draw");
     expect(out).toContain("/admin/participants");
     expect(out).toContain("/admin/backup");
+  });
+
+  it("waiting: says how many are children and why there are fewer emails", async () => {
+    today("2026-12-10");
+    const out = await html(
+      await OverviewView({
+        overview: overview({
+          phase: "waiting",
+          participants: 4,
+          children: 2,
+          broadcasts: {
+            draw: { total: 2, sent: 2 },
+            "gifts-open": none,
+            reminder: none,
+            reveal: none,
+          },
+        }),
+        settings: drawn,
+      }),
+    );
+    expect(out).toContain("admin.overview.childrenOf");
+    expect(out).toContain("admin.overview.mailPerAccount");
+  });
+
+  it("waiting without children: no children note, no fewer-emails note", async () => {
+    today("2026-12-10");
+    const out = await html(
+      await OverviewView({
+        overview: overview({
+          phase: "waiting",
+          broadcasts: {
+            draw: { total: 10, sent: 10 },
+            "gifts-open": none,
+            reminder: none,
+            reveal: none,
+          },
+        }),
+        settings: drawn,
+      }),
+    );
+    expect(out).not.toContain("admin.overview.childrenOf");
+    expect(out).not.toContain("admin.overview.mailPerAccount");
+  });
+
+  it("right after the draw: shows «sending» and refreshes instead of offering «Дослать»", async () => {
+    today("2026-12-07");
+    const justDrawn = defaultSettings({
+      drawnAt: new Date(Date.now() - 60_000),
+    });
+    const out = await html(
+      await OverviewView({
+        overview: overview({ phase: "waiting" }),
+        settings: justDrawn,
+      }),
+    );
+    expect(out).toContain("admin.overview.sending");
+    expect(out).toContain("live-refresh");
+    expect(out).not.toContain("resend:draw");
   });
 
   it("gifts: gifts marked, waiting for backup, the 25 and 29 Dec mailings", async () => {
