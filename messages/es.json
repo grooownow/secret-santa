@@ -64,9 +64,9 @@
       "cta": "Abrir mi cuenta"
     },
     "draw": {
-      "subject": "El sorteo está hecho",
-      "title": "El sorteo está hecho",
-      "body": "Las parejas están listas. Entra en tu cuenta para saber de quién te encargas. Es un secreto, no se lo cuentes a nadie.",
+      "subject": "Amigo invisible: ya se hizo el sorteo",
+      "title": "¡Ya se hizo el sorteo!",
+      "body": "Participas en el amigo invisible con tus vecinos de Bialto. Por fin se hizo el sorteo: cada participante tiene ahora a alguien para quien preparará un regalo en secreto. Entra en tu área personal para saber de quién te encargarás. Es un secreto, no se lo cuentes a nadie.",
       "cta": "Abrir mi cuenta"
     },
     "giftsOpen": {
@@ -273,7 +273,10 @@
       "solo": "Estás en el juego",
       "child": "menor",
       "photoAlt": "Foto: {name}",
-      "toProfile": "Abrir las fichas"
+      "toProfile": "Abrir las fichas",
+      "activeHint": "Jugando ahora: {name}. Las pestañas Inicio y Regalo muestran el destinatario y el regalo de esta persona.",
+      "playingNow": "Jugando ahora",
+      "playAs": "Jugar como {name}"
     },
     "unverified": {
       "title": "Solo falta un paso",
@@ -508,7 +511,8 @@
       "owner": "tu ficha",
       "address": "Edificio {building} · piso {apartment}",
       "open": "Abrir el espacio de {name}",
-      "childAge": "{age, plural, one {# año} other {# años}}"
+      "childAge": "{age, plural, one {# año} other {# años}}",
+      "current": "Jugando ahora"
     },
     "home": {
       "chipWaiting": "Regalos desde el {date}",
@@ -556,7 +560,12 @@
       "guessLink": "Adivinar a tu Santa",
       "guessLinkUntil": "Adivina a tu Santa hasta el {date}",
       "noProfileTitle": "No hay ficha",
-      "noProfileText": "El sorteo ya se hizo y esta cuenta no tiene ficha. Si es un error, escribe a la organización."
+      "noProfileText": "El sorteo ya se hizo y esta cuenta no tiene ficha. Si es un error, escribe a la organización.",
+      "playingNow": "Jugando ahora:",
+      "switchShort": "Cambiar",
+      "guessSaved": "Tu suposición: {name}. Lo sabrás en la revelación.",
+      "guessChange": "Cambiar suposición",
+      "guessLater": "Podrás adivinar quién es tu Santa a partir del {date}, cuando empiecen los regalos."
     }
   },
   "gift": {

@@ -64,9 +64,9 @@
       "cta": "Open your account"
     },
     "draw": {
-      "subject": "The draw is done",
-      "title": "The draw is done",
-      "body": "The pairs are set. Open your account to find out who you will look after. It is a secret, so keep it to yourself.",
+      "subject": "Secret Santa: the draw is done",
+      "title": "The draw is done!",
+      "body": "You are playing Secret Santa with your Bialto neighbours. The draw has finally happened: every participant now has someone to secretly prepare a gift for. Open your cabinet to find out who you will look after. It is a secret, so do not tell anyone.",
       "cta": "Open your account"
     },
     "giftsOpen": {
@@ -273,7 +273,10 @@
       "solo": "You are in the game",
       "child": "child",
       "photoAlt": "Photo: {name}",
-      "toProfile": "Open the profiles"
+      "toProfile": "Open the profiles",
+      "activeHint": "Playing now: {name}. The Home and Gift tabs show this participant's recipient and gift.",
+      "playingNow": "Playing now",
+      "playAs": "Play as {name}"
     },
     "unverified": {
       "title": "One step left",
@@ -508,7 +511,8 @@
       "owner": "your profile",
       "address": "Building {building} · flat {apartment}",
       "open": "Open the page of {name}",
-      "childAge": "{age, plural, one {# year old} other {# years old}}"
+      "childAge": "{age, plural, one {# year old} other {# years old}}",
+      "current": "Playing now"
     },
     "home": {
       "chipWaiting": "Gifts from {date}",
@@ -556,7 +560,12 @@
       "guessLink": "Guess your Santa",
       "guessLinkUntil": "Guess your Santa until {date}",
       "noProfileTitle": "No profile",
-      "noProfileText": "The draw is done and this account has no profile. If this is a mistake, write to the organizer."
+      "noProfileText": "The draw is done and this account has no profile. If this is a mistake, write to the organizer.",
+      "playingNow": "Playing now:",
+      "switchShort": "Change",
+      "guessSaved": "Your guess: {name}. You will find out at the reveal.",
+      "guessChange": "Change your guess",
+      "guessLater": "You can guess your Santa from {date}, when the gifts start."
     }
   },
   "gift": {

@@ -64,9 +64,9 @@
       "cta": "Konto öffnen"
     },
     "draw": {
-      "subject": "Die Auslosung ist erfolgt",
-      "title": "Die Auslosung ist erfolgt",
-      "body": "Die Paare stehen fest. Öffne dein Konto, um zu erfahren, wen du beschenkst. Das ist geheim, erzähle es niemandem.",
+      "subject": "Wichteln: die Auslosung ist gelaufen",
+      "title": "Die Auslosung ist gelaufen!",
+      "body": "Du wichtelst mit deinen Nachbarinnen und Nachbarn in Bialto. Endlich ist die Auslosung gelaufen: Alle Teilnehmenden haben jetzt jemanden, für den sie heimlich ein Geschenk vorbereiten. Schau in deinen Bereich, um zu erfahren, für wen du sorgst. Es ist ein Geheimnis, also verrate es niemandem.",
       "cta": "Konto öffnen"
     },
     "giftsOpen": {
@@ -273,7 +273,10 @@
       "solo": "Du bist dabei",
       "child": "Kind",
       "photoAlt": "Foto: {name}",
-      "toProfile": "Steckbriefe öffnen"
+      "toProfile": "Steckbriefe öffnen",
+      "activeHint": "Spielt gerade: {name}. Die Tabs „Start“ und „Geschenk“ zeigen Wichtelkind und Geschenk dieser Person.",
+      "playingNow": "Spielt gerade",
+      "playAs": "Spielen als {name}"
     },
     "unverified": {
       "title": "Noch ein Schritt",
@@ -508,7 +511,8 @@
       "owner": "dein Steckbrief",
       "address": "Haus {building} · Wohnung {apartment}",
       "open": "Bereich von {name} öffnen",
-      "childAge": "{age, plural, one {# Jahr} other {# Jahre}}"
+      "childAge": "{age, plural, one {# Jahr} other {# Jahre}}",
+      "current": "Spielt gerade"
     },
     "home": {
       "chipWaiting": "Geschenke ab {date}",
@@ -556,7 +560,12 @@
       "guessLink": "Santa erraten",
       "guessLinkUntil": "Santa erraten bis {date}",
       "noProfileTitle": "Kein Steckbrief",
-      "noProfileText": "Die Auslosung ist vorbei und dieses Konto hat keinen Steckbrief. Falls das ein Fehler ist, schreib der Organisation."
+      "noProfileText": "Die Auslosung ist vorbei und dieses Konto hat keinen Steckbrief. Falls das ein Fehler ist, schreib der Organisation.",
+      "playingNow": "Spielt gerade:",
+      "switchShort": "Wechseln",
+      "guessSaved": "Dein Tipp: {name}. Die Antwort erfährst du bei der Auflösung.",
+      "guessChange": "Tipp ändern",
+      "guessLater": "Ab {date}, wenn die Geschenke beginnen, kannst du deinen Wichtel erraten."
     }
   },
   "gift": {
