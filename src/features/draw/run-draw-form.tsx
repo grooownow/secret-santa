@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, CircleAlert } from "lucide-react";
+import { ArrowUpRight, CircleAlert, X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -124,6 +124,9 @@ export function RunDrawForm({
           </p>
         </>
       )}
+      {/* The backdrop click is a mouse shortcut only: keyboard users close
+          with Esc (onCancel) or the ✕ button, so no key handler is missing. */}
+      {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <dialog
         ref={dialogRef}
         aria-labelledby="draw-confirm-title"
@@ -131,12 +134,26 @@ export function RunDrawForm({
           if (pending) event.preventDefault();
           else setOpen(false);
         }}
-        className="bg-santa-white backdrop:bg-santa-ink/40 m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl p-6"
+        // A click on the backdrop lands on the <dialog> itself (the content
+        // wrapper below fills it edge to edge), so close like Esc does.
+        onClick={(event) => {
+          if (event.target === event.currentTarget && !pending) setOpen(false);
+        }}
+        className="bg-santa-white backdrop:bg-santa-ink/40 m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl p-0"
       >
-        <div className="flex flex-col gap-5">
+        <div className="relative flex flex-col gap-5 p-6">
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => setOpen(false)}
+            aria-label={t("close")}
+            className="text-santa-ink hover:bg-santa-mint absolute top-3 right-3 flex size-10 items-center justify-center rounded-full disabled:opacity-60"
+          >
+            <X className="size-5" aria-hidden />
+          </button>
           <h2
             id="draw-confirm-title"
-            className="text-santa-ink text-[26px] leading-tight font-bold"
+            className="text-santa-ink pr-8 text-[26px] leading-tight font-bold"
           >
             {t("confirmTitle")}
           </h2>
