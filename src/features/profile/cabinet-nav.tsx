@@ -89,13 +89,13 @@ export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
                 : "text-santa-muted font-normal",
             )}
           >
-            {/* The active tab: a light green pill behind the icon only
+            {/* The active tab: a mint pill (the «Подарок оставлен» box colour) behind the icon only
                 (owner, 2 Nov), so it reads at a glance without a heavy block. */}
             <span
               data-nav-icon
               className={cn(
                 "flex h-8 w-12 items-center justify-center rounded-full transition-colors",
-                active && "bg-santa-lime",
+                active && "bg-santa-mint",
               )}
             >
               <Icon className="size-6 shrink-0" aria-hidden />

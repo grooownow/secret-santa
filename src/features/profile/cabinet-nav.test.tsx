@@ -47,13 +47,13 @@ describe("CabinetNav", () => {
       expect(current.map((l) => l.textContent)).toEqual([active]);
       // A light green pill behind the icon only; the others stay plain.
       const pill = (l: HTMLElement) => l.querySelector("[data-nav-icon]");
-      expect(pill(current[0]!)).toHaveClass("bg-santa-lime");
+      expect(pill(current[0]!)).toHaveClass("bg-santa-mint");
       expect(current[0]).not.toHaveClass("bg-santa-green");
       expect(current[0]).toHaveClass("text-santa-green");
       for (const other of screen
         .getAllByRole("link")
         .filter((l) => l !== current[0])) {
-        expect(pill(other)).not.toHaveClass("bg-santa-lime");
+        expect(pill(other)).not.toHaveClass("bg-santa-mint");
       }
       unmount();
     }
