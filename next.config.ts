@@ -25,6 +25,14 @@ const nextConfig: NextConfig = {
   // sign-in (a Server Action) crashes in the production build.
   serverExternalPackages: ["@electric-sql/pglite"],
 
+  // Next 16.4 started tracing sharp (+ its ~18 MB libvips binary) into every
+  // page function. On Vercel /_next/image is served by the platform's image
+  // optimizer, never by sharp inside our functions, so keep it out of the
+  // bundles (the trace gate in scripts/check-function-traces.ts caught it).
+  outputFileTracingExcludes: {
+    "*": ["node_modules/sharp/**", "node_modules/@img/**"],
+  },
+
   // Security headers baseline. A full Content-Security-Policy is
   // deliberately deferred: a naive CSP breaks agent-added inline scripts
   // in this skeleton. See docs/rules/security.md for the CSP
