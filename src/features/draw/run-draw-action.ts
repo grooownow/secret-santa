@@ -10,7 +10,7 @@ import { runBroadcast } from "@/features/mail";
 import { flatKey } from "@/features/profile";
 import { logger } from "@/lib/logger";
 import { runAfterResponse } from "@/lib/run-after-response";
-import { buildChain, type ChainFailure, type DrawEntry } from "./build-chain";
+import { buildDraw, type ChainFailure, type KindedEntry } from "./build-chain";
 
 export type DrawResult =
   | { ok: true; links: number }
@@ -50,14 +50,16 @@ export async function runDraw(): Promise<DrawResult> {
       .select({
         id: participants.id,
         userId: participants.userId,
+        kind: participants.kind,
         building: users.building,
         apartment: users.apartment,
       })
       .from(participants)
       .innerJoin(users, eq(users.id, participants.userId))
       .where(isNotNull(users.emailVerified));
-    const entries: DrawEntry[] = people.map((p) => ({
+    const entries: KindedEntry[] = people.map((p) => ({
       id: p.id,
+      kind: p.kind,
       // No flat on file cannot happen for a profile owner; such a person
       // simply counts as their own flat.
       flat:
@@ -66,7 +68,7 @@ export async function runDraw(): Promise<DrawResult> {
           : `none:${p.userId}`,
     }));
 
-    const chain = buildChain(entries);
+    const chain = buildDraw(entries);
     if (!chain.ok) {
       return { ok: false, reason: chain.reason, flat: chain.flat };
     }

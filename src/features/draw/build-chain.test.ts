@@ -1,6 +1,11 @@
 import { randomInt } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { buildChain, type DrawEntry } from "./build-chain";
+import {
+  buildChain,
+  buildDraw,
+  type DrawEntry,
+  type KindedEntry,
+} from "./build-chain";
 
 /** Random neighbourhood that satisfies the "no flat above half" rule. */
 function randomNeighbourhood(): DrawEntry[] {
@@ -124,5 +129,108 @@ describe("buildChain", () => {
       expectNoSameFlat(r.links, entries);
     }
     expect(Date.now() - started).toBeLessThan(1000);
+  });
+});
+
+describe("buildDraw: children give to children", () => {
+  type K = KindedEntry;
+  const kid = (id: string, flat: string): K => ({ id, flat, kind: "child" });
+  const adult = (id: string, flat: string): K => ({ id, flat, kind: "adult" });
+  const kindOf = (entries: K[]) => new Map(entries.map((e) => [e.id, e.kind]));
+  const crossings = (
+    links: { giverId: string; receiverId: string }[],
+    es: K[],
+  ) => {
+    const k = kindOf(es);
+    return links.filter((l) => k.get(l.giverId) !== k.get(l.receiverId)).length;
+  };
+
+  it("three or more children and adults: two separate cycles, nobody crosses", () => {
+    const entries = [
+      adult("a1", "K:1"),
+      kid("c1", "K:1"),
+      adult("a2", "K:2"),
+      kid("c2", "K:2"),
+      adult("a3", "K:3"),
+      kid("c3", "K:3"),
+      adult("a4", "K:4"),
+    ];
+    for (let run = 0; run < 50; run += 1) {
+      const result = buildDraw(entries);
+      if (!result.ok) throw new Error(result.reason);
+      expect(result.links).toHaveLength(entries.length);
+      expect(crossings(result.links, entries)).toBe(0);
+      expectNoSameFlat(result.links, entries);
+      expectSingleCycle(
+        result.links.filter((l) => l.giverId.startsWith("c")),
+        entries.filter((e) => e.kind === "child"),
+      );
+    }
+  });
+
+  it("one child: one shared cycle, the child gives to and gets from adults", () => {
+    const entries = [
+      adult("a1", "K:1"),
+      kid("c1", "K:1"),
+      adult("a2", "K:2"),
+      adult("a3", "K:3"),
+    ];
+    const result = buildDraw(entries);
+    if (!result.ok) throw new Error(result.reason);
+    expectSingleCycle(result.links, entries);
+    expectNoSameFlat(result.links, entries);
+  });
+
+  it("two children of different flats sit next to each other in the shared cycle", () => {
+    const entries = [
+      adult("a1", "K:1"),
+      kid("c1", "K:1"),
+      adult("a2", "K:2"),
+      kid("c2", "K:2"),
+      adult("a3", "K:3"),
+      adult("a4", "K:4"),
+    ];
+    for (let run = 0; run < 50; run += 1) {
+      const result = buildDraw(entries);
+      if (!result.ok) throw new Error(result.reason);
+      expectSingleCycle(result.links, entries);
+      expectNoSameFlat(result.links, entries);
+      // One block of children: in and out of it once each.
+      expect(crossings(result.links, entries)).toBe(2);
+    }
+  });
+
+  it("children all from too few flats fall back to one valid shared cycle", () => {
+    // Three children, two from one flat: a children-only cycle is impossible.
+    const entries = [
+      kid("c1", "K:1"),
+      kid("c2", "K:1"),
+      kid("c3", "K:2"),
+      adult("a1", "K:1"),
+      adult("a2", "K:3"),
+      adult("a3", "K:4"),
+      adult("a4", "K:5"),
+    ];
+    const result = buildDraw(entries);
+    if (!result.ok) throw new Error(result.reason);
+    expectSingleCycle(result.links, entries);
+    expectNoSameFlat(result.links, entries);
+  });
+
+  it("300 random mixed neighbourhoods: every valid one gets a valid draw", () => {
+    for (let run = 0; run < 300; run += 1) {
+      const base = randomNeighbourhood();
+      const entries: K[] = base.map((e) => ({
+        ...e,
+        kind: randomInt(0, 3) === 0 ? "child" : "adult",
+      }));
+      const result = buildDraw(entries);
+      if (!result.ok) throw new Error(result.reason);
+      expect(result.links).toHaveLength(entries.length);
+      expect(new Set(result.links.map((l) => l.receiverId)).size).toBe(
+        entries.length,
+      );
+      expectNoSameFlat(result.links, entries);
+    }
   });
 });

@@ -50,7 +50,11 @@ function feasible(
  * and no flat above half of all. Random depth-first search with pruning by
  * `feasible`; `crypto.randomInt` supplies the randomness.
  */
-export function buildChain(entries: readonly DrawEntry[]): ChainResult {
+export function buildChain<E extends DrawEntry>(
+  entries: readonly E[],
+  /** Tried first as the next link after `last` (keeps alike people together). */
+  prefer?: (last: E, candidate: E) => boolean,
+): ChainResult {
   if (entries.length < MIN_PARTICIPANTS) {
     return { ok: false, reason: "too_few" };
   }
@@ -68,14 +72,20 @@ export function buildChain(entries: readonly DrawEntry[]): ChainResult {
   const first = pool[0]!;
   const remaining = new Map(counts);
   remaining.set(first.flat, remaining.get(first.flat)! - 1);
-  const path: DrawEntry[] = [first];
+  const path: E[] = [first];
   const used = new Set<string>([first.id]);
 
   function extend(): boolean {
     if (path.length === pool.length) return true;
     const last = path[path.length - 1]!;
     const open = pool.length - path.length - 1;
-    for (const candidate of pool) {
+    const order = prefer
+      ? [
+          ...pool.filter((c) => prefer(last, c)),
+          ...pool.filter((c) => !prefer(last, c)),
+        ]
+      : pool;
+    for (const candidate of order) {
       if (used.has(candidate.id) || candidate.flat === last.flat) continue;
       remaining.set(candidate.flat, remaining.get(candidate.flat)! - 1);
       if (feasible(remaining, open, candidate.flat, first.flat)) {
@@ -102,4 +112,30 @@ export function buildChain(entries: readonly DrawEntry[]): ChainResult {
       receiverId: path[(i + 1) % path.length]!.id,
     })),
   };
+}
+
+export type KindedEntry = DrawEntry & { kind: "adult" | "child" };
+
+/**
+ * The draw with the «children give to children» rule (owner, 2 Nov). With at
+ * least three children and three adults that can each form a chain, children
+ * and adults get two separate cycles. Otherwise (one or two children, or the
+ * children of mostly one flat) everyone is in one cycle where children are
+ * kept next to each other, so a child gives to an adult as rarely as the
+ * flats allow. The flat rule always holds.
+ */
+export function buildDraw(entries: readonly KindedEntry[]): ChainResult {
+  const children = entries.filter((e) => e.kind === "child");
+  const adults = entries.filter((e) => e.kind === "adult");
+  if (
+    children.length >= MIN_PARTICIPANTS &&
+    adults.length >= MIN_PARTICIPANTS
+  ) {
+    const kids = buildChain(children);
+    const grown = buildChain(adults);
+    if (kids.ok && grown.ok) {
+      return { ok: true, links: [...grown.links, ...kids.links] };
+    }
+  }
+  return buildChain(entries, (last, candidate) => candidate.kind === last.kind);
 }
