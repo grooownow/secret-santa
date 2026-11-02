@@ -249,7 +249,8 @@
       "gift": "Regalo",
       "wall": "Muro",
       "settings": "Ajustes",
-      "profile": "Ficha"
+      "profile": "Ficha",
+      "admin": "Admin"
     },
     "home": {
       "phase": "Inscripciones hasta el {date}",
@@ -382,7 +383,10 @@
       "giftsOpenMail": "Correo del {date}",
       "reminderMail": "Recordatorio del {date}",
       "revealMail": "Correo del {date}",
-      "purgeNote": "El {date} se borran automáticamente todas las fichas, fotos, mensajes y parejas. El buzón de Gmail hay que vaciarlo a mano."
+      "purgeNote": "El {date} se borran automáticamente todas las fichas, fotos, mensajes y parejas. El buzón de Gmail hay que vaciarlo a mano.",
+      "childrenOf": "de ellos, niños: {count}",
+      "mailPerAccount": "Los correos llegan a la dirección de la cuenta, uno por familia. Los niños lo reciben junto con su adulto, por eso hay menos correos que participantes.",
+      "sending": "Se están enviando los correos; la página se actualizará sola."
     },
     "draw": {
       "start": "Hacer el sorteo",
@@ -573,7 +577,9 @@
       "editGift": "Corregir el lugar del regalo",
       "notYet": "El botón funcionará el {start}.",
       "private": "Solo tú ves la dirección y la foto. Por favor, no las enseñes a nadie.",
-      "childAge": "{age, plural, one {# año} other {# años}}"
+      "childAge": "{age, plural, one {# año} other {# años}}",
+      "photoOpen": "Abrir foto: {name}",
+      "photoClose": "Cerrar foto"
     },
     "form": {
       "title": "¿Dónde espera la sorpresa?",

@@ -249,7 +249,8 @@
       "gift": "Gift",
       "wall": "Wall",
       "settings": "Settings",
-      "profile": "Profile"
+      "profile": "Profile",
+      "admin": "Admin"
     },
     "home": {
       "phase": "Sign-ups until {date}",
@@ -382,7 +383,10 @@
       "giftsOpenMail": "Email of {date}",
       "reminderMail": "Reminder of {date}",
       "revealMail": "Email of {date}",
-      "purgeNote": "On {date} all profiles, photos, posts and pairs are deleted automatically. The Gmail mailbox has to be cleared by hand."
+      "purgeNote": "On {date} all profiles, photos, posts and pairs are deleted automatically. The Gmail mailbox has to be cleared by hand.",
+      "childrenOf": "of them children: {count}",
+      "mailPerAccount": "Emails go to the account address, one per family. Children get theirs together with their adult, so there are fewer emails than participants.",
+      "sending": "Emails are being sent; this page refreshes by itself."
     },
     "draw": {
       "start": "Run the draw",
@@ -573,7 +577,9 @@
       "editGift": "Correct the gift place",
       "notYet": "The button starts working on {start}.",
       "private": "Only you can see the address and photo. Please do not show them to others.",
-      "childAge": "{age, plural, one {# year old} other {# years old}}"
+      "childAge": "{age, plural, one {# year old} other {# years old}}",
+      "photoOpen": "Open photo: {name}",
+      "photoClose": "Close photo"
     },
     "form": {
       "title": "Where is the surprise waiting?",

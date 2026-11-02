@@ -249,7 +249,8 @@
       "gift": "Geschenk",
       "wall": "Wand",
       "settings": "Einstellungen",
-      "profile": "Steckbrief"
+      "profile": "Steckbrief",
+      "admin": "Admin"
     },
     "home": {
       "phase": "Anmeldung bis {date}",
@@ -382,7 +383,10 @@
       "giftsOpenMail": "E-Mail vom {date}",
       "reminderMail": "Erinnerung vom {date}",
       "revealMail": "E-Mail vom {date}",
-      "purgeNote": "Am {date} werden alle Steckbriefe, Fotos, Beiträge und Paare automatisch gelöscht. Das Gmail-Postfach muss von Hand geleert werden."
+      "purgeNote": "Am {date} werden alle Steckbriefe, Fotos, Beiträge und Paare automatisch gelöscht. Das Gmail-Postfach muss von Hand geleert werden.",
+      "childrenOf": "davon Kinder: {count}",
+      "mailPerAccount": "E-Mails gehen an die Adresse des Kontos, eine pro Familie. Kinder bekommen sie zusammen mit ihrer erwachsenen Person, daher gibt es weniger E-Mails als Teilnehmende.",
+      "sending": "Die E-Mails werden gesendet, die Seite aktualisiert sich selbst."
     },
     "draw": {
       "start": "Auslosung starten",
@@ -573,7 +577,9 @@
       "editGift": "Ort des Geschenks korrigieren",
       "notYet": "Die Schaltfläche funktioniert ab {start}.",
       "private": "Adresse und Foto sehen nur du. Bitte zeige sie niemandem.",
-      "childAge": "{age, plural, one {# Jahr} other {# Jahre}}"
+      "childAge": "{age, plural, one {# Jahr} other {# Jahre}}",
+      "photoOpen": "Foto öffnen: {name}",
+      "photoClose": "Foto schließen"
     },
     "form": {
       "title": "Wo wartet die Überraschung?",
