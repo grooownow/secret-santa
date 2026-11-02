@@ -12,6 +12,7 @@ import {
   readMails,
   registerAndConfirm as register,
   setDates,
+  ORGANISER,
   SUBJECT,
   useOwnIp,
   waitForMail,
@@ -274,6 +275,34 @@ test.describe("the whole game", () => {
         await expect(
           santa.page.getByRole("heading", { name: /^Your recipient — / }),
         ).not.toContainText(CHILD);
+      });
+
+      await test.step("the leaver sends «I can’t take part»; the organiser is emailed and sees it", async () => {
+        await leaver.page.goto("/home/settings");
+        await leaver.page
+          .getByRole("link", { name: "I can’t take part" })
+          .click();
+        await leaver.page
+          .getByLabel(/Comment for the organiser/)
+          .fill("Away for the holidays");
+        await leaver.page
+          .getByRole("button", { name: "I can’t take part" })
+          .click();
+        await expect(
+          leaver.page.getByText(
+            "Request sent. The organiser got an email and will confirm.",
+          ),
+        ).toBeVisible();
+        await waitForMail(ORGANISER.email, "Secret Santa: a request to leave");
+
+        await organiser.goto("/admin/participants");
+        const row = organiser
+          .getByRole("listitem")
+          .filter({ hasText: LEAVER.name });
+        await expect(
+          row.getByText("Asks to leave («I can’t take part»)"),
+        ).toBeVisible();
+        await expect(row.getByText("Away for the holidays")).toBeVisible();
       });
 
       await test.step("a withdrawn adult loses their account and their Santa is moved", async () => {

@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { renderServerToHtml as html } from "../../../test/render-server";
 import { defaultSettings } from "@/lib/game-phase";
@@ -22,6 +23,11 @@ vi.mock("./resend-broadcast-form", () => ({
   ),
 }));
 vi.mock("./withdraw-action", () => ({ withdrawAction: vi.fn() }));
+const markBackupNeeded = vi.hoisted(() => vi.fn(async () => ({ ok: true })));
+vi.mock("./backup-actions", () => ({
+  markBackupNeeded,
+  assignVolunteer: vi.fn(),
+}));
 vi.mock("./refresh-while-sending", () => ({
   RefreshWhileSending: () => <i>live-refresh</i>,
 }));
@@ -31,6 +37,7 @@ const overview = (patch: Partial<Overview>): Overview => ({
   phase: "collect",
   participants: 10,
   children: 0,
+  exitRequests: 0,
   excluded: 2,
   giftsMarked: 4,
   broadcasts: {
@@ -218,6 +225,10 @@ const rows = [
     building: "K",
     apartment: "24",
     verified: true,
+    exitRequestedAt: null,
+    exitComment: null,
+    inChain: false,
+    backupRequested: false,
   },
 ];
 
@@ -235,6 +246,39 @@ describe("ParticipantsTable", () => {
       "/admin/participants/11111111-1111-4111-8111-111111111111/withdraw",
     );
     expect(screen.queryByText("admin.participants.remove")).toBeNull();
+  });
+
+  it("marks a «Не могу участвовать» request with its comment", () => {
+    render(
+      <ParticipantsTable
+        rows={[
+          {
+            ...rows[0]!,
+            exitRequestedAt: new Date("2026-12-10T10:00:00Z"),
+            exitComment: "Away",
+          },
+        ]}
+        phase="waiting"
+      />,
+    );
+    expect(screen.getByText("admin.participants.exitRequested")).toBeTruthy();
+    expect(screen.getByText("admin.participants.exitComment")).toBeTruthy();
+  });
+
+  it("after the draw a drawn person can be put on «Помощь» by hand", async () => {
+    render(
+      <ParticipantsTable
+        rows={[{ ...rows[0]!, inChain: true }]}
+        phase="later"
+      />,
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: "admin.participants.needsBackup" }),
+    );
+    expect(markBackupNeeded).toHaveBeenCalledWith(rows[0]!.id);
+    expect(
+      await screen.findByText("admin.participants.backupAdded"),
+    ).toBeTruthy();
   });
 
   it("offers nothing from 25 December", () => {

@@ -19,6 +19,8 @@ export const EMAIL_TYPES = [
   "giftWaiting",
   "reassigned",
   "reveal",
+  "exitRequest",
+  "backupAsk",
 ] as const;
 export type EmailType = (typeof EMAIL_TYPES)[number];
 
@@ -33,6 +35,20 @@ export type EmailData = {
   note?: string | null;
   /** reassigned: true when there is nobody left to give to. */
   noReceiver?: boolean;
+  /** exitRequest: who asks to leave, and their optional comment. */
+  person?: string;
+  comment?: string | null;
+  /**
+   * backupAsk: the person the volunteer is asked to prepare a gift for.
+   * Only what a Santa sees anyway: name, building, flat, wishes, avoid.
+   */
+  receiver?: {
+    name: string;
+    building: string | null;
+    apartment: string | null;
+    wishes: string;
+    avoid: string;
+  };
   /**
    * Game dates (`YYYY-MM-DD`) from the settings, for the texts that name
    * them; the defaults are used when absent.
@@ -89,6 +105,7 @@ export function renderEmail(
   const body = t(`${key}.body` as "verify.body", {
     giftsEnd: formatGameDay(dates.giftsEndOn, safeLocale),
     reveal: formatGameDay(dates.revealOn, safeLocale),
+    name: data.person ?? data.receiver?.name ?? "",
   });
   const cta = t(`${key}.cta` as "verify.cta");
   const url = data.url ?? cabinetUrl();
@@ -109,6 +126,20 @@ export function renderEmail(
     if (data.note) lines.push(`${t("gift.note")}: ${data.note}`);
   }
   if (type === "verify" || type === "reset") lines.push(t("ignore"));
+  if (type === "exitRequest" && data.comment) {
+    lines.push(t("exitRequest.comment", { comment: data.comment }));
+  }
+  if (type === "backupAsk" && data.receiver) {
+    const r = data.receiver;
+    lines.push(
+      t("backupAsk.address", {
+        building: r.building ?? "",
+        apartment: r.apartment ?? "",
+      }),
+    );
+    if (r.wishes) lines.push(t("backupAsk.wishes", { text: r.wishes }));
+    if (r.avoid) lines.push(t("backupAsk.avoid", { text: r.avoid }));
+  }
 
   const textParts = [...lines, `${cta}: ${url}`];
   if (type === "reveal") {

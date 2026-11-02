@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { OrganizerLink } from "@/components/organizer-link";
 import { SiteFooter } from "@/features/game";
 import { TextLink } from "@/components/form-ui";
 import { signOutAction } from "./sign-out-action";
 import { CABINET_SETTINGS_DELETE } from "@/lib/cabinet-routes";
 import { PendingSpinner } from "@/components/spinner";
+import { VolunteerToggle } from "./volunteer-toggle";
 
 function Section({
   title,
@@ -29,9 +29,12 @@ function Section({
 export async function SettingsView({
   email,
   canDelete,
+  volunteer,
 }: {
   email: string;
   canDelete: boolean;
+  /** «Могу быть запасным Сантой» is on for this account. */
+  volunteer: boolean;
 }) {
   const t = await getTranslations("settings");
   return (
@@ -49,11 +52,11 @@ export async function SettingsView({
         {canDelete ? (
           <TextLink href={CABINET_SETTINGS_DELETE}>{t("deleteLink")}</TextLink>
         ) : (
-          <>
-            <TextLink href={CABINET_SETTINGS_DELETE}>{t("leaveLink")}</TextLink>
-            <OrganizerLink />
-          </>
+          <TextLink href={CABINET_SETTINGS_DELETE}>{t("leaveLink")}</TextLink>
         )}
+      </Section>
+      <Section title={t("volunteerTitle")}>
+        <VolunteerToggle initial={volunteer} />
       </Section>
       <form action={signOutAction}>
         <button

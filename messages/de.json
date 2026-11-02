@@ -111,6 +111,22 @@
       "mailbox": "Briefkasten",
       "code": "Nummer oder Code",
       "note": "Notiz"
+    },
+    "exitRequest": {
+      "subject": "Wichteln: Bitte um Austritt",
+      "title": "Jemand kann nicht mitspielen",
+      "body": "{name} möchte aus dem Spiel austreten. Bestätige das im Adminbereich, Tab „Teilnehmende“.",
+      "comment": "Kommentar: „{comment}“",
+      "cta": "Teilnehmende öffnen"
+    },
+    "backupAsk": {
+      "subject": "Wichteln: ein Ersatzwichtel wird gebraucht",
+      "title": "Wirst du Ersatzwichtel?",
+      "body": "Danke, dass du helfen möchtest! {name} hat gerade keinen Wichtel, und die Organisation bittet dich, ein Geschenk vorzubereiten. Lege es ins Schließfach oder in den Briefkasten des Hauses und gib Bescheid, wenn es da ist.",
+      "address": "Haus {building}, Wohnung {apartment}.",
+      "wishes": "Würde sich freuen über: {text}",
+      "avoid": "Lieber nicht schenken: {text}",
+      "cta": "Bereich öffnen"
     }
   },
   "account": {
@@ -395,7 +411,10 @@
       "purgeNote": "Am {date} werden alle Steckbriefe, Fotos, Beiträge und Paare automatisch gelöscht. Das Gmail-Postfach muss von Hand geleert werden.",
       "childrenOf": "davon Kinder: {count}",
       "mailPerAccount": "E-Mails gehen an die Adresse des Kontos, eine pro Familie. Kinder bekommen sie zusammen mit ihrer erwachsenen Person, daher gibt es weniger E-Mails als Teilnehmende.",
-      "sending": "Die E-Mails werden gesendet, die Seite aktualisiert sich selbst."
+      "sending": "Die E-Mails werden gesendet, die Seite aktualisiert sich selbst.",
+      "exitTitle": "Austrittsanfragen: {count}",
+      "exitText": "Teilnehmende haben „Ich kann nicht mitmachen“ gedrückt. Bestätige im Tab „Teilnehmende“: Ihre Wichtel bekommen neue Wichtelkinder.",
+      "exitLink": "Teilnehmende öffnen"
     },
     "draw": {
       "start": "Auslosung starten",
@@ -441,7 +460,12 @@
       "remove": "Anmeldung löschen",
       "removeConfirm": "Anmeldung löschen? Steckbrief, Foto und Daten der Person werden gelöscht, bei Erwachsenen auch das ganze Konto samt Kindern.",
       "removeFailed": "Löschen hat nicht geklappt. Bitte versuche es noch einmal.",
-      "withdraw": "Ausstieg"
+      "withdraw": "Ausstieg",
+      "exitRequested": "Möchte austreten („Ich kann nicht mitmachen“)",
+      "exitComment": "Kommentar: „{comment}“",
+      "needsBackup": "Braucht Ersatzwichtel",
+      "backupAdded": "Auf der Liste „Hilfe“",
+      "backupFailed": "Hinzufügen hat nicht geklappt. Versuch es noch einmal."
     },
     "withdraw": {
       "title": "Eine Person steigt aus dem Spiel aus",
@@ -474,11 +498,26 @@
       "reason": {
         "noSanta": "Der Santa ist ausgestiegen",
         "notFound": "Das Geschenk liegt nicht da",
-        "notMarked": "Das Geschenk ist nicht markiert"
+        "notMarked": "Das Geschenk ist nicht markiert",
+        "manual": "Von der Organisation hinzugefügt"
       },
       "organize": "Geschenk organisiert",
       "failed": "Speichern hat nicht geklappt. Bitte versuche es noch einmal.",
-      "organizedTitle": "Organisiert · {count}"
+      "organizedTitle": "Organisiert · {count}",
+      "pickVolunteer": "Freiwillige Person fragen",
+      "volunteerOption": "{name} · Haus {building}, Whg. {apartment}",
+      "ask": "Fragen",
+      "asked": "Ersatzwichtel: {name}, E-Mail gesendet",
+      "noVolunteers": "Keine passenden Freiwilligen: Du oder jemand aus der Nachbarschaft bereitet das Geschenk vor.",
+      "volunteersTitle": "Bereit, Ersatzwichtel zu sein · {count}",
+      "volunteersEmpty": "Noch niemand hat „Ich kann Ersatzwichtel sein“ in den Einstellungen angekreuzt.",
+      "askErrors": {
+        "invalid": "Etwas ist schiefgegangen. Versuch es noch einmal.",
+        "notNeeded": "Diese Person braucht keine Hilfe mehr.",
+        "notVolunteer": "Diese Person ist nicht mehr freiwillig.",
+        "ownFlat": "Du kannst niemanden aus derselben Wohnung fragen.",
+        "mail": "Gespeichert, aber die E-Mail ging nicht raus. Versuch es noch einmal."
+      }
     },
     "settings": {
       "title": "Termine und Einladung",
@@ -803,7 +842,7 @@
     "email": "E-Mail",
     "dataTitle": "Teilnahme und Daten",
     "dataCollect": "Vor der Auslosung kannst du dein Konto selbst löschen. Danach nur über die Organisation.",
-    "dataLater": "Nach der Auslosung ist ein Ausstieg nur über die Organisation möglich.",
+    "dataLater": "Nach der Auslosung kannst du der Organisation die Anfrage „Ich kann nicht mitmachen“ schicken, bis die Geschenke beginnen.",
     "delete": {
       "back": "Einstellungen",
       "title": "Das Spiel verlassen?",
@@ -828,8 +867,36 @@
     },
     "signOut": "Abmelden",
     "deleteLink": "Aus dem Spiel aussteigen",
-    "leaveLink": "So steigst du aus dem Spiel aus",
-    "rulesLink": "Regeln und Daten"
+    "leaveLink": "Ich kann nicht mitmachen",
+    "rulesLink": "Regeln und Daten",
+    "exit": {
+      "back": "Einstellungen",
+      "title": "Kannst du nicht mitmachen?",
+      "boxTitle": "Schick der Organisation eine Anfrage",
+      "boxText": "Die Organisation bekommt eine E-Mail und bestätigt den Austritt. Niemand bleibt ohne Geschenk: Dein Wichtel beschenkt dann dein Wichtelkind. Austreten geht bis einschließlich {date}.",
+      "who": "Wer kann nicht mitmachen?",
+      "whoAdult": "{name} und die ganze Familie",
+      "comment": "Kommentar für die Organisation, optional",
+      "commentHint": "Bis zu {max} Zeichen.",
+      "commentPlaceholder": "Zum Beispiel: Ich bin über die Feiertage weg",
+      "submit": "Ich kann nicht mitmachen",
+      "pending": "Wird gesendet…",
+      "sent": "Anfrage gesendet. Die Organisation hat eine E-Mail bekommen und bestätigt sie.",
+      "requested": "Anfrage gesendet: {name}. Die Organisation bestätigt sie.",
+      "stay": "Im Spiel bleiben",
+      "errors": {
+        "invalid": "Kommentar bis 300 Zeichen.",
+        "notFound": "Teilnehmende Person nicht gefunden.",
+        "closed": "Austreten ist jetzt nicht mehr möglich.",
+        "failed": "Senden hat nicht geklappt. Versuch es noch einmal."
+      }
+    },
+    "volunteerTitle": "Ersatzwichtel",
+    "volunteer": {
+      "label": "Ich kann Ersatzwichtel sein",
+      "hint": "Wenn jemand ohne Wichtel bleibt, kann die Organisation dich bitten, ein Geschenk vorzubereiten. Du bekommst eine E-Mail mit Name und Wünschen.",
+      "failed": "Speichern hat nicht geklappt. Versuch es noch einmal."
+    }
   },
   "meta": {
     "siteName": "Wichteln Bialto",

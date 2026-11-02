@@ -186,6 +186,17 @@ export async function OverviewView({
     return (
       <div className="flex flex-col gap-5">
         <StageCard title={t("drawnTitle")} />
+        {overview.exitRequests > 0 ? (
+          <div className="bg-santa-yellow flex flex-col gap-2 rounded-2xl p-[18px]">
+            <p className="text-santa-ink text-base font-bold">
+              {t("exitTitle", { count: overview.exitRequests })}
+            </p>
+            <p className="text-santa-ink text-sm leading-relaxed">
+              {t("exitText")}
+            </p>
+            <TextLink href={ADMIN_PARTICIPANTS}>{t("exitLink")}</TextLink>
+          </div>
+        ) : null}
         <div className="flex gap-5">
           <Stat
             label={t("inChain")}

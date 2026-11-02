@@ -111,6 +111,22 @@
       "mailbox": "Buzón",
       "code": "Número o código",
       "note": "Nota"
+    },
+    "exitRequest": {
+      "subject": "Amigo invisible: solicitud de baja",
+      "title": "Una persona no podrá jugar",
+      "body": "{name} pide darse de baja del juego. Confírmalo en la administración, pestaña «Participantes».",
+      "comment": "Comentario: «{comment}»",
+      "cta": "Abrir participantes"
+    },
+    "backupAsk": {
+      "subject": "Amigo invisible: hace falta un Santa de reserva",
+      "title": "¿Serás Santa de reserva?",
+      "body": "¡Gracias por ofrecer tu ayuda! {name} se ha quedado sin Santa y la organización te pide preparar un regalo. Déjalo en la taquilla o el buzón de su edificio y avisa a la organización cuando esté allí.",
+      "address": "Edificio {building}, piso {apartment}.",
+      "wishes": "Le gustaría: {text}",
+      "avoid": "Mejor no regalar: {text}",
+      "cta": "Abrir mi área"
     }
   },
   "account": {
@@ -395,7 +411,10 @@
       "purgeNote": "El {date} se borran automáticamente todas las fichas, fotos, mensajes y parejas. El buzón de Gmail hay que vaciarlo a mano.",
       "childrenOf": "de ellos, niños: {count}",
       "mailPerAccount": "Los correos llegan a la dirección de la cuenta, uno por familia. Los niños lo reciben junto con su adulto, por eso hay menos correos que participantes.",
-      "sending": "Se están enviando los correos; la página se actualizará sola."
+      "sending": "Se están enviando los correos; la página se actualizará sola.",
+      "exitTitle": "Solicitudes de baja: {count}",
+      "exitText": "Hay participantes que pulsaron «No puedo participar». Confírmalo en la pestaña «Participantes»: sus Santas recibirán nuevos destinatarios.",
+      "exitLink": "Abrir participantes"
     },
     "draw": {
       "start": "Hacer el sorteo",
@@ -441,7 +460,12 @@
       "remove": "Eliminar solicitud",
       "removeConfirm": "¿Eliminar la solicitud? Se borrarán la ficha, la foto y los datos de la persona y, si es adulta, toda la cuenta con sus hijos.",
       "removeFailed": "No se pudo eliminar. Inténtalo de nuevo.",
-      "withdraw": "Baja"
+      "withdraw": "Baja",
+      "exitRequested": "Pide la baja («No puedo participar»)",
+      "exitComment": "Comentario: «{comment}»",
+      "needsBackup": "Necesita Santa de reserva",
+      "backupAdded": "En la lista «Ayuda»",
+      "backupFailed": "No se pudo añadir. Inténtalo de nuevo."
     },
     "withdraw": {
       "title": "Un participante sale del juego",
@@ -474,11 +498,26 @@
       "reason": {
         "noSanta": "Quien hacía de Santa se dio de baja",
         "notFound": "El regalo no está en su sitio",
-        "notMarked": "El regalo no está marcado"
+        "notMarked": "El regalo no está marcado",
+        "manual": "Añadido por la organización"
       },
       "organize": "Regalo organizado",
       "failed": "No se pudo guardar. Inténtalo de nuevo.",
-      "organizedTitle": "Organizados · {count}"
+      "organizedTitle": "Organizados · {count}",
+      "pickVolunteer": "Pedir a un voluntario",
+      "volunteerOption": "{name} · edificio {building}, piso {apartment}",
+      "ask": "Pedir",
+      "asked": "Santa de reserva: {name}, correo enviado",
+      "noVolunteers": "No hay voluntarios adecuados: el regalo lo preparas tú o alguien del vecindario.",
+      "volunteersTitle": "Dispuestos a ser Santas de reserva · {count}",
+      "volunteersEmpty": "Nadie ha marcado aún «Puedo ser Santa de reserva» en los ajustes.",
+      "askErrors": {
+        "invalid": "Algo salió mal. Inténtalo de nuevo.",
+        "notNeeded": "Esta persona ya no necesita ayuda.",
+        "notVolunteer": "Esta persona ya no es voluntaria.",
+        "ownFlat": "No puedes pedírselo a alguien del mismo piso.",
+        "mail": "Guardado, pero el correo no salió. Inténtalo de nuevo."
+      }
     },
     "settings": {
       "title": "Fechas e invitación",
@@ -803,7 +842,7 @@
     "email": "Correo electrónico",
     "dataTitle": "Participación y datos",
     "dataCollect": "Antes del sorteo puedes eliminar tu cuenta sin ayuda. Después, solo a través de la organización.",
-    "dataLater": "Después del sorteo solo se puede salir del juego a través de la organización.",
+    "dataLater": "Tras el sorteo puedes enviar a la organización una solicitud «No puedo participar» hasta que empiecen los regalos.",
     "delete": {
       "back": "Ajustes",
       "title": "¿Salir del juego?",
@@ -828,8 +867,36 @@
     },
     "signOut": "Cerrar sesión",
     "deleteLink": "Salir del juego",
-    "leaveLink": "Cómo salir del juego",
-    "rulesLink": "Reglas y datos"
+    "leaveLink": "No puedo participar",
+    "rulesLink": "Reglas y datos",
+    "exit": {
+      "back": "Ajustes",
+      "title": "¿No puedes participar?",
+      "boxTitle": "Envía una solicitud a la organización",
+      "boxText": "La organización recibe un correo y confirma la baja. Nadie se queda sin regalo: tu Santa regalará a tu destinatario. Puedes darte de baja hasta el {date} incluido.",
+      "who": "¿Quién no podrá participar?",
+      "whoAdult": "{name} y toda la familia",
+      "comment": "Comentario para la organización, opcional",
+      "commentHint": "Hasta {max} caracteres.",
+      "commentPlaceholder": "Por ejemplo: me voy de viaje en las fiestas",
+      "submit": "No puedo participar",
+      "pending": "Enviando…",
+      "sent": "Solicitud enviada. La organización recibió un correo y la confirmará.",
+      "requested": "Solicitud enviada: {name}. La organización la confirmará.",
+      "stay": "Seguir en el juego",
+      "errors": {
+        "invalid": "Comentario de hasta 300 caracteres.",
+        "notFound": "Participante no encontrado.",
+        "closed": "Ya no es posible darse de baja.",
+        "failed": "No se pudo enviar. Inténtalo de nuevo."
+      }
+    },
+    "volunteerTitle": "Santa de reserva",
+    "volunteer": {
+      "label": "Puedo ser Santa de reserva",
+      "hint": "Si alguien se queda sin Santa, la organización puede pedirte que le prepares un regalo. Recibirás un correo con su nombre y deseos.",
+      "failed": "No se pudo guardar. Inténtalo de nuevo."
+    }
   },
   "meta": {
     "siteName": "Amigo Invisible Bialto",

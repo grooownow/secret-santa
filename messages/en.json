@@ -111,6 +111,22 @@
       "mailbox": "Mailbox",
       "code": "Number or code",
       "note": "Note"
+    },
+    "exitRequest": {
+      "subject": "Secret Santa: a request to leave",
+      "title": "A participant cannot play",
+      "body": "{name} asks to leave the game. Confirm it in the admin area, «Participants» tab.",
+      "comment": "Comment: “{comment}”",
+      "cta": "Open participants"
+    },
+    "backupAsk": {
+      "subject": "Secret Santa: a backup Santa is needed",
+      "title": "Will you be a backup Santa?",
+      "body": "Thank you for offering to help! {name} has no Santa right now, and the organiser asks you to prepare a gift. Leave it in the locker or mailbox of their building and tell the organiser when it is there.",
+      "address": "Building {building}, flat {apartment}.",
+      "wishes": "Would enjoy: {text}",
+      "avoid": "Better not to give: {text}",
+      "cta": "Open the cabinet"
     }
   },
   "account": {
@@ -395,7 +411,10 @@
       "purgeNote": "On {date} all profiles, photos, posts and pairs are deleted automatically. The Gmail mailbox has to be cleared by hand.",
       "childrenOf": "of them children: {count}",
       "mailPerAccount": "Emails go to the account address, one per family. Children get theirs together with their adult, so there are fewer emails than participants.",
-      "sending": "Emails are being sent; this page refreshes by itself."
+      "sending": "Emails are being sent; this page refreshes by itself.",
+      "exitTitle": "Requests to leave: {count}",
+      "exitText": "Participants pressed «I can’t take part». Confirm on the «Participants» tab: their Santas get new recipients.",
+      "exitLink": "Open participants"
     },
     "draw": {
       "start": "Run the draw",
@@ -441,7 +460,12 @@
       "remove": "Delete entry",
       "removeConfirm": "Delete this entry? The profile, photo and data of the participant will be deleted, and for an adult the whole account with the children too.",
       "removeFailed": "Could not delete. Please try again.",
-      "withdraw": "Withdraw"
+      "withdraw": "Withdraw",
+      "exitRequested": "Asks to leave («I can’t take part»)",
+      "exitComment": "Comment: “{comment}”",
+      "needsBackup": "Needs a backup Santa",
+      "backupAdded": "On the «Help» list",
+      "backupFailed": "Could not add. Please try again."
     },
     "withdraw": {
       "title": "A participant leaves the game",
@@ -474,11 +498,26 @@
       "reason": {
         "noSanta": "The Santa dropped out",
         "notFound": "The gift is not there",
-        "notMarked": "The gift is not marked"
+        "notMarked": "The gift is not marked",
+        "manual": "Added by the organiser"
       },
       "organize": "Gift arranged",
       "failed": "Could not save. Please try again.",
-      "organizedTitle": "Arranged · {count}"
+      "organizedTitle": "Arranged · {count}",
+      "pickVolunteer": "Ask a volunteer",
+      "volunteerOption": "{name} · building {building}, flat {apartment}",
+      "ask": "Ask",
+      "asked": "Backup Santa: {name}, email sent",
+      "noVolunteers": "No suitable volunteers: you or a neighbour prepare the gift.",
+      "volunteersTitle": "Ready to be backup Santas · {count}",
+      "volunteersEmpty": "Nobody has ticked «I can be a backup Santa» in the settings yet.",
+      "askErrors": {
+        "invalid": "Something went wrong. Please try again.",
+        "notNeeded": "This participant no longer needs help.",
+        "notVolunteer": "This person is no longer a volunteer.",
+        "ownFlat": "You cannot ask someone from the same flat.",
+        "mail": "Saved, but the email did not go out. Please try again."
+      }
     },
     "settings": {
       "title": "Dates and invitation",
@@ -803,7 +842,7 @@
     "email": "Email",
     "dataTitle": "Participation and data",
     "dataCollect": "Before the draw you can delete your account yourself. After it, only through the organizer.",
-    "dataLater": "After the draw you can leave the game only through the organizer.",
+    "dataLater": "After the draw you can send the organiser an «I can’t take part» request until the gifts start.",
     "delete": {
       "back": "Settings",
       "title": "Leave the game?",
@@ -828,8 +867,36 @@
     },
     "signOut": "Sign out",
     "deleteLink": "Leave the game",
-    "leaveLink": "How to leave the game",
-    "rulesLink": "Rules and data"
+    "leaveLink": "I can’t take part",
+    "rulesLink": "Rules and data",
+    "exit": {
+      "back": "Settings",
+      "title": "Can’t take part?",
+      "boxTitle": "Send a request to the organiser",
+      "boxText": "The organiser gets an email and confirms it. Nobody is left without a gift: your Santa will give to your recipient. You can leave until {date} inclusive.",
+      "who": "Who can’t take part?",
+      "whoAdult": "{name} and the whole family",
+      "comment": "Comment for the organiser, optional",
+      "commentHint": "Up to {max} characters.",
+      "commentPlaceholder": "For example: I’m away for the holidays",
+      "submit": "I can’t take part",
+      "pending": "Sending…",
+      "sent": "Request sent. The organiser got an email and will confirm.",
+      "requested": "Request sent: {name}. The organiser will confirm.",
+      "stay": "Stay in the game",
+      "errors": {
+        "invalid": "Comment up to 300 characters.",
+        "notFound": "Participant not found.",
+        "closed": "It is too late to leave now.",
+        "failed": "Could not send. Please try again."
+      }
+    },
+    "volunteerTitle": "Backup Santa",
+    "volunteer": {
+      "label": "I can be a backup Santa",
+      "hint": "If someone is left without a Santa, the organiser may ask you to prepare a gift for them. You will get an email with their name and wishes.",
+      "failed": "Could not save. Please try again."
+    }
   },
   "meta": {
     "siteName": "Secret Santa Bialto",

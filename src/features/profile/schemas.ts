@@ -38,3 +38,6 @@ export const childSchema = z.object({
 });
 
 export const idSchema = z.uuid();
+
+/** «Не могу участвовать»: the optional comment for the organizer. */
+export const EXIT_COMMENT_MAX = 300;

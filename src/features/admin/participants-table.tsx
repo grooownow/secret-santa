@@ -10,6 +10,7 @@ import { withdrawPath } from "./routes";
 import { UnnotifiedNotice } from "./unnotified-notice";
 import { withdrawAction } from "./withdraw-action";
 import { Spinner } from "@/components/spinner";
+import { markBackupNeeded } from "./backup-actions";
 
 export type TablePhase = "collect" | "waiting" | "later";
 
@@ -71,6 +72,46 @@ function RemoveButton({ id }: { id: string }) {
  * with a search box. "Удалить заявку" in collect, "Выбытие" from the draw to
  * 24 December, nothing later.
  */
+/** «Нужна замена»: put this receiver on «Помощь» by hand. */
+function NeedsBackupButton({ id }: { id: string }) {
+  const t = useTranslations("admin.participants");
+  const [done, setDone] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [pending, startTransition] = useTransition();
+  if (done) {
+    return (
+      <p className="text-santa-green text-[13px] font-semibold">
+        {t("backupAdded")}
+      </p>
+    );
+  }
+  return (
+    <div className="flex flex-col gap-1">
+      <button
+        type="button"
+        disabled={pending}
+        aria-busy={pending || undefined}
+        onClick={() =>
+          startTransition(async () => {
+            const result = await markBackupNeeded(id).catch(() => null);
+            if (result?.ok) setDone(true);
+            else setFailed(true);
+          })
+        }
+        className="text-santa-green flex items-center gap-1.5 self-start text-[13px] font-semibold underline-offset-4 hover:underline disabled:opacity-60"
+      >
+        {t("needsBackup")}
+        {pending ? <Spinner className="size-3.5" /> : null}
+      </button>
+      {failed ? (
+        <p role="alert" className="text-santa-danger text-sm">
+          {t("backupFailed")}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export function ParticipantsTable({
   rows,
   phase,
@@ -127,6 +168,16 @@ export function ParticipantsTable({
               >
                 {r.verified ? t("verified") : t("unverified")}
               </p>
+              {r.exitRequestedAt ? (
+                <div className="bg-santa-yellow text-santa-ink flex flex-col gap-0.5 self-stretch rounded-xl px-3 py-2 text-[13px]">
+                  <span className="font-semibold">{t("exitRequested")}</span>
+                  {r.exitComment ? (
+                    <span className="break-words">
+                      {t("exitComment", { comment: r.exitComment })}
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
               {phase === "collect" ? <RemoveButton id={r.id} /> : null}
               {phase === "waiting" ? (
                 <Link
@@ -135,6 +186,15 @@ export function ParticipantsTable({
                 >
                   {t("withdraw")}
                 </Link>
+              ) : null}
+              {phase !== "collect" && r.inChain ? (
+                r.backupRequested ? (
+                  <p className="text-santa-muted text-[13px]">
+                    {t("backupAdded")}
+                  </p>
+                ) : (
+                  <NeedsBackupButton id={r.id} />
+                )
               ) : null}
             </li>
           ))}

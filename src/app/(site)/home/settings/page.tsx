@@ -19,6 +19,7 @@ export default async function SettingsPage() {
     <SettingsView
       email={account.email}
       canDelete={getPhase(new Date(), settings) === "collect"}
+      volunteer={account.backupVolunteer}
     />
   );
 }

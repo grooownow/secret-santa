@@ -222,6 +222,10 @@ describe("backup list", () => {
         "name",
         "participantId",
         "reason",
+        // The receiver's own account (to keep their family off the volunteer
+        // picker) and the volunteer the organizer chose: never the giver.
+        "userId",
+        "volunteer",
       ]);
     }
     expect(JSON.stringify(list)).not.toMatch(/giver/i);

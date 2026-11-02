@@ -21,3 +21,5 @@ export { switchParticipantAction } from "./switch-action";
 export { PhotoInput } from "./photo-input";
 export { readPhoto } from "./photo-field";
 export type { PhotoInput as PhotoInputResult } from "./photo-field";
+export { ExitRequestForm } from "./exit-request-form";
+export type { ExitCandidate } from "./exit-request-form";

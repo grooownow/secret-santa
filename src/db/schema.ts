@@ -1,6 +1,7 @@
 import type { AdapterAccountType } from "@auth/core/adapters";
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   integer,
   pgEnum,
   pgTable,
@@ -30,6 +31,9 @@ export const users = pgTable("users", {
   // Bumped when an account is verified, reset or taken over by Google, so
   // sessions issued before that moment stop working (see requireAccount).
   sessionVersion: integer("session_version").notNull().default(0),
+  // «Готов(а) быть запасным Сантой»: the organizer may ask this account to
+  // prepare a gift for someone left without a Santa.
+  backupVolunteer: boolean("backup_volunteer").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -94,6 +98,10 @@ export const participants = pgTable(
     wishes: text("wishes").notNull().default(""),
     avoid: text("avoid").notNull().default(""),
     childConsentAt: timestamp("child_consent_at", { withTimezone: true }),
+    // «Не могу участвовать»: asked by the account after the draw; the
+    // organizer confirms with «Выбытие» (which removes the row).
+    exitRequestedAt: timestamp("exit_requested_at", { withTimezone: true }),
+    exitComment: text("exit_comment"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -124,6 +132,12 @@ export const assignments = pgTable("assignments", {
   giftLeftAt: timestamp("gift_left_at", { withTimezone: true }),
   notFoundAt: timestamp("not_found_at", { withTimezone: true }),
   backupOrganizedAt: timestamp("backup_organized_at", { withTimezone: true }),
+  // The organizer put this receiver on «Помощь» by hand.
+  backupRequestedAt: timestamp("backup_requested_at", { withTimezone: true }),
+  // A volunteer the organizer asked to prepare this receiver's gift.
+  backupVolunteerId: uuid("backup_volunteer_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
   reassignedAt: timestamp("reassigned_at", { withTimezone: true }),
 });
 

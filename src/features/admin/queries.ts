@@ -12,6 +12,8 @@ export type Overview = {
   phase: Phase;
   /** Collect: players with a confirmed email. Later: people in the chain. */
   participants: number;
+  /** «Не могу участвовать» requests waiting for «Выбытие». */
+  exitRequests: number;
   /** How many of `participants` are children (they get no email of their own). */
   children: number;
   /** Participants on accounts whose email is not confirmed (not in the draw). */
@@ -32,6 +34,13 @@ export interface ParticipantRow {
   apartment: string | null;
   /** Whether the account's email is confirmed (only then they are drawn). */
   verified: boolean;
+  /** «Не могу участвовать» sent by the account, with its comment. */
+  exitRequestedAt: Date | null;
+  exitComment: string | null;
+  /** In the drawn chain as a receiver (after the draw). */
+  inChain: boolean;
+  /** Put on «Помощь» by the organizer by hand. */
+  backupRequested: boolean;
 }
 
 /**
@@ -54,6 +63,7 @@ export async function getOverview(): Promise<Overview> {
     status,
     needed,
     organized,
+    exitRequests,
   ] = await Promise.all([
     getSettings(),
     db
@@ -82,6 +92,10 @@ export async function getOverview(): Promise<Overview> {
     broadcastStatuses(EVENTS),
     listBackupNeeded(),
     listBackupOrganized(),
+    db
+      .select({ n: count() })
+      .from(participants)
+      .where(isNotNull(participants.exitRequestedAt)),
   ]);
 
   return {
@@ -91,6 +105,7 @@ export async function getOverview(): Promise<Overview> {
       ? (chainChildren[0]?.n ?? 0)
       : (eligibleChildren[0]?.n ?? 0),
     excluded: excluded[0]?.n ?? 0,
+    exitRequests: exitRequests[0]?.n ?? 0,
     giftsMarked: marked[0]?.n ?? 0,
     broadcasts: status,
     backupNeeded: needed.length,
@@ -112,9 +127,19 @@ export async function listParticipantRows(): Promise<ParticipantRow[]> {
       building: users.building,
       apartment: users.apartment,
       verified: users.emailVerified,
+      exitRequestedAt: participants.exitRequestedAt,
+      exitComment: participants.exitComment,
+      receiverId: assignments.receiverId,
+      backupRequestedAt: assignments.backupRequestedAt,
     })
     .from(participants)
     .innerJoin(users, eq(users.id, participants.userId))
+    .leftJoin(assignments, eq(assignments.receiverId, participants.id))
     .orderBy(participants.name);
-  return rows.map((r) => ({ ...r, verified: r.verified !== null }));
+  return rows.map(({ receiverId, backupRequestedAt, verified, ...r }) => ({
+    ...r,
+    verified: verified !== null,
+    inChain: receiverId !== null,
+    backupRequested: backupRequestedAt !== null,
+  }));
 }

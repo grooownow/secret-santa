@@ -7,7 +7,8 @@ import { getDb } from "@/db/client";
 import { participants } from "@/db/schema";
 import { DeleteAccountForm, PageText, PageTitle } from "@/features/account";
 import { requireAccount } from "@/features/auth";
-import { formatGameDay, getPhase, getSettings } from "@/features/game";
+import { canExit, formatGameDay, getPhase, getSettings } from "@/features/game";
+import { ExitRequestForm } from "@/features/profile";
 import { ORGANIZER_NAME } from "@/lib/organizer";
 import { CABINET_HOME, CABINET_SETTINGS } from "@/lib/cabinet-routes";
 import { getLocale } from "next-intl/server";
@@ -18,15 +19,21 @@ function dayBefore(date: string): string {
   return d.toISOString().slice(0, 10);
 }
 
-// Leaving the game. Collect: delete the account (frame r30NS). After the
-// draw: contact the organizer instead (frame XqGGn).
+// Leaving the game. Collect: delete the account (frame r30NS). From the
+// draw to 24 December: «Не могу участвовать», a request to the organizer.
+// From 25 December nobody can leave (frame XqGGn explains).
 export default async function LeavePage() {
   const account = await requireAccount();
   const [settings, locale, people] = await Promise.all([
     getSettings(),
     getLocale(),
     getDb()
-      .select({ name: participants.name })
+      .select({
+        id: participants.id,
+        name: participants.name,
+        kind: participants.kind,
+        exitRequestedAt: participants.exitRequestedAt,
+      })
       .from(participants)
       .where(eq(participants.userId, account.id))
       .orderBy(participants.createdAt),
@@ -51,6 +58,46 @@ export default async function LeavePage() {
         ) : null}
         <LinkButton href={CABINET_HOME}>{t("stay")}</LinkButton>
         <DeleteAccountForm />
+      </>
+    );
+  }
+
+  // Between the draw and 24 December: «Не могу участвовать» is a request in
+  // the app (the organizer gets an email and confirms), not a Telegram chat.
+  if (account.emailVerified && canExit(new Date(), settings)) {
+    const t = await getTranslations("settings.exit");
+    const asked = people.filter((p) => p.exitRequestedAt);
+    return (
+      <>
+        <TextBack label={t("back")} />
+        <PageTitle>{t("title")}</PageTitle>
+        <div className="bg-santa-mint flex flex-col gap-2 rounded-2xl p-[18px]">
+          <p className="text-santa-green text-base font-bold">
+            {t("boxTitle")}
+          </p>
+          <p className="text-santa-ink text-sm leading-relaxed">
+            {t("boxText", {
+              date: formatGameDay(dayBefore(settings.giftsStartOn), locale),
+            })}
+          </p>
+        </div>
+        {asked.map((p) => (
+          <p
+            key={p.id}
+            className="bg-santa-yellow text-santa-ink rounded-2xl p-4 text-sm leading-relaxed"
+          >
+            {t("requested", { name: p.name })}
+          </p>
+        ))}
+        <ExitRequestForm
+          people={people.map((p) => ({
+            id: p.id,
+            name: p.name,
+            kind: p.kind,
+            requested: !!p.exitRequestedAt,
+          }))}
+        />
+        <LinkButton href={CABINET_HOME}>{t("stay")}</LinkButton>
       </>
     );
   }

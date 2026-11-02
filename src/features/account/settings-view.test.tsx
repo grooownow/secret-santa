@@ -28,13 +28,19 @@ vi.mock("@/features/game", async () => {
   };
 });
 vi.mock("./sign-out-action", () => ({ signOutAction: vi.fn() }));
+vi.mock("./volunteer-action", () => ({ setBackupVolunteer: vi.fn() }));
+vi.mock("next-intl", () => ({
+  useTranslations: (ns: string) => (key: string) => `${ns}.${key}`,
+}));
 vi.mock("@/components/organizer-link", () => ({
   OrganizerLink: () => <i>organizer-link</i>,
 }));
 
 describe("SettingsView", () => {
   it("ends with the shared author footer and has the rules link, no password change", async () => {
-    const out = await html(<SettingsView email="a@b.dev" canDelete />);
+    const out = await html(
+      <SettingsView email="a@b.dev" canDelete volunteer={false} />,
+    );
     for (const href of [
       "https://ludvik4.dev/",
       "https://t.me/ludvik4",
@@ -56,16 +62,40 @@ describe("SettingsView", () => {
     expect(out).not.toMatch(/password/i);
   });
 
-  it("offers deletion in collect and the organizer after the draw", async () => {
-    const collect = await html(<SettingsView email="a@b.dev" canDelete />);
+  it("offers deletion in collect and «I can't take part» after the draw", async () => {
+    const collect = await html(
+      <SettingsView email="a@b.dev" canDelete volunteer={false} />,
+    );
     expect(collect).toContain(`>${en.settings.deleteLink}</a>`);
     expect(collect).not.toContain("organizer-link");
 
     const later = await html(
-      <SettingsView email="a@b.dev" canDelete={false} />,
+      <SettingsView email="a@b.dev" canDelete={false} volunteer={false} />,
     );
     expect(later).not.toContain(en.settings.deleteLink);
     expect(later).toContain(`>${en.settings.leaveLink}</a>`);
-    expect(later).toContain("organizer-link");
+  });
+});
+
+describe("SettingsView volunteer switch", () => {
+  it("has «I can be a backup Santa» reflecting the saved choice", async () => {
+    const off = await html(
+      <SettingsView email="a@b.dev" canDelete={false} volunteer={false} />,
+    );
+    expect(off).toContain("settings.volunteer.label");
+    expect(off).not.toMatch(/type="checkbox"[^>]*checked/);
+    const on = await html(
+      <SettingsView email="a@b.dev" canDelete={false} volunteer />,
+    );
+    expect(on).toMatch(/type="checkbox"[^>]*checked/);
+  });
+
+  it("after the draw links «I can't take part» and no longer sends people to Telegram", async () => {
+    const later = await html(
+      <SettingsView email="a@b.dev" canDelete={false} volunteer={false} />,
+    );
+    expect(later).toContain("/home/settings/delete");
+    // The request is in the app now; no «write to the organizer» link.
+    expect(later).not.toContain("organizer-link");
   });
 });

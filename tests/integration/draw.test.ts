@@ -314,6 +314,8 @@ describe("overview and resend", () => {
       // A count of children in the chain: no names, ids or pairs.
       "children",
       "excluded",
+      // A count of «Не могу участвовать» requests: no names or ids.
+      "exitRequests",
       "giftsMarked",
       "participants",
       "phase",
