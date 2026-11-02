@@ -317,8 +317,9 @@ test.describe("the whole game", () => {
           }
         }
         if (!giver || !receiver) throw new Error("no account-to-account pair");
+        // Home links to the recipient's page («I give»), no big button.
         await giver.page
-          .getByRole("link", { name: "View your recipient" })
+          .getByRole("link", { name: `Open the page: ${receiver.who.name}` })
           .click();
         await expect(
           // A repaired pair carries the "Recipient changed" chip instead.
@@ -345,7 +346,10 @@ test.describe("the whole game", () => {
       });
 
       await test.step("the giver marks the gift and the receiver is emailed", async () => {
-        await from.page.getByRole("link", { name: "Gift left" }).click();
+        await from.page
+          .getByRole("link", { name: `Open the page: ${to.who.name}` })
+          .click();
+        await from.page.getByRole("link", { name: "Leave the gift" }).click();
         await from.page
           .getByRole("combobox", { name: "Where was the gift left?" })
           .click();
@@ -370,8 +374,13 @@ test.describe("the whole game", () => {
       });
 
       await test.step("the receiver sees «My gift» with the place", async () => {
+        // Home leads with «A gift for you»: the green box names the place.
         await to.page.goto("/home");
-        await to.page.getByRole("link", { name: "My gift" }).first().click();
+        await expect(
+          to.page.getByText(`${to.who.name}, a gift is waiting for you!`),
+        ).toBeVisible();
+        await expect(to.page.getByText("It is in the locker.")).toBeVisible();
+        await to.page.getByRole("link", { name: "Details" }).first().click();
         await expect(
           to.page.getByText("Your gift is waiting").first(),
         ).toBeVisible();
@@ -394,8 +403,8 @@ test.describe("the whole game", () => {
         await expect(from.page.getByText(`${to.who.name} ·`)).toBeVisible();
       });
 
-      await test.step("the receiver guesses their Santa", async () => {
-        await to.page.goto("/home");
+      await test.step("the receiver guesses their Santa (on «Profile»)", async () => {
+        await to.page.goto("/home/profile");
         await to.page
           .getByRole("link", { name: /Guess your Santa/ })
           .first()

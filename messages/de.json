@@ -246,10 +246,10 @@
     "nav": {
       "label": "Menü des Bereichs",
       "home": "Start",
-      "gift": "Geschenk",
+      "gift": "Ich schenke",
       "wall": "Wand",
       "settings": "Einstellungen",
-      "profile": "Steckbrief",
+      "profile": "Profil",
       "admin": "Admin"
     },
     "home": {
@@ -527,12 +527,12 @@
       "leftTitle": "Dein Geschenk ist hinterlegt",
       "leftText": "Hat sich der Ort geändert, korrigiere ihn bis Ende {date}: Die beschenkte Person bekommt eine neue E-Mail.",
       "whoIsSanta": "Herausfinden, wer mein Santa ist",
-      "recipient": "Deine beschenkte Person — {name}",
+      "recipient": "Dein Wichtelkind: {name}",
       "address": "Haus {building} · Wohnung {apartment}",
-      "changed": "Die beschenkte Person hat sich nach einem Ausstieg geändert.",
+      "changed": "Dein Wichtelkind hat sich nach einem Austritt geändert.",
       "editGift": "Wo das Geschenk liegt",
       "leaveGift": "Geschenk hinterlegt",
-      "seeRecipient": "Beschenkte Person ansehen",
+      "seeRecipient": "Wichtelkind ansehen",
       "noneTitle": "Es gibt niemanden mehr zu beschenken",
       "noneText": "Deine beschenkte Person ist ausgestiegen und eine neue kann nicht zugewiesen werden. Das Geschenk von deinem Santa bekommst du trotzdem.",
       "myGift": {
@@ -563,7 +563,10 @@
       "switchShort": "Wechseln",
       "guessSaved": "Dein Tipp: {name}. Die Antwort erfährst du bei der Auflösung.",
       "guessChange": "Tipp ändern",
-      "guessLater": "Ab {date}, wenn die Geschenke beginnen, kannst du deinen Wichtel erraten."
+      "guessLater": "Ab {date}, wenn die Geschenke beginnen, kannst du deinen Wichtel erraten.",
+      "openRecipient": "Seite öffnen: {name}",
+      "givenText": "Das Geschenk ist hinterlegt, wir haben Bescheid gegeben.",
+      "givenLink": "Ansehen"
     }
   },
   "gift": {
@@ -671,6 +674,22 @@
     "notInDraw": {
       "title": "Du bist nicht in der Auslosung",
       "text": "Die Auslosung fand statt, bevor der Steckbrief dieser Person im Spiel war, daher gibt es weder eine beschenkte Person noch einen Santa. Schreib der Organisation, dann sucht ihr eine Lösung."
+    },
+    "forYou": {
+      "title": "Ein Geschenk für dich",
+      "soon": "Geschenke gibt es ab {date}. Sobald dein Wichtel deins hinterlegt, zeigen wir hier, wo es auf dich wartet.",
+      "leftTitle": "{name}, ein Geschenk wartet auf dich!",
+      "leftPlace": {
+        "locker": "Es liegt im Schließfach.",
+        "mailbox": "Es liegt im Briefkasten."
+      },
+      "leftPlaceUnknown": "Es ist schon da.",
+      "note": "Notiz: „{note}“",
+      "details": "Mehr dazu",
+      "waitingTitle": "Dein Wichtel hat dein Geschenk noch nicht hinterlegt",
+      "waitingText": "Sobald es da ist, zeigen wir es hier und schicken dir eine E-Mail.",
+      "notFoundTitle": "Wir suchen dein Geschenk",
+      "notFoundText": "Die Organisation weiß, dass das Geschenk nicht da ist, und hilft."
     }
   },
   "organizer": {

@@ -29,10 +29,8 @@ const base: HomeViewProps = {
     reassigned: false,
     giftLeft: false,
   },
-  myGift: "waiting",
+  forYou: <section data-testid="for-you">for-you</section>,
   daysToGifts: 12,
-  canMark: false,
-  canGuess: true,
   dates: { giftsStart: "25 December", giftsEnd: "31 December" },
 };
 
@@ -40,45 +38,39 @@ const render = (overrides: Partial<HomeViewProps>) =>
   html(<HomeView {...base} {...overrides} />);
 
 describe("HomeView per phase", () => {
-  it("waiting: recipient, days to gifts, guess not yet open; no gift button, no wall", async () => {
-    const out = await render({ canGuess: false });
+  it("waiting: days to gifts and «your recipient» with one link to their page", async () => {
+    const out = await render({});
     expect(out).toContain("cabinet.home.daysTitle");
     expect(out).toContain("cabinet.home.recipient");
+    expect(out).toContain("cabinet.home.openRecipient");
     expect(out).toContain(`/home/recipient/${ID}`);
-    expect(out).toContain('aria-disabled="true"');
-    // Guessing opens with the gifts: the block says when, with no link.
-    expect(out).toContain("cabinet.home.guessLater");
-    expect(out).not.toContain(`/home/guess/${ID}`);
-    expect(out).not.toContain("/home/wall");
+    // What I receive is not news yet; no big buttons, no guessing, no wall.
+    expect(out).not.toContain('data-testid="for-you"');
     expect(out).not.toContain(`/home/gift/${ID}`);
-    expect(out).not.toContain(`/home/my-gift/${ID}`);
+    expect(out).not.toContain("/home/guess");
+    expect(out).not.toContain("/home/wall");
   });
 
-  it("gifts: status, the gift button, my gift and the wall", async () => {
-    const out = await render({ phase: "gifts", canMark: true });
-    expect(out).toContain("cabinet.home.notLeftTitle");
-    expect(out).toContain(`/home/gift/${ID}`);
-    expect(out).toContain(`/home/my-gift/${ID}`);
+  it("gifts: «a gift for you» comes first, then the recipient, then the wall", async () => {
+    const out = await render({ phase: "gifts" });
+    const forYou = out.indexOf('data-testid="for-you"');
+    const giving = out.indexOf("cabinet.home.recipient");
+    expect(forYou).toBeGreaterThan(-1);
+    expect(forYou).toBeLessThan(giving);
+    expect(out).toContain('data-giving="todo"');
+    expect(out).toContain(`/home/recipient/${ID}`);
     expect(out).toContain("/home/wall");
-    expect(out).toContain("cabinet.home.guessLinkUntil");
+    // Leaving the gift lives on the recipient's page, not as a home button.
+    expect(out).not.toContain(`/home/gift/${ID}`);
     expect(out).not.toContain("cabinet.home.daysTitle");
+    // My gift and guessing moved to «Профиль».
+    expect(out).not.toContain(`/home/my-gift/${ID}`);
+    expect(out).not.toContain("/home/guess");
   });
 
-  it("gifts with a saved guess: shows whom and offers to change it", async () => {
+  it("gifts after my gift is left: «we told the recipient» and a small «view» link", async () => {
     const out = await render({
       phase: "gifts",
-      canMark: true,
-      guessedName: "Boris",
-    });
-    expect(out).toContain("cabinet.home.guessSaved");
-    expect(out).toContain("cabinet.home.guessChange");
-    expect(out).toContain(`/home/guess/${ID}`);
-  });
-
-  it("gifts after marking: left status and the edit button", async () => {
-    const out = await render({
-      phase: "gifts",
-      canMark: true,
       recipient: {
         state: "ready",
         name: "Maria",
@@ -88,26 +80,25 @@ describe("HomeView per phase", () => {
         giftLeft: true,
       },
     });
-    expect(out).toContain("cabinet.home.leftTitle");
-    expect(out).toContain("cabinet.home.editGift");
+    expect(out).toContain('data-giving="left"');
+    expect(out).toContain("cabinet.home.givenText");
+    expect(out).toContain("cabinet.home.givenLink");
     expect(out).toContain("cabinet.home.changed");
-    expect(out).not.toContain("cabinet.home.notLeftTitle");
+    expect(out).not.toContain("cabinet.home.openRecipient");
   });
 
-  it("reveal: who is my Santa, my gift and the wall; no recipient", async () => {
-    const out = await render({ phase: "reveal", canGuess: false });
+  it("reveal: who is my Santa and the wall; no recipient", async () => {
+    const out = await render({ phase: "reveal" });
     expect(out).toContain(`/home/reveal/${ID}`);
-    expect(out).toContain(`/home/my-gift/${ID}`);
     expect(out).toContain("/home/wall");
     expect(out).not.toContain("cabinet.home.recipient");
-    expect(out).not.toContain("/home/guess");
+    expect(out).not.toContain('data-testid="for-you"');
   });
 
-  it("nothing to give shows the explanation instead of a recipient", async () => {
-    const out = await render({ phase: "gifts", recipient: { state: "none" } });
+  it("nobody left to give to: the none box", async () => {
+    const out = await render({ recipient: { state: "none" } });
     expect(out).toContain("cabinet.home.noneTitle");
     expect(out).not.toContain("cabinet.home.recipient");
-    expect(out).not.toContain(`/home/gift/${ID}`);
   });
 });
 

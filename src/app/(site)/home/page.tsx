@@ -4,7 +4,6 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { PageText, PageTitle } from "@/features/account";
 import { requireAccount } from "@/features/auth";
 import {
-  canGuess,
   canMarkGift,
   daysBetween,
   formatGameDay,
@@ -15,8 +14,7 @@ import {
   type GameSettings,
 } from "@/features/game";
 import { AboutSections, SantaIllustration } from "@/features/landing";
-import { listGuessOptions } from "@/features/reveal";
-import { getMyGift, getRecipient, NotInDraw } from "@/features/gift";
+import { ForYouBox, getMyGift, getRecipient, NotInDraw } from "@/features/gift";
 import {
   CurrentSwitch,
   getCurrentParticipant,
@@ -108,16 +106,10 @@ async function HomeStatus({
   const chosen = await getCurrentParticipant(account.id, people);
   if (!chosen) return null;
 
-  const guessOpen = canGuess(now, settings);
-  const [recipient, myGift, guess] = await Promise.all([
+  const [recipient, myGift] = await Promise.all([
     getRecipient(account.id, chosen.id),
     getMyGift(account.id, chosen.id),
-    guessOpen ? listGuessOptions(account.id, chosen.id) : null,
   ]);
-  const guessedName =
-    guess?.state === "ready"
-      ? (guess.options.find((o) => o.id === guess.guessedId)?.name ?? null)
-      : null;
   const switcher = (
     <CurrentSwitch userId={account.id} personId={chosen.id} to="home" />
   );
@@ -147,11 +139,16 @@ async function HomeStatus({
               }
             : { state: "none" }
         }
-        myGift={myGift?.state === "ready" ? myGift.status : "waiting"}
+        forYou={
+          <ForYouBox
+            personId={chosen.id}
+            name={chosen.name}
+            started={canMarkGift(now, settings) || phase !== "waiting"}
+            startDate={formatGameDay(settings.giftsStartOn, locale)}
+            gift={myGift?.state === "ready" ? myGift : null}
+          />
+        }
         daysToGifts={daysBetween(todayInMadrid(now), settings.giftsStartOn)}
-        canMark={canMarkGift(now, settings)}
-        canGuess={guessOpen}
-        guessedName={guessedName}
         dates={{
           giftsStart: formatGameDay(settings.giftsStartOn, locale),
           giftsEnd: formatGameDay(settings.giftsEndOn, locale),

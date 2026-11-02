@@ -246,10 +246,10 @@
     "nav": {
       "label": "Menú del área personal",
       "home": "Inicio",
-      "gift": "Regalo",
+      "gift": "Yo regalo",
       "wall": "Muro",
       "settings": "Ajustes",
-      "profile": "Ficha",
+      "profile": "Perfil",
       "admin": "Admin"
     },
     "home": {
@@ -527,12 +527,12 @@
       "leftTitle": "Tu regalo está dejado",
       "leftText": "Si cambió el lugar, corrígelo hasta el final del {date}: la persona recibirá un nuevo correo.",
       "whoIsSanta": "Descubrir quién es mi Santa",
-      "recipient": "A quién regalas — {name}",
+      "recipient": "Tu destinatario: {name}",
       "address": "Edificio {building} · piso {apartment}",
-      "changed": "La persona a la que regalas cambió tras una baja.",
+      "changed": "Tu destinatario cambió tras una baja.",
       "editGift": "Dónde quedó el regalo",
       "leaveGift": "Regalo dejado",
-      "seeRecipient": "Ver a quién regalas",
+      "seeRecipient": "Ver al destinatario",
       "noneTitle": "Ya no hay a quién regalar",
       "noneText": "La persona a la que regalabas se dio de baja y no se puede asignar otra. El regalo de tu Santa te llegará igualmente.",
       "myGift": {
@@ -563,7 +563,10 @@
       "switchShort": "Cambiar",
       "guessSaved": "Tu suposición: {name}. Lo sabrás en la revelación.",
       "guessChange": "Cambiar suposición",
-      "guessLater": "Podrás adivinar quién es tu Santa a partir del {date}, cuando empiecen los regalos."
+      "guessLater": "Podrás adivinar quién es tu Santa a partir del {date}, cuando empiecen los regalos.",
+      "openRecipient": "Abrir la página: {name}",
+      "givenText": "El regalo está dejado, avisamos al destinatario.",
+      "givenLink": "Ver"
     }
   },
   "gift": {
@@ -671,6 +674,22 @@
     "notInDraw": {
       "title": "No estás en el sorteo",
       "text": "El sorteo se hizo antes de que la ficha de esta persona entrara en el juego, así que no hay a quién regalar ni Santa. Escribe a la organización para ver qué se puede hacer."
+    },
+    "forYou": {
+      "title": "Un regalo para ti",
+      "soon": "Los regalos empiezan el {date}. En cuanto tu Santa deje el tuyo, te mostraremos aquí dónde te espera.",
+      "leftTitle": "¡{name}, te espera un regalo!",
+      "leftPlace": {
+        "locker": "Está en la taquilla.",
+        "mailbox": "Está en el buzón."
+      },
+      "leftPlaceUnknown": "Ya está en su sitio.",
+      "note": "Nota: «{note}»",
+      "details": "Más detalles",
+      "waitingTitle": "Tu Santa aún no ha dejado tu regalo",
+      "waitingText": "En cuanto lo deje, te lo mostraremos aquí y te enviaremos un correo.",
+      "notFoundTitle": "Buscamos tu regalo",
+      "notFoundText": "La organización sabe que el regalo no está y te ayudará."
     }
   },
   "organizer": {

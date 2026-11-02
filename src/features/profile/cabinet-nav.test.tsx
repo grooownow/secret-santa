@@ -34,6 +34,10 @@ describe("CabinetNav", () => {
       ["/home/participants/new", "profile"],
       ["/home/participants/abc", "profile"],
       ["/home/recipient/abc", "gift"],
+      ["/home/gift/abc", "gift"],
+      // What I receive lives on «Профиль».
+      ["/home/my-gift/abc", "profile"],
+      ["/home/guess/abc", "profile"],
     ] as const) {
       nav.pathname = path;
       const { unmount } = render(<CabinetNav />);

@@ -246,7 +246,7 @@
     "nav": {
       "label": "Account menu",
       "home": "Home",
-      "gift": "Gift",
+      "gift": "I give",
       "wall": "Wall",
       "settings": "Settings",
       "profile": "Profile",
@@ -532,7 +532,7 @@
       "changed": "Your recipient changed after someone dropped out.",
       "editGift": "Where the gift was left",
       "leaveGift": "Gift left",
-      "seeRecipient": "View your recipient",
+      "seeRecipient": "View the recipient",
       "noneTitle": "Nobody left to give to",
       "noneText": "Your recipient dropped out and no new one can be assigned. Your own Santa's gift will still come to you.",
       "myGift": {
@@ -563,7 +563,10 @@
       "switchShort": "Change",
       "guessSaved": "Your guess: {name}. You will find out at the reveal.",
       "guessChange": "Change your guess",
-      "guessLater": "You can guess your Santa from {date}, when the gifts start."
+      "guessLater": "You can guess your Santa from {date}, when the gifts start.",
+      "openRecipient": "Open the page: {name}",
+      "givenText": "The gift is left, we emailed the recipient.",
+      "givenLink": "View"
     }
   },
   "gift": {
@@ -671,6 +674,22 @@
     "notInDraw": {
       "title": "You are not part of the draw",
       "text": "The draw took place before this participant's profile joined the game, so there is no recipient and no Santa. Write to the organizer to see what can be done."
+    },
+    "forYou": {
+      "title": "A gift for you",
+      "soon": "Gifts start on {date}. As soon as your Santa leaves yours, we will show here where it waits for you.",
+      "leftTitle": "{name}, a gift is waiting for you!",
+      "leftPlace": {
+        "locker": "It is in the locker.",
+        "mailbox": "It is in the mailbox."
+      },
+      "leftPlaceUnknown": "It is already in place.",
+      "note": "Note: “{note}”",
+      "details": "Details",
+      "waitingTitle": "Your Santa has not left your gift yet",
+      "waitingText": "As soon as they do, we will show it here and send you an email.",
+      "notFoundTitle": "Looking for your gift",
+      "notFoundText": "The organiser knows the gift is not in place and will help."
     }
   },
   "organizer": {

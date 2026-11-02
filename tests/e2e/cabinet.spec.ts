@@ -62,7 +62,7 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
     await expect(menu.getByRole("link")).toHaveText([
       "Home",
       "Profile",
-      "Gift",
+      "I give",
       "Wall",
       "Settings",
     ]);

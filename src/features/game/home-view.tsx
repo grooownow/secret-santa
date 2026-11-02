@@ -1,15 +1,7 @@
-import { Lock } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { LinkButton, TextLink } from "@/components/form-ui";
 import { PageText, PageTitle } from "@/features/account";
-import {
-  CABINET_WALL,
-  giftPath,
-  guessPath,
-  myGiftPath,
-  recipientPath,
-  revealPath,
-} from "@/lib/cabinet-routes";
+import { CABINET_WALL, recipientPath, revealPath } from "@/lib/cabinet-routes";
 
 export type HomePhase = "waiting" | "gifts" | "reveal";
 
@@ -27,13 +19,12 @@ export interface HomeViewProps {
         reassigned: boolean;
         giftLeft: boolean;
       };
-  /** What waits for this participant, as the receiver sees it. */
-  myGift: "waiting" | "left" | "notFound";
+  /**
+   * «Подарок для тебя» (ForYouBox from the gift feature), rendered by the
+   * page: what this participant receives. Shown first in the gifts phase.
+   */
+  forYou?: React.ReactNode;
   daysToGifts: number;
-  canMark: boolean;
-  canGuess: boolean;
-  /** Whom this participant guessed so far (shown with «изменить»). */
-  guessedName?: string | null;
   /** Already formatted dates, e.g. "25 декабря". */
   dates: { giftsStart: string; giftsEnd: string };
 }
@@ -84,10 +75,9 @@ function Block({
  * plain props, so the view has no queries of its own.
  */
 export async function HomeView(props: HomeViewProps) {
-  const { phase, person, recipient, myGift, dates } = props;
+  const { phase, person, recipient, dates } = props;
   const t = await getTranslations("cabinet.home");
   const id = person.id;
-  const giftPrimary = phase === "gifts" && props.canMark;
 
   const chip = {
     waiting: t("chipWaiting", { date: dates.giftsStart }),
@@ -115,102 +105,46 @@ export async function HomeView(props: HomeViewProps) {
         />
       ) : null}
 
-      {phase === "gifts" &&
-      recipient.state === "ready" &&
-      !recipient.giftLeft ? (
-        <Box
-          tone="yellow"
-          title={t("notLeftTitle")}
-          text={t("notLeftText", { name: recipient.name })}
-        />
-      ) : null}
-      {phase === "gifts" &&
-      recipient.state === "ready" &&
-      recipient.giftLeft ? (
-        <Box
-          tone="mint"
-          title={t("leftTitle")}
-          text={t("leftText", { date: dates.giftsEnd })}
-        />
-      ) : null}
+      {/* What I receive comes first: it is the more exciting news. */}
+      {phase === "gifts" ? props.forYou : null}
 
       {phase === "reveal" ? (
         <LinkButton href={revealPath(id)}>{t("whoIsSanta")}</LinkButton>
       ) : recipient.state === "ready" ? (
-        <>
-          <section className="flex flex-col gap-1">
-            <h2 className="text-santa-ink text-base font-bold">
-              {t("recipient", { name: recipient.name })}
-            </h2>
+        // «Кому я дарю»: who, and one link to their page («Я дарю»), where
+        // leaving the gift lives. No big button here.
+        <section
+          data-giving={recipient.giftLeft ? "left" : "todo"}
+          className="border-santa-line flex flex-col gap-1 border-t pt-4"
+        >
+          <h2 className="text-santa-ink text-base font-bold">
+            {t("recipient", { name: recipient.name })}
+          </h2>
+          {recipient.giftLeft ? (
+            <PageText>{t("givenText")}</PageText>
+          ) : (
             <PageText>
               {t("address", {
                 building: recipient.building ?? "",
                 apartment: recipient.apartment ?? "",
               })}
             </PageText>
-            {recipient.reassigned ? <PageText>{t("changed")}</PageText> : null}
-          </section>
-          {giftPrimary ? (
-            <LinkButton href={giftPath(id)}>
-              {recipient.giftLeft ? t("editGift") : t("leaveGift")}
-            </LinkButton>
-          ) : (
-            <LinkButton href={recipientPath(id)}>
-              {t("seeRecipient")}
-            </LinkButton>
           )}
-          {phase === "waiting" ? (
-            <div
-              aria-disabled="true"
-              className="bg-santa-mint text-santa-muted flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold"
-            >
-              <span>{t("leaveGift")}</span>
-              <Lock className="size-[18px]" aria-hidden />
-            </div>
-          ) : giftPrimary ? (
-            <TextLink href={recipientPath(id)}>{t("seeRecipient")}</TextLink>
-          ) : null}
-        </>
+          {recipient.reassigned ? <PageText>{t("changed")}</PageText> : null}
+          <TextLink href={recipientPath(id)}>
+            {recipient.giftLeft
+              ? t("givenLink")
+              : t("openRecipient", { name: recipient.name })}
+          </TextLink>
+        </section>
       ) : (
         <Box tone="mint" title={t("noneTitle")} text={t("noneText")} />
       )}
 
       {phase !== "waiting" ? (
-        <Block
-          title={t(`myGift.${myGift}.title`)}
-          text={t(`myGift.${myGift}.text`)}
-        >
-          <TextLink href={myGiftPath(id)}>{t("myGiftLink")}</TextLink>
-        </Block>
-      ) : null}
-
-      {phase !== "waiting" ? (
         <Block title={t("wallTitle")} text={t("wallText")}>
           <TextLink href={CABINET_WALL}>{t("wallLink")}</TextLink>
         </Block>
-      ) : null}
-
-      {props.canGuess ? (
-        <Block
-          title={t("guessTitle")}
-          text={
-            props.guessedName
-              ? t("guessSaved", { name: props.guessedName })
-              : t("guessText", { date: dates.giftsEnd })
-          }
-        >
-          <TextLink href={guessPath(id)}>
-            {props.guessedName
-              ? t("guessChange")
-              : t("guessLinkUntil", { date: dates.giftsEnd })}
-          </TextLink>
-        </Block>
-      ) : phase === "waiting" ? (
-        // Guessing opens with the gifts; say when instead of hiding it.
-        <Block
-          title={t("guessTitle")}
-          text={t("guessLater", { date: dates.giftsStart })}
-        />
       ) : null}
     </div>
   );

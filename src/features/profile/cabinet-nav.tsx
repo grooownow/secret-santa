@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Gift,
+  HandHeart,
   House,
   MessageSquareHeart,
   Settings,
@@ -24,7 +24,8 @@ import {
 const ITEMS = [
   { key: "home", href: CABINET_HOME, icon: House },
   { key: "profile", href: CABINET_PROFILE, icon: UserRound },
-  { key: "gift", href: CABINET_GIFT, icon: Gift },
+  // «Я дарю»: a hand giving, not a gift box (a box reads as "a gift for me").
+  { key: "gift", href: CABINET_GIFT, icon: HandHeart },
   { key: "wall", href: CABINET_WALL, icon: MessageSquareHeart },
   { key: "settings", href: CABINET_SETTINGS, icon: Settings },
 ] as const;
@@ -38,24 +39,28 @@ function isActive(pathname: string, key: string, href: string): boolean {
   if (key === "home") {
     return pathname === href || pathname.startsWith("/home/switch");
   }
+  // «Профиль»: what I receive — my cards, my gift, guessing my Santa.
   if (key === "profile") {
     return (
-      pathname.startsWith(href) || pathname.startsWith("/home/participants")
+      pathname.startsWith(href) ||
+      pathname.startsWith("/home/participants") ||
+      pathname.startsWith("/home/my-gift") ||
+      pathname.startsWith("/home/guess")
     );
   }
+  // «Я дарю»: my recipient and leaving the gift.
   if (key === "gift") {
     return (
       pathname.startsWith("/home/gift") ||
-      pathname.startsWith("/home/recipient") ||
-      pathname.startsWith("/home/my-gift")
+      pathname.startsWith("/home/recipient")
     );
   }
   return pathname.startsWith(href);
 }
 
 /**
- * Bottom navigation of the cabinet (component NMcOL): Главная · Анкета ·
- * Подарок · Стена · Настройки, plus «Админка» for the organizer. Items share
+ * Bottom navigation of the cabinet (component NMcOL): Главная · Профиль ·
+ * Я дарю · Стена · Настройки, plus «Админка» for the organizer. Items share
  * the width equally, so the bar fits a 360px screen.
  */
 export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
