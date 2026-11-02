@@ -41,19 +41,19 @@ export async function WallFeed({ posts }: { posts: WallPost[] }) {
   });
 
   return (
-    <ul className="flex flex-col gap-5">
+    <ul className="flex flex-col gap-5 lg:gap-7">
       {posts.map((post) => (
         <li
           key={post.id}
-          className="border-santa-line flex flex-col gap-2 border-b pb-[18px]"
+          className="border-santa-line flex flex-col gap-2 border-b pb-[18px] lg:gap-4 lg:pb-7"
         >
-          <p className="text-santa-ink text-[17px] font-bold">
+          <p className="font-heading text-santa-ink text-[17px] font-bold lg:text-xl">
             {post.authorName} ·{" "}
             <time dateTime={post.createdAt.toISOString()}>
               {date.format(post.createdAt)}
             </time>
           </p>
-          <p className="text-santa-muted text-sm leading-relaxed">
+          <p className="text-santa-muted text-sm leading-relaxed lg:text-base">
             <LocalizedText
               original={post.text}
               translated={translated.get(postKey(post.id)) ?? null}
@@ -71,7 +71,7 @@ export async function WallFeed({ posts }: { posts: WallPost[] }) {
               width={600}
               height={450}
               buttonClassName="block w-full rounded-xl"
-              className="h-[210px] w-full rounded-xl object-cover"
+              className="h-[210px] w-full rounded-xl object-cover lg:h-[260px]"
             />
           ) : null}
           {post.canDelete ? <DeletePostButton id={post.id} /> : null}

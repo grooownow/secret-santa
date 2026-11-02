@@ -50,6 +50,49 @@ test.describe("golden path smoke", () => {
     expect(response.headers()["content-type"]).toContain("image/png");
   });
 
+  test("desktop: the page column, the hero in two columns, a phone unchanged", async ({
+    page,
+  }) => {
+    const left = async (name: string) =>
+      (await page.getByRole("heading", { name, level: 1 }).boundingBox())?.x;
+    const title = "Secret Santa for Bialto neighbours";
+    const santa = page.locator("main img").first();
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    // The mockups' 1120px column: 160px margins on a 1440 screen.
+    expect(await left(title)).toBe(160);
+    const heading = await page
+      .getByRole("heading", { name: title })
+      .boundingBox();
+    const picture = await santa.boundingBox();
+    expect(picture!.x).toBeGreaterThanOrEqual(heading!.x + heading!.width);
+    // Pages without a mockup keep the same left edge as the header.
+    await page.goto("/rules");
+    expect(await left("Rules and data")).toBe(160);
+
+    await page.setViewportSize({ width: 375, height: 740 });
+    await page.goto("/");
+    expect(await left(title)).toBeLessThan(60);
+    const phoneHeading = await page
+      .getByRole("heading", { name: title })
+      .boundingBox();
+    const phonePicture = await santa.boundingBox();
+    expect(phonePicture!.y).toBeGreaterThanOrEqual(
+      phoneHeading!.y + phoneHeading!.height,
+    );
+  });
+
+  test("favicon: a raster fallback next to the SVG, for browsers that skip SVG", async ({
+    request,
+  }) => {
+    const ico = await request.get("/favicon.ico");
+    expect(ico.status()).toBe(200);
+    expect(ico.headers()["content-type"]).toContain("image/");
+    const svg = await request.get("/icon.svg");
+    expect(svg.status()).toBe(200);
+  });
+
   test("unknown route renders the not-found page", async ({ page }) => {
     await page.goto("/nonexistent");
 

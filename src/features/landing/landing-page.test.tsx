@@ -92,7 +92,7 @@ describe("LandingPage", () => {
   it("ends with the plain author footer, no organizer line in it", async () => {
     const out = await render();
     const footer = out.slice(out.indexOf("<footer"));
-    expect(footer).toBe('<footer data-props=""></footer></div>');
+    expect(footer).toBe('<footer data-props="className"></footer></div>');
     expect(out).not.toContain("Game organizer");
   });
 

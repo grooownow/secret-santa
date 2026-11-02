@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/features/game";
+import { PageMain } from "@/components/page-main";
+import { cn } from "@/lib/utils";
 
 /**
  * Frame of every account page: header and a narrow column (no footer: it is
@@ -19,31 +21,57 @@ export async function AuthShell({
     <div className="flex min-h-screen flex-col">
       <SiteHeader
         action={
-          <Link href="/" className="text-santa-ink text-[13px]">
+          <Link href="/" className="text-santa-ink text-[13px] lg:text-[15px]">
             {h("home")}
           </Link>
         }
       />
-      <main className="flex flex-1 flex-col gap-5 px-[26px] py-8">
+      <PageMain>
         {icon ? (
           <div className="bg-santa-mint text-santa-green flex size-14 items-center justify-center rounded-full">
             {icon}
           </div>
         ) : null}
         {children}
-      </main>
+      </PageMain>
     </div>
   );
 }
 
-export function PageTitle({ children }: { children: React.ReactNode }) {
+export function PageTitle({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <h1 className="text-santa-ink text-[26px] leading-tight font-bold">
+    <h1
+      className={cn(
+        "text-santa-ink text-[26px] leading-tight font-bold lg:text-[40px]",
+        className,
+      )}
+    >
       {children}
     </h1>
   );
 }
 
-export function PageText({ children }: { children: React.ReactNode }) {
-  return <p className="text-santa-muted text-sm leading-relaxed">{children}</p>;
+export function PageText({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <p
+      className={cn(
+        "text-santa-muted text-sm leading-relaxed lg:text-base",
+        className,
+      )}
+    >
+      {children}
+    </p>
+  );
 }

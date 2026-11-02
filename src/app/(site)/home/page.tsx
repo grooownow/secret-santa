@@ -59,8 +59,8 @@ function CabinetAbout({
   locale: string;
 }) {
   return (
-    <div className="-mx-[26px] -mb-8 flex flex-col">
-      <div className="border-santa-line mt-4 flex justify-center border-t pt-6">
+    <div data-wide className="-mx-[26px] -mb-8 flex flex-col lg:-mb-12">
+      <div className="border-santa-line mt-4 flex justify-center border-t pt-6 lg:mx-[26px]">
         <SantaIllustration />
       </div>
       <AboutSections settings={settings} locale={locale} />
@@ -122,38 +122,36 @@ async function HomeStatus({
     );
   }
   return (
-    <>
-      {switcher}
-      <HomeView
-        phase={phase}
-        person={{ id: chosen.id, name: chosen.name }}
-        recipient={
-          recipient?.state === "ready"
-            ? {
-                state: "ready",
-                name: recipient.recipient.name,
-                building: recipient.recipient.building,
-                apartment: recipient.recipient.apartment,
-                reassigned: recipient.reassigned,
-                giftLeft: recipient.gift.leftAt !== null,
-              }
-            : { state: "none" }
-        }
-        forYou={
-          <ForYouBox
-            personId={chosen.id}
-            name={chosen.name}
-            started={canMarkGift(now, settings) || phase !== "waiting"}
-            startDate={formatGameDay(settings.giftsStartOn, locale)}
-            gift={myGift?.state === "ready" ? myGift : null}
-          />
-        }
-        daysToGifts={daysBetween(todayInMadrid(now), settings.giftsStartOn)}
-        dates={{
-          giftsStart: formatGameDay(settings.giftsStartOn, locale),
-          giftsEnd: formatGameDay(settings.giftsEndOn, locale),
-        }}
-      />
-    </>
+    <HomeView
+      switcher={switcher}
+      phase={phase}
+      person={{ id: chosen.id, name: chosen.name }}
+      recipient={
+        recipient?.state === "ready"
+          ? {
+              state: "ready",
+              name: recipient.recipient.name,
+              building: recipient.recipient.building,
+              apartment: recipient.recipient.apartment,
+              reassigned: recipient.reassigned,
+              giftLeft: recipient.gift.leftAt !== null,
+            }
+          : { state: "none" }
+      }
+      forYou={
+        <ForYouBox
+          personId={chosen.id}
+          name={chosen.name}
+          started={canMarkGift(now, settings) || phase !== "waiting"}
+          startDate={formatGameDay(settings.giftsStartOn, locale)}
+          gift={myGift?.state === "ready" ? myGift : null}
+        />
+      }
+      daysToGifts={daysBetween(todayInMadrid(now), settings.giftsStartOn)}
+      dates={{
+        giftsStart: formatGameDay(settings.giftsStartOn, locale),
+        giftsEnd: formatGameDay(settings.giftsEndOn, locale),
+      }}
+    />
   );
 }

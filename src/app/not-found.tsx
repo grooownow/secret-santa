@@ -1,3 +1,4 @@
+import { PageMain } from "@/components/page-main";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/features/game";
@@ -7,7 +8,7 @@ export default async function NotFound() {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="flex flex-1 flex-col gap-5 px-[26px] py-7">
+      <PageMain className="py-7">
         <h1 className="text-[26px] leading-tight font-bold">{t("title")}</h1>
         <p className="text-santa-muted text-sm leading-relaxed">{t("text")}</p>
         <Link
@@ -16,7 +17,7 @@ export default async function NotFound() {
         >
           {t("home")}
         </Link>
-      </main>
+      </PageMain>
     </div>
   );
 }

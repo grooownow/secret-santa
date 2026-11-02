@@ -59,9 +59,10 @@ function isActive(pathname: string, key: string, href: string): boolean {
 }
 
 /**
- * Bottom navigation of the cabinet (component NMcOL): Главная · Профиль ·
- * Я дарю · Стена · Настройки, plus «Админка» for the organizer. Items share
- * the width equally, so the bar fits a 360px screen.
+ * Navigation of the cabinet (component NMcOL): Главная · Профиль · Я дарю ·
+ * Стена · Настройки, plus «Админка» for the organizer. On a phone it is the
+ * bottom bar, where items share the width equally so it fits a 360px screen;
+ * from `lg` it is the row of tabs under the header (desktop mockups).
  */
 export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
   const t = useTranslations("profile.nav");
@@ -71,44 +72,50 @@ export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
   return (
     <nav
       aria-label={t("label")}
-      className="bg-santa-white border-santa-line sticky bottom-0 flex items-stretch gap-0.5 border-t px-1 pt-2 pb-3"
+      className="bg-santa-white border-santa-line sticky bottom-0 border-t lg:static lg:border-t-0 lg:border-b"
     >
-      {items.map(({ key, href, icon: Icon }) => {
-        const active = isActive(pathname, key, href);
-        return (
-          <Link
-            key={key}
-            href={href}
-            // Full prefetch: the tab's page is ready before the tap.
-            prefetch
-            aria-current={active ? "page" : undefined}
-            className={cn(
-              "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",
-              active
-                ? "text-santa-green font-semibold"
-                : "text-santa-muted font-normal",
-            )}
-          >
-            {/* The active tab: a mint pill (the «Подарок оставлен» box colour) behind the icon only
-                (owner, 2 Nov), so it reads at a glance without a heavy block. */}
-            <span
-              data-nav-icon
+      <div className="lg:santa-page flex items-stretch gap-0.5 px-1 pt-2 pb-3 lg:gap-8 lg:py-0">
+        {items.map(({ key, href, icon: Icon }) => {
+          const active = isActive(pathname, key, href);
+          return (
+            <Link
+              key={key}
+              href={href}
+              // Full prefetch: the tab's page is ready before the tap.
+              prefetch
+              aria-current={active ? "page" : undefined}
               className={cn(
-                "flex h-8 w-12 items-center justify-center rounded-full transition-colors",
-                active && "bg-santa-mint",
+                "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",
+                "lg:-mb-px lg:h-16 lg:flex-none lg:flex-row lg:gap-2.5 lg:border-b-2 lg:px-1 lg:text-[15px]",
+                active
+                  ? "text-santa-green lg:border-santa-green font-semibold"
+                  : "text-santa-muted font-normal lg:border-transparent",
               )}
             >
-              <Icon className="size-6 shrink-0" aria-hidden />
-            </span>
-            {/* A long single word (uk «Налаштування», Cyrillic falls back to
+              {/* The active tab: a mint pill (the «Подарок оставлен» box colour) behind the icon only
+                (owner, 2 Nov), so it reads at a glance without a heavy block. */}
+              <span
+                data-nav-icon
+                className={cn(
+                  "flex h-8 w-12 items-center justify-center rounded-full transition-colors lg:size-5",
+                  active && "bg-santa-mint lg:bg-transparent",
+                )}
+              >
+                <Icon className="size-6 shrink-0 lg:size-5" aria-hidden />
+              </span>
+              {/* A long single word (uk «Налаштування», Cyrillic falls back to
                 the system font) wraps within the fifth, so the bar never
                 widens the page at 360px. */}
-            <span data-nav-label className="w-full wrap-anywhere hyphens-auto">
-              {t(key)}
-            </span>
-          </Link>
-        );
-      })}
+              <span
+                data-nav-label
+                className="w-full wrap-anywhere hyphens-auto lg:w-auto lg:whitespace-nowrap"
+              >
+                {t(key)}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

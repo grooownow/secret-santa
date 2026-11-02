@@ -1,3 +1,4 @@
+import { PageMain } from "./page-main";
 import { CloudOff } from "lucide-react";
 import Link from "next/link";
 
@@ -30,7 +31,7 @@ export function ErrorScreen({
 }) {
   return (
     <div className="bg-santa-white text-santa-ink flex min-h-screen flex-col">
-      <header className="bg-santa-mint flex items-center justify-between px-6 py-5">
+      <header className="bg-santa-mint flex items-center justify-between px-6 py-5 lg:px-[max(26px,calc((100%-70rem)/2))]">
         <span className="font-heading text-base font-bold">
           {labels.appName}
         </span>
@@ -40,7 +41,7 @@ export function ErrorScreen({
           </Link>
         ) : null}
       </header>
-      <main className="flex flex-1 flex-col gap-5 px-[26px] py-7">
+      <PageMain className="py-7">
         <div className="bg-santa-mint flex size-[68px] items-center justify-center rounded-full">
           <CloudOff aria-hidden className="text-santa-green size-[30px]" />
         </div>
@@ -71,7 +72,7 @@ export function ErrorScreen({
             {labels.home}
           </Link>
         ) : null}
-      </main>
+      </PageMain>
     </div>
   );
 }

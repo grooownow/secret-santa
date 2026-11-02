@@ -47,17 +47,26 @@ export function PostForm({
 
   if (!open) {
     return (
-      <>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold"
-        >
-          <span>{t("open")}</span>
-          <Plus className="size-[18px]" aria-hidden />
-        </button>
-        {children}
-      </>
+      // Phone: the button above the feed. Desktop: the feed with the button in
+      // a mint side card, as in the mockup.
+      <div
+        data-wide
+        className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,704px)_minmax(0,352px)] lg:items-start lg:justify-between lg:gap-16"
+      >
+        <div className="lg:bg-santa-mint lg:col-start-2 lg:row-start-1 lg:rounded-2xl lg:p-7">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold"
+          >
+            <span>{t("open")}</span>
+            <Plus className="size-[18px]" aria-hidden />
+          </button>
+        </div>
+        <div className="flex flex-col gap-5 lg:col-start-1 lg:row-start-1">
+          {children}
+        </div>
+      </div>
     );
   }
 

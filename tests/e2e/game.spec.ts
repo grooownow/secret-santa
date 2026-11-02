@@ -211,7 +211,9 @@ test.describe("the whole game", () => {
       await test.step("organiser: the bottom menu carries «Admin» and fits 360px with six items", async () => {
         await organiser.setViewportSize({ width: 360, height: 740 });
         await organiser.goto("/admin");
-        const menu = organiser.locator("nav").last();
+        const menu = organiser.getByRole("navigation", {
+          name: "Account menu",
+        });
         await expect(menu.getByRole("link")).toHaveCount(6);
         await expect(menu.getByRole("link", { name: "Admin" })).toHaveAttribute(
           "aria-current",

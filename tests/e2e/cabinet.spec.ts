@@ -56,6 +56,20 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
   const name = `Cabi ${testInfo.project.name}`;
   await registerAndConfirm(page, { email, password: "a-long-password" });
 
+  await test.step("the menu is tabs above the content on desktop, a bottom bar on a phone", async () => {
+    const menu = page.getByRole("navigation", { name: NAV_LABEL.en });
+    const main = page.getByRole("main");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const tabs = await menu.boundingBox();
+    expect(tabs!.y + tabs!.height).toBeLessThanOrEqual(
+      (await main.boundingBox())!.y,
+    );
+    await page.setViewportSize({ width: 360, height: 740 });
+    const bar = await menu.boundingBox();
+    expect(bar!.y).toBeGreaterThan((await main.boundingBox())!.y);
+    expect(bar!.y + bar!.height).toBeCloseTo(740, 0);
+  });
+
   await test.step("the menu has five items and fits 360px in every language", async () => {
     await page.setViewportSize({ width: 360, height: 740 });
     const menu = page.getByRole("navigation", { name: NAV_LABEL.en });

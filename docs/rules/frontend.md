@@ -42,6 +42,16 @@ is an invariant here, not a nice-to-have (spec §5.6).
 - `feature` skill's review step checks new/changed code against rules 1–5
   above before calling a slice done.
 
+## Desktop layout
+
+One codebase, one breakpoint: the desktop layout starts at `lg` (1024px) and a
+phone never changes. `PageMain` (`src/components/page-main.tsx`) is the content
+area of every page with a header: the `santa-page` utility gives the 1120px
+column, and each direct child stays in a readable 704px column unless its root
+carries `data-wide` (screens laid out in columns). A new page with a header uses
+`PageMain`, never its own `<main>`. The cabinet menu comes before `<main>` in the
+DOM (tabs on desktop) and moves to the bottom on a phone with `max-lg:order-last`.
+
 ## Design tokens
 
 `(enforced — hook)` Hardcoded colors in `.tsx` (hex, `rgb()`/`hsl()`/`oklch()`,

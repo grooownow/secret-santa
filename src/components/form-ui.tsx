@@ -53,7 +53,10 @@ export function Field({
     // of the field's name, only as its description.
     <div className="flex flex-col gap-2">
       <label className="flex flex-col gap-2">
-        <span id={labelId} className="text-santa-green text-xs font-semibold">
+        <span
+          id={labelId}
+          className="text-santa-green text-xs font-semibold lg:text-sm"
+        >
           {label}
         </span>
         {control}
@@ -173,14 +176,19 @@ export function SubmitButton({
 export function LinkButton({
   href,
   children,
+  className,
 }: {
   href: Route;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <Link
       href={href}
-      className="bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold"
+      className={cn(
+        "bg-santa-green text-santa-white flex h-14 w-full items-center justify-between rounded-full px-6 text-base font-semibold",
+        className,
+      )}
     >
       <span>{children}</span>
       <ArrowUpRight className="size-[18px]" aria-hidden />
@@ -198,7 +206,7 @@ export function TextLink({
   return (
     <Link
       href={href}
-      className="text-santa-green text-[13px] font-semibold underline-offset-4 hover:underline"
+      className="text-santa-green text-[13px] font-semibold underline-offset-4 hover:underline lg:text-sm"
     >
       {children}
     </Link>

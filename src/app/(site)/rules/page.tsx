@@ -1,3 +1,4 @@
+import { PageMain } from "@/components/page-main";
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CONSENT_VERSION } from "@/features/account";
@@ -14,13 +15,13 @@ export default async function RulesPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="flex flex-1 flex-col gap-5 px-[26px] py-7">
+      <PageMain className="py-7">
         <RulesContent
           settings={settings}
           locale={locale}
           version={CONSENT_VERSION}
         />
-      </main>
+      </PageMain>
     </div>
   );
 }

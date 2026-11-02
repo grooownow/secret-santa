@@ -25,9 +25,12 @@ export default async function RevealPage({
   if (!reveal) notFound();
   if (reveal.state === "notInDraw") return <NotInDraw />;
   return (
-    <>
-      <CurrentSwitch userId={account.id} personId={id.data} to="home" />
-      <RevealCard personId={id.data} reveal={reveal} />
-    </>
+    <RevealCard
+      personId={id.data}
+      reveal={reveal}
+      switcher={
+        <CurrentSwitch userId={account.id} personId={id.data} to="home" />
+      }
+    />
   );
 }

@@ -105,6 +105,15 @@
   --sidebar-ring: var(--santa-green);
 }
 
+/* The page column of the desktop mockups: 1120px of content, with the phone
+   gutter kept on every width, so a 1440 screen gets the 160px margins. */
+@utility santa-page {
+  width: 100%;
+  max-width: calc(70rem + 52px);
+  margin-inline: auto;
+  padding-inline: 26px;
+}
+
 @layer base {
   /* Buttons and pill/card links answer the pointer: a slightly darker shade
      on hover, a small press on click. Low specificity (:where) so a

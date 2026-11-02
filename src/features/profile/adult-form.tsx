@@ -58,7 +58,9 @@ export function AdultForm({
         if (photo) formData.set("photo", photo);
         formAction(formData);
       }}
-      className="flex flex-col gap-4"
+      data-wide
+      // Desktop: name, house and apartment in one row beside the photo card.
+      className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_160px_160px_400px] lg:gap-x-4 lg:gap-y-6"
     >
       <Field label={t("name")}>
         <TextInput
@@ -95,32 +97,44 @@ export function AdultForm({
           defaultValue={v?.apartment ?? defaults.apartment}
         />
       </Field>
-      <PhotoInput
-        currentUrl={defaults.photoUrl}
-        onChange={setPhoto}
-        onBusyChange={setBusy}
-        removeName="removePhoto"
-      />
-      <Field label={t("wishes")}>
-        <TextAreaInput
-          name="wishes"
-          maxLength={1000}
-          placeholder={t("wishesPlaceholder")}
-          defaultValue={v?.wishes ?? defaults.wishes}
+      <div className="lg:col-start-4 lg:row-span-4 lg:row-start-1 lg:ml-12">
+        <PhotoInput
+          currentUrl={defaults.photoUrl}
+          onChange={setPhoto}
+          onBusyChange={setBusy}
+          removeName="removePhoto"
         />
-      </Field>
-      <Field label={t("avoid")}>
-        <TextAreaInput
-          name="avoid"
-          maxLength={1000}
-          placeholder={t("avoidPlaceholder")}
-          defaultValue={v?.avoid ?? defaults.avoid}
-        />
-      </Field>
-      {state.error ? <FormAlert>{e(state.error)}</FormAlert> : null}
-      <SubmitButton pendingLabel={t("pending")} disabled={busy}>
-        {mode === "create" ? t("create") : t("save")}
-      </SubmitButton>
+      </div>
+      <div className="lg:col-span-3 lg:col-start-1">
+        <Field label={t("wishes")}>
+          <TextAreaInput
+            name="wishes"
+            maxLength={1000}
+            placeholder={t("wishesPlaceholder")}
+            defaultValue={v?.wishes ?? defaults.wishes}
+          />
+        </Field>
+      </div>
+      <div className="lg:col-span-3 lg:col-start-1">
+        <Field label={t("avoid")}>
+          <TextAreaInput
+            name="avoid"
+            maxLength={1000}
+            placeholder={t("avoidPlaceholder")}
+            defaultValue={v?.avoid ?? defaults.avoid}
+          />
+        </Field>
+      </div>
+      {state.error ? (
+        <div className="lg:col-span-3 lg:col-start-1">
+          <FormAlert>{e(state.error)}</FormAlert>
+        </div>
+      ) : null}
+      <div className="lg:col-start-1 lg:w-70">
+        <SubmitButton pendingLabel={t("pending")} disabled={busy}>
+          {mode === "create" ? t("create") : t("save")}
+        </SubmitButton>
+      </div>
     </form>
   );
 }

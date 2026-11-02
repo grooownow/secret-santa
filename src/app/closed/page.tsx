@@ -1,3 +1,4 @@
+import { PageMain } from "@/components/page-main";
 import type { ReactNode } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { SiteHeader, getSettings } from "@/features/game";
@@ -29,7 +30,7 @@ export default async function ClosedPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="flex flex-1 flex-col gap-5 px-[26px] py-7">
+      <PageMain className="py-7">
         <h1 className="text-[26px] leading-tight font-bold">{t("title")}</h1>
         <p className="text-santa-muted text-sm leading-relaxed">{t("text")}</p>
         <section className="bg-santa-mint flex flex-col gap-1.5 rounded-2xl p-[18px]">
@@ -45,7 +46,7 @@ export default async function ClosedPage() {
             link: telegramLink,
           })}
         </p>
-      </main>
+      </PageMain>
     </div>
   );
 }
