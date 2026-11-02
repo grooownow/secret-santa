@@ -32,6 +32,24 @@ test.describe("golden path smoke", () => {
     ).toBeVisible();
   });
 
+  test("link preview: English title and the Santa picture, in any language", async ({
+    page,
+    request,
+  }) => {
+    await page.goto("/");
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      "content",
+      "Secret Santa",
+    );
+    const image = await page
+      .locator('meta[property="og:image"]')
+      .getAttribute("content");
+    expect(image).toContain("opengraph-image");
+    const response = await request.get(new URL(image as string).pathname);
+    expect(response.ok()).toBe(true);
+    expect(response.headers()["content-type"]).toContain("image/png");
+  });
+
   test("unknown route renders the not-found page", async ({ page }) => {
     await page.goto("/nonexistent");
 

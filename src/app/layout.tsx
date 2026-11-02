@@ -22,6 +22,8 @@ const geologica = Geologica({
   variable: "--font-geologica",
 });
 
+const SHARE_TITLE = "Secret Santa";
+
 const OG_LOCALES: Record<string, string> = {
   ru: "ru_RU",
   uk: "uk_UA",
@@ -41,12 +43,19 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s · ${t("siteName")}`,
     },
     description: t("description"),
+    // Link previews (Telegram, WhatsApp) always read «Secret Santa», whatever
+    // the visitor's language; the picture comes from (site)/opengraph-image.png.
     openGraph: {
-      siteName: t("siteName"),
-      title: t("title"),
+      siteName: SHARE_TITLE,
+      title: SHARE_TITLE,
       description: t("description"),
       type: "website",
       locale: OG_LOCALES[locale] ?? "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: SHARE_TITLE,
+      description: t("description"),
     },
     // The site is for neighbours only: keep it out of every search index.
     robots: { index: false, follow: false },

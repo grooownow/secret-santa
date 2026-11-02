@@ -3,14 +3,14 @@ import { ImageResponse } from "next/og";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-// Home-screen icon (iOS ignores SVG favicons): the same white lucide "gift"
-// on the primary green as src/app/icon.svg. Metadata images are exempt from
+// Home-screen icon (iOS ignores SVG favicons): the same green lucide "gift"
+// on the light brand green as src/app/icon.svg. Metadata images are exempt from
 // the token rule (docs/rules/frontend.md).
 export default function AppleIcon() {
   return new ImageResponse(
     <div
       style={{
-        background: "#235a32",
+        background: "#b8eca2",
         width: "100%",
         height: "100%",
         display: "flex",
@@ -23,7 +23,7 @@ export default function AppleIcon() {
         height="112"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#ffffff"
+        stroke="#235a32"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

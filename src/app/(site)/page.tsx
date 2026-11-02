@@ -17,8 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: title },
     description,
-    openGraph: { title, description, type: "website" },
-    twitter: { card: "summary_large_image", title, description },
+    // The share preview always reads «Secret Santa» (see the root layout).
+    openGraph: { title: "Secret Santa", description, type: "website" },
+    twitter: {
+      card: "summary_large_image",
+      title: "Secret Santa",
+      description,
+    },
   };
 }
 
