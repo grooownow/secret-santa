@@ -32,6 +32,8 @@ export function AdminNav() {
           <Link
             key={key}
             href={href}
+            // Full prefetch: the tab's page is ready before the tap.
+            prefetch
             aria-current={active ? "page" : undefined}
             className={cn(
               "flex flex-1 items-center justify-center rounded-full px-2.5 py-2 text-xs font-semibold",

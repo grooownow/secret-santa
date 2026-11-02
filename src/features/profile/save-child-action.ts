@@ -1,6 +1,7 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { CABINET_PROFILE } from "@/lib/cabinet-routes";
 import { getDb } from "@/db/client";
@@ -119,5 +120,8 @@ export async function saveChildAction(
   }
   await saveTexts(id, data);
 
+  // Tabs are prefetched and kept in the browser (staleTimes): drop that
+  // cache so every cabinet tab shows the change.
+  revalidatePath("/home", "layout");
   redirect(CABINET_PROFILE);
 }

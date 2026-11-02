@@ -74,6 +74,8 @@ export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
           <Link
             key={key}
             href={href}
+            // Full prefetch: the tab's page is ready before the tap.
+            prefetch
             aria-current={active ? "page" : undefined}
             className={cn(
               "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",

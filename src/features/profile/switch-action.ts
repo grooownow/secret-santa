@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 import { requireVerifiedAccount } from "@/features/auth";
@@ -39,5 +40,8 @@ export async function switchParticipantAction(formData: FormData) {
   ) {
     notFound();
   }
+  // Tabs are prefetched and kept in the browser (staleTimes): drop that
+  // cache so every cabinet tab shows the change.
+  revalidatePath("/home", "layout");
   redirect(TARGET[input.data.to]);
 }

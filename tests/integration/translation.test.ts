@@ -33,6 +33,7 @@ let cleanup: () => Promise<void>;
 const authMock = vi.fn();
 
 vi.mock("@/db/client", () => ({ getDb: () => db }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/headers", () => ({
   cookies: async () => ({ set: vi.fn(), get: vi.fn() }),
   headers: async () => new Headers(),

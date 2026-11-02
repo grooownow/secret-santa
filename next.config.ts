@@ -6,6 +6,18 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   typedRoutes: true,
 
+  // Instant tab switches (owner, 2 Nov): the bottom menu and the admin tabs
+  // prefetch their pages in full (prefetch={true}), and the browser keeps
+  // them for `static` seconds; pages reached otherwise stay `dynamic` seconds.
+  // Every server action that changes data calls revalidatePath, which drops
+  // this client cache, so a save is never followed by a stale page.
+  experimental: {
+    staleTimes: {
+      dynamic: 30,
+      static: 180,
+    },
+  },
+
   // Participant photos live in Vercel Blob (public store, *.public.blob.vercel-storage.com).
   images: {
     remotePatterns: [

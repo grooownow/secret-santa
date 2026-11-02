@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getDb } from "@/db/client";
@@ -66,5 +67,8 @@ export async function acceptConsentAction(
     })
     .where(eq(users.id, user.id));
   await setLocaleCookie(locale);
+  // Tabs are prefetched and kept in the browser (staleTimes): drop that
+  // cache so every cabinet tab shows the change.
+  revalidatePath("/home", "layout");
   redirect(HOME);
 }

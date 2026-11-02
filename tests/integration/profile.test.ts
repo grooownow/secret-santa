@@ -20,6 +20,7 @@ let cleanup: () => Promise<void>;
 const authMock = vi.fn();
 
 vi.mock("@/db/client", () => ({ getDb: () => db }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/headers", () => ({
   cookies: async () => ({ set: vi.fn(), get: vi.fn() }),
   headers: async () => new Headers(),
@@ -177,6 +178,9 @@ describe("owner profile", () => {
     });
     const [row] = await db.select().from(users).where(eq(users.id, user.id));
     expect(row).toMatchObject({ building: "K", apartment: "24" });
+    // Tabs are prefetched and cached in the browser: the save must drop it.
+    const { revalidatePath } = await import("next/cache");
+    expect(revalidatePath).toHaveBeenCalledWith("/home", "layout");
   });
 
   it("second adult on one account is rejected", async () => {
