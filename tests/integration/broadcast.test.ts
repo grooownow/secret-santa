@@ -103,10 +103,10 @@ describe("runBroadcast", () => {
 
     expect(outbox).toHaveLength(3);
     const toA = outbox.find((m) => m.to === a.email)!;
-    expect(toA.subject).toBe("Жеребьёвка прошла");
+    expect(toA.subject).toBe("Тайный Санта: жеребьёвка прошла");
     expect(toA.text).toContain("Ana и Leo");
     expect(outbox.find((m) => m.to === b.email)!.subject).toBe(
-      "Die Auslosung ist erfolgt",
+      "Wichteln: die Auslosung ist gelaufen",
     );
     // Pairs never leak: Bo's mail does not mention Cy or Ana.
     const toB = outbox.find((m) => m.to === b.email)!;

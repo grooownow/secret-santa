@@ -26,9 +26,11 @@ describe("renderEmail", () => {
   });
 
   it("uses the requested language", () => {
-    expect(renderEmail("draw", "ru", {}).subject).toBe("Жеребьёвка прошла");
+    expect(renderEmail("draw", "ru", {}).subject).toBe(
+      "Тайный Санта: жеребьёвка прошла",
+    );
     expect(renderEmail("draw", "de", {}).subject).toBe(
-      "Die Auslosung ist erfolgt",
+      "Wichteln: die Auslosung ist gelaufen",
     );
   });
 
@@ -128,6 +130,15 @@ describe("renderEmail", () => {
 
   it("falls back to English for an unknown locale value", () => {
     const out = renderEmail("draw", "xx" as never, {});
-    expect(out.subject).toBe("The draw is done");
+    expect(out.subject).toBe("Secret Santa: the draw is done");
+  });
+
+  it("the draw mail opens with the landing's Santa (absolute PNG URL); others do not", () => {
+    const draw = renderEmail("draw", "ru", {}).html;
+    expect(draw).toMatch(/<img src="https?:\/\/[^"]+\/email\/santa\.png"/);
+    expect(draw.indexOf("<img")).toBeLessThan(draw.indexOf("<h1"));
+    // Context: says what game this is before the call to action.
+    expect(draw).toContain("Тайного Санту");
+    expect(renderEmail("reveal", "ru", {}).html).not.toContain("<img");
   });
 });

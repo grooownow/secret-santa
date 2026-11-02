@@ -46,6 +46,16 @@ const MESSAGES = { ru, uk, en, es, de } as const;
 const DEVELOPER_URL = "https://ludvik4.dev";
 const THREADS_URL = "https://www.threads.com/@ludvik.coffee";
 
+function appUrl(): string {
+  return env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
+}
+
+/** The landing's Santa as a small PNG (public/email/santa.png): mail clients
+ * do not all show webp, and the hashed /_next asset URL changes per build. */
+export function santaImageUrl(): string {
+  return `${appUrl()}/email/santa.png`;
+}
+
 export function cabinetUrl(): string {
   return `${env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")}/home`;
 }
@@ -113,7 +123,12 @@ export function renderEmail(
     type === "reveal"
       ? `<p style="margin:24px 0 0;font-size:12px;color:#526356">${escapeHtml(t("madeBy"))} <a href="${DEVELOPER_URL}" style="color:#526356">ludvik4.dev</a> · <a href="${THREADS_URL}" style="color:#526356">Threads</a></p>`
       : "";
-  const html = `<!doctype html><html lang="${safeLocale}"><body style="margin:0;padding:24px;background:#ffffff;color:#183d26;font-family:Arial,Helvetica,sans-serif"><div style="max-width:520px;margin:0 auto"><h1 style="margin:0 0 16px;font-size:22px">${escapeHtml(title)}</h1>${lines.map(p).join("")}<p style="margin:20px 0"><a href="${escapeHtml(url)}" style="display:inline-block;padding:12px 20px;background:#235a32;color:#ffffff;text-decoration:none;border-radius:8px">${escapeHtml(cta)}</a></p>${signature}</div></body></html>`;
+  // The draw mail is the game's big moment: it opens with the landing's Santa.
+  const picture =
+    type === "draw"
+      ? `<img src="${escapeHtml(santaImageUrl())}" width="200" height="200" alt="" style="display:block;width:200px;height:200px;margin:0 0 16px;border:0">`
+      : "";
+  const html = `<!doctype html><html lang="${safeLocale}"><body style="margin:0;padding:24px;background:#ffffff;color:#183d26;font-family:Arial,Helvetica,sans-serif"><div style="max-width:520px;margin:0 auto">${picture}<h1 style="margin:0 0 16px;font-size:22px">${escapeHtml(title)}</h1>${lines.map(p).join("")}<p style="margin:20px 0"><a href="${escapeHtml(url)}" style="display:inline-block;padding:12px 20px;background:#235a32;color:#ffffff;text-decoration:none;border-radius:8px">${escapeHtml(cta)}</a></p>${signature}</div></body></html>`;
 
   return { subject, text: textParts.join("\n\n"), html };
 }
