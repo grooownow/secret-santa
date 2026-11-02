@@ -60,62 +60,98 @@ function isActive(pathname: string, key: string, href: string): boolean {
 
 /**
  * Navigation of the cabinet (component NMcOL): Главная · Профиль · Я дарю ·
- * Стена · Настройки, plus «Админка» for the organizer. On a phone it is the
- * bottom bar, where items share the width equally so it fits a 360px screen;
- * from `lg` it is the row of tabs under the header (desktop mockups).
+ * Стена · Настройки, plus «Админка» for the organizer. The layouts render it
+ * twice and CSS shows one: `bar` is the phone's bottom bar, where items share
+ * the width equally so it fits a 360px screen; `header` sits in the mint header
+ * beside the game name from `lg`.
  */
-export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
+export function CabinetNav({
+  organizer = false,
+  variant = "bar",
+}: {
+  organizer?: boolean;
+  variant?: "bar" | "header";
+}) {
   const t = useTranslations("profile.nav");
   const pathname = usePathname();
   const items = organizer ? [...ITEMS, ADMIN_ITEM] : ITEMS;
 
+  if (variant === "header") {
+    return (
+      <nav aria-label={t("label")} className="hidden min-w-0 lg:block">
+        <div className="flex h-20 items-stretch gap-5 xl:gap-7">
+          {items.map(({ key, href, icon: Icon }) => {
+            const active = isActive(pathname, key, href);
+            return (
+              <Link
+                key={key}
+                href={href}
+                prefetch
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2 text-sm whitespace-nowrap xl:text-[15px]",
+                  active
+                    ? "text-santa-green font-bold"
+                    : "text-santa-muted font-normal",
+                )}
+              >
+                {/* Six labels and the header's own items share 1024px: the
+                    icons appear once there is room for them. */}
+                <Icon
+                  className="hidden size-5 shrink-0 xl:block"
+                  strokeWidth={active ? 2.75 : 2}
+                  aria-hidden
+                />
+                {t(key)}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav
       aria-label={t("label")}
-      className="bg-santa-white border-santa-line sticky bottom-0 border-t lg:static lg:border-t-0 lg:border-b"
+      className="bg-santa-white border-santa-line sticky bottom-0 flex items-stretch gap-0.5 border-t px-1 pt-2 pb-3 lg:hidden"
     >
-      <div className="lg:santa-page flex items-stretch gap-0.5 px-1 pt-2 pb-3 lg:gap-8 lg:py-0">
-        {items.map(({ key, href, icon: Icon }) => {
-          const active = isActive(pathname, key, href);
-          return (
-            <Link
-              key={key}
-              href={href}
-              // Full prefetch: the tab's page is ready before the tap.
-              prefetch
-              aria-current={active ? "page" : undefined}
+      {items.map(({ key, href, icon: Icon }) => {
+        const active = isActive(pathname, key, href);
+        return (
+          <Link
+            key={key}
+            href={href}
+            // Full prefetch: the tab's page is ready before the tap.
+            prefetch
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",
+              active
+                ? "text-santa-green font-semibold"
+                : "text-santa-muted font-normal",
+            )}
+          >
+            {/* The active tab: a mint pill (the «Подарок оставлен» box colour) behind the icon only
+                (owner, 2 Nov), so it reads at a glance without a heavy block. */}
+            <span
+              data-nav-icon
               className={cn(
-                "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",
-                "lg:-mb-px lg:h-16 lg:flex-none lg:flex-row lg:gap-2.5 lg:border-b-2 lg:px-1 lg:text-[15px]",
-                active
-                  ? "text-santa-green lg:border-santa-green font-semibold"
-                  : "text-santa-muted font-normal lg:border-transparent",
+                "flex h-8 w-12 items-center justify-center rounded-full transition-colors",
+                active && "bg-santa-mint",
               )}
             >
-              {/* The active tab: a mint pill (the «Подарок оставлен» box colour) behind the icon only
-                (owner, 2 Nov), so it reads at a glance without a heavy block. */}
-              <span
-                data-nav-icon
-                className={cn(
-                  "flex h-8 w-12 items-center justify-center rounded-full transition-colors lg:size-5",
-                  active && "bg-santa-mint lg:bg-transparent",
-                )}
-              >
-                <Icon className="size-6 shrink-0 lg:size-5" aria-hidden />
-              </span>
-              {/* A long single word (uk «Налаштування», Cyrillic falls back to
+              <Icon className="size-6 shrink-0" aria-hidden />
+            </span>
+            {/* A long single word (uk «Налаштування», Cyrillic falls back to
                 the system font) wraps within the fifth, so the bar never
                 widens the page at 360px. */}
-              <span
-                data-nav-label
-                className="w-full wrap-anywhere hyphens-auto lg:w-auto lg:whitespace-nowrap"
-              >
-                {t(key)}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
+            <span data-nav-label className="w-full wrap-anywhere hyphens-auto">
+              {t(key)}
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

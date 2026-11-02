@@ -82,6 +82,46 @@ describe("CabinetNav for the organizer", () => {
   });
 });
 
+describe("CabinetNav placement", () => {
+  it("the bottom bar stops at desktop, the header menu starts there", () => {
+    const { unmount } = render(<CabinetNav />);
+    expect(screen.getByRole("navigation")).toHaveClass("lg:hidden");
+    unmount();
+    render(<CabinetNav variant="header" />);
+    expect(screen.getByRole("navigation")).toHaveClass("hidden", "lg:block");
+  });
+
+  it("the header menu has the same items and marks the active one", () => {
+    nav.pathname = "/home/wall";
+    render(<CabinetNav variant="header" organizer />);
+    const links = screen.getAllByRole("link");
+    expect(links.map((l) => l.textContent)).toEqual([
+      "home",
+      "profile",
+      "gift",
+      "wall",
+      "settings",
+      "admin",
+    ]);
+    expect(
+      links
+        .filter((l) => l.getAttribute("aria-current") === "page")
+        .map((l) => l.textContent),
+    ).toEqual(["wall"]);
+  });
+
+  it("the active item is bold text and a bold icon, with no underline", () => {
+    nav.pathname = "/home/wall";
+    render(<CabinetNav variant="header" />);
+    const active = screen.getByRole("link", { name: "wall" });
+    const other = screen.getByRole("link", { name: "home" });
+    expect(active).toHaveClass("font-bold");
+    expect(active.className).not.toMatch(/border/);
+    expect(active.querySelector("svg")).toHaveAttribute("stroke-width", "2.75");
+    expect(other.querySelector("svg")).toHaveAttribute("stroke-width", "2");
+  });
+});
+
 describe("CabinetNav labels", () => {
   it("a long single-word label (uk «Налаштування») wraps inside its fifth instead of widening the bar", () => {
     render(<CabinetNav />);

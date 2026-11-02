@@ -56,15 +56,27 @@ test("cabinet: menu, house listbox, photo, profile cards, settings, share", asyn
   const name = `Cabi ${testInfo.project.name}`;
   await registerAndConfirm(page, { email, password: "a-long-password" });
 
-  await test.step("the menu is tabs above the content on desktop, a bottom bar on a phone", async () => {
+  await test.step("the menu is in the mint header on desktop, a bottom bar on a phone", async () => {
     const menu = page.getByRole("navigation", { name: NAV_LABEL.en });
+    const inHeader = page.getByRole("banner").getByRole("navigation");
     const main = page.getByRole("main");
+    const overflow = () =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      );
+
     await page.setViewportSize({ width: 1440, height: 900 });
-    const tabs = await menu.boundingBox();
-    expect(tabs!.y + tabs!.height).toBeLessThanOrEqual(
-      (await main.boundingBox())!.y,
-    );
+    await expect(inHeader).toBeVisible();
+    await expect(menu).toHaveCount(1);
+    // No extra strip: the content starts right under the 80px header.
+    expect((await main.boundingBox())!.y).toBe(80);
+
+    // The longest labels on the narrowest desktop width.
+    await page.setViewportSize({ width: 1024, height: 768 });
+    expect(await overflow()).toBe(0);
+
     await page.setViewportSize({ width: 360, height: 740 });
+    await expect(inHeader).toBeHidden();
     const bar = await menu.boundingBox();
     expect(bar!.y).toBeGreaterThan((await main.boundingBox())!.y);
     expect(bar!.y + bar!.height).toBeCloseTo(740, 0);

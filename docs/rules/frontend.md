@@ -49,8 +49,9 @@ phone never changes. `PageMain` (`src/components/page-main.tsx`) is the content
 area of every page with a header: the `santa-page` utility gives the 1120px
 column, and each direct child stays in a readable 704px column unless its root
 carries `data-wide` (screens laid out in columns). A new page with a header uses
-`PageMain`, never its own `<main>`. The cabinet menu comes before `<main>` in the
-DOM (tabs on desktop) and moves to the bottom on a phone with `max-lg:order-last`.
+`PageMain`, never its own `<main>`. The layouts render `CabinetNav` twice and CSS
+shows one: `variant="header"` in the mint header from `lg`, the default bottom
+bar below it.
 
 ## Design tokens
 

@@ -20,3 +20,4 @@ docs/superpowers/
 tests/fixtures/planted-defects/
 
 .playwright-mcp/
+print/

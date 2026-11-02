@@ -43,6 +43,13 @@ describe("focus ring", () => {
   });
 });
 
+describe("placeholder", () => {
+  it("is dimmed to half opacity, so it does not read as a filled value", () => {
+    render(<TextInput name="city" placeholder="Madrid" />);
+    expect(screen.getByRole("textbox")).toHaveClass("placeholder:opacity-50");
+  });
+});
+
 describe("SelectInput", () => {
   it("draws its own muted chevron and keeps the text clear of it", () => {
     render(

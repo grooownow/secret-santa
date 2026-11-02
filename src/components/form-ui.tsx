@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { Spinner } from "./spinner";
 
 const controlClass =
-  "border-santa-line text-santa-ink placeholder:text-santa-muted focus-visible:border-santa-green h-[52px] w-full rounded-2xl border bg-santa-white px-4 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-santa-green";
+  "border-santa-line text-santa-ink placeholder:text-santa-muted placeholder:opacity-50 focus-visible:border-santa-green h-[52px] w-full rounded-2xl border bg-santa-white px-4 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-santa-green";
 
 /**
  * Labelled text input or select in the style of component n0DZBW. The hint

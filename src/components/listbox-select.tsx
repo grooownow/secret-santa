@@ -152,7 +152,9 @@ export function ListboxSelect({
           selected ? "text-santa-ink" : "text-santa-muted",
         )}
       >
-        <span className="truncate">{selected?.label ?? placeholder}</span>
+        <span className={cn("truncate", !selected && "opacity-50")}>
+          {selected?.label ?? placeholder}
+        </span>
         <ChevronDown
           aria-hidden
           className={cn(

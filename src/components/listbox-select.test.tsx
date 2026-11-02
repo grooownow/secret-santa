@@ -91,6 +91,19 @@ describe("ListboxSelect", () => {
     expect(value()).toBe("B");
   });
 
+  it("dims the placeholder but not a chosen value", () => {
+    const { trigger } = renderPicker();
+    expect(screen.getByText("Choose")).toHaveClass("opacity-50");
+    expect(trigger).toBeInTheDocument();
+  });
+
+  it("shows a chosen value at full strength", () => {
+    renderPicker("K");
+    expect(screen.getByRole("combobox").querySelector("span")).not.toHaveClass(
+      "opacity-50",
+    );
+  });
+
   it("closes when focus leaves the combobox", async () => {
     const { trigger, value } = renderPicker("K");
     await userEvent.click(trigger);

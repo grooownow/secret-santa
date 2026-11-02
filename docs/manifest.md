@@ -16,3 +16,8 @@ The language the agent speaks with you in chat (artifacts stay English).
 To change it later, edit the value below (or just ask the agent to switch).
 
 Russian
+
+## Deploy
+
+Deploy gate: accepted risk (owner, 2026-11-02). Vercel deploys every push to
+`main`; run `pnpm gates` before pushing.
