@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import { Geologica, Onest } from "next/font/google";
 import { getLocale, getTranslations } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -8,13 +8,15 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import { env } from "@/lib/env";
 
-const outfit = Outfit({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-outfit",
+// Both carry Cyrillic: ru and uk are the main locales, and fonts without it
+// (the earlier Outfit / Bricolage Grotesque) fell back to the system face.
+const onest = Onest({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  variable: "--font-onest",
 });
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-bricolage",
+const geologica = Geologica({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  variable: "--font-geologica",
 });
 
 const OG_LOCALES: Record<string, string> = {
@@ -57,7 +59,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={cn("font-sans", outfit.variable, bricolage.variable)}
+      className={cn("font-sans", onest.variable, geologica.variable)}
       suppressHydrationWarning
     >
       <body>

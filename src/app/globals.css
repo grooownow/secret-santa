@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: var(--font-bricolage);
-  --font-sans: var(--font-outfit);
+  --font-heading: var(--font-geologica);
+  --font-sans: var(--font-onest);
   --color-santa-ink: var(--santa-ink);
   --color-santa-muted: var(--santa-muted);
   --color-santa-green: var(--santa-green);
