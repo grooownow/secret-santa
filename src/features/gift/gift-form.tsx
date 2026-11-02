@@ -1,61 +1,63 @@
 "use client";
 
-import { CircleCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useActionState } from "react";
+import { useActionState, useRef, useState } from "react";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   Field,
   FormAlert,
   SelectInput,
   SubmitButton,
   TextAreaInput,
-  TextInput,
 } from "@/components/form-ui";
 import { markGiftFormAction } from "./mark-gift-action";
-import { CODE_MAX, NOTE_MAX } from "./schemas";
+import { NOTE_MAX } from "./schemas";
 import type { GiftState } from "./state";
 
 const initial: GiftState = {};
 
-export interface GiftDefaults {
-  place: "locker" | "mailbox" | "";
-  code: string;
-  note: string;
-}
-
 /**
- * "Оставить подарок" (frames b4x7S, OGFSm, Y5rWl): place, number or code and an
- * optional anonymous note. `marked` switches to the edit variant; saving again
- * emails the receiver the new details.
+ * "Оставить подарок" (frames b4x7S, OGFSm): the place and an optional
+ * anonymous note. Saving is final, so the submit first asks «Всё верно?»;
+ * only «Да, сохранить» sends the form. After a save the page shows the
+ * read-only `GiftLeftView` instead of this form.
  */
 export function GiftForm({
   participantId,
-  defaults,
-  marked,
   name,
 }: {
   participantId: string;
-  defaults: GiftDefaults;
-  marked: boolean;
   name: string;
 }) {
   const t = useTranslations("gift.form");
   const [state, formAction] = useActionState(markGiftFormAction, initial);
-  const values = state.values ?? defaults;
+  const values = state.values ?? { place: "", note: "" };
+  const formRef = useRef<HTMLFormElement>(null);
+  const confirmed = useRef(false);
+  const [asking, setAsking] = useState(false);
 
   return (
-    <form action={formAction} className="flex flex-col gap-5">
+    <form
+      ref={formRef}
+      action={formAction}
+      // The submit event fires only after the browser's own validation
+      // passed (place chosen), so the question comes for a complete form.
+      onSubmit={(event) => {
+        if (confirmed.current) {
+          confirmed.current = false;
+          return;
+        }
+        event.preventDefault();
+        setAsking(true);
+      }}
+      className="flex flex-col gap-5"
+    >
       <input type="hidden" name="participantId" value={participantId} />
-      {marked || state.saved ? (
-        <div className="bg-santa-mint text-santa-green flex size-14 items-center justify-center rounded-full">
-          <CircleCheck className="size-6" aria-hidden />
-        </div>
-      ) : null}
       <h1 className="text-santa-ink text-[26px] leading-tight font-bold">
-        {marked || state.saved ? t("titleDone") : t("title")}
+        {t("title")}
       </h1>
       <p className="text-santa-muted text-sm leading-relaxed">
-        {marked || state.saved ? t("introDone") : t("intro", { name })}
+        {t("intro", { name })}
       </p>
 
       <Field label={t("place")}>
@@ -66,14 +68,6 @@ export function GiftForm({
           <option value="locker">{t("locker")}</option>
           <option value="mailbox">{t("mailbox")}</option>
         </SelectInput>
-      </Field>
-      <Field label={t("code")}>
-        <TextInput
-          name="code"
-          maxLength={CODE_MAX}
-          defaultValue={values.code ?? ""}
-          placeholder={t("codePlaceholder")}
-        />
       </Field>
       <Field label={t("note")} hint={t("noteHint", { max: NOTE_MAX })}>
         <TextAreaInput
@@ -92,16 +86,24 @@ export function GiftForm({
       </div>
 
       {state.error ? <FormAlert>{t(`errors.${state.error}`)}</FormAlert> : null}
-      {state.saved ? (
-        <output className="text-santa-green block text-sm font-semibold">
-          {t("saved")}
-        </output>
-      ) : null}
 
-      <SubmitButton pendingLabel={t("pending")}>
-        {marked || state.saved ? t("saveChanges") : t("submit")}
-      </SubmitButton>
+      <SubmitButton pendingLabel={t("pending")}>{t("submit")}</SubmitButton>
       <p className="text-santa-muted text-xs leading-relaxed">{t("hint")}</p>
+
+      <ConfirmDialog
+        open={asking}
+        title={t("confirmTitle")}
+        text={t("confirmText")}
+        confirmLabel={t("confirmYes")}
+        cancelLabel={t("confirmBack")}
+        closeLabel={t("close")}
+        onClose={() => setAsking(false)}
+        onConfirm={() => {
+          setAsking(false);
+          confirmed.current = true;
+          formRef.current?.requestSubmit();
+        }}
+      />
     </form>
   );
 }

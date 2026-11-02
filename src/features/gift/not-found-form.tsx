@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { FormAlert } from "@/components/form-ui";
 import { reportNotFoundFormAction } from "./not-found-action";
 import type { GiftState } from "./state";
+import { Spinner } from "@/components/spinner";
 
 const initial: GiftState = {};
 
@@ -21,9 +22,11 @@ export function NotFoundForm({ participantId }: { participantId: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="border-santa-green text-santa-green bg-santa-white flex h-14 w-full items-center justify-center rounded-full border px-6 text-base font-semibold disabled:opacity-60"
+        aria-busy={pending || undefined}
+        className="border-santa-green text-santa-green bg-santa-white flex h-14 w-full items-center justify-center gap-2 rounded-full border px-6 text-base font-semibold disabled:opacity-60"
       >
         {t("notFoundButton")}
+        {pending ? <Spinner /> : null}
       </button>
       {state.error ? <FormAlert>{t(`errors.${state.error}`)}</FormAlert> : null}
       {state.saved ? (

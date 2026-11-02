@@ -266,7 +266,8 @@ describe("getMyGift", () => {
       state: "ready",
       status: "left",
       place: "locker",
-      code: "42",
+      // There is no number/code field any more: nothing is stored.
+      code: null,
       note: "enjoy",
     });
     const dump = JSON.stringify(mine);
@@ -292,13 +293,18 @@ describe("markGift", () => {
 
     at("2026-12-25T00:30:00+01:00");
     expect(await markGift(input(giver.p.id))).toEqual({ saved: true });
+  });
+
+  it("the last day of the window still accepts a first mark", async () => {
+    const { giver } = await pair();
+    signInAs(giver.user);
     at("2026-12-31T23:30:00+01:00");
-    expect(await markGift(input(giver.p.id, { code: "43" }))).toEqual({
+    expect(await (await actions()).markGift(input(giver.p.id))).toEqual({
       saved: true,
     });
   });
 
-  it("marking emails the receiver with place, code and note, and only them", async () => {
+  it("marking emails the receiver with place and note, and only them", async () => {
     const { giver, receiver } = await pair();
     signInAs(giver.user);
     await (await actions()).markGift(input(giver.p.id));
@@ -307,8 +313,9 @@ describe("markGift", () => {
     expect(sent).toHaveLength(1);
     const [mail] = sent;
     expect(mail?.to).toBe("rob@example.dev");
-    expect(mail?.text).toContain("42");
     expect(mail?.text).toContain("enjoy");
+    // A code sent by an old client is ignored, never mailed.
+    expect(mail?.text).not.toContain("42");
     expect(mail?.text).toContain("Recipient Rob");
     expect(mail?.text).not.toContain("Giver Gina");
     expect(mail?.html).not.toContain("Giver Gina");
@@ -318,45 +325,39 @@ describe("markGift", () => {
     expect(saved?.giftLeftAt).not.toBeNull();
   });
 
-  it("editing the place resends the email under a new version key", async () => {
+  it("a gift is marked once: a second save is refused and changes nothing", async () => {
     const { giver, receiver } = await pair();
     signInAs(giver.user);
     const { markGift } = await actions();
-    await markGift(input(giver.p.id));
-    await markGift(input(giver.p.id, { place: "mailbox", code: "7" }));
+    expect(await markGift(input(giver.p.id))).toEqual({ saved: true });
+    expect(
+      await markGift(input(giver.p.id, { place: "mailbox", note: "other" })),
+    ).toEqual({ error: "alreadyLeft" });
     await flush();
 
-    expect(sent).toHaveLength(2);
-    expect(sent[1]?.text).toContain("7");
-    const keys = (await db.select().from(sentEmails)).map((r) => r.key).sort();
-    expect(keys).toEqual([
-      `gift:${receiver.p.id}:1`,
-      `gift:${receiver.p.id}:2`,
-    ]);
+    expect(sent).toHaveLength(1);
+    const keys = (await db.select().from(sentEmails)).map((r) => r.key);
+    expect(keys).toEqual([`gift:${receiver.p.id}:1`]);
     expect(await row(receiver.p.id)).toMatchObject({
-      giftPlace: "mailbox",
-      giftVersion: 2,
+      giftPlace: "locker",
+      giftNote: "enjoy",
+      giftVersion: 1,
     });
   });
 
-  it("note and code are limited to 200 and 50 chars", async () => {
+  it("the note is limited to 200 chars and the place to locker/mailbox", async () => {
     const { giver } = await pair();
     signInAs(giver.user);
     const { markGift } = await actions();
     expect(
       await markGift(input(giver.p.id, { note: "n".repeat(201) })),
     ).toEqual({ error: "invalid" });
-    expect(await markGift(input(giver.p.id, { code: "c".repeat(51) }))).toEqual(
-      { error: "invalid" },
-    );
-    expect(
-      await markGift(
-        input(giver.p.id, { note: "n".repeat(200), code: "c".repeat(50) }),
-      ),
-    ).toEqual({ saved: true });
     expect(await markGift(input(giver.p.id, { place: "roof" }))).toEqual({
       error: "invalid",
     });
+    expect(
+      await markGift(input(giver.p.id, { note: "n".repeat(200) })),
+    ).toEqual({ saved: true });
   });
 
   it("only the giver of that recipient can mark", async () => {
@@ -440,11 +441,10 @@ describe("saved form values", () => {
     const data = new FormData();
     data.set("participantId", giver.p.id);
     data.set("place", "mailbox");
-    data.set("code", "9");
     data.set("note", "second");
     expect(await markGiftFormAction({}, data)).toEqual({
       saved: true,
-      values: { place: "mailbox", code: "9", note: "second" },
+      values: { place: "mailbox", note: "second" },
     });
   });
 });

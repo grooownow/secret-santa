@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/db/client";
 import { assignments, participants, settings, users } from "@/db/schema";
@@ -17,19 +17,24 @@ import { markGiftSchema } from "./schemas";
 import type { GiftState } from "./state";
 
 class GateClosedError extends Error {}
+class AlreadyLeftError extends Error {}
 
 /**
- * "Подарок оставлен" and its correction: the giver of `participantId` sets the
- * place, code and note. Works 25-31 December only; the phase is re-checked
- * inside the transaction under a shared lock on the settings row. Every save
- * bumps the version, so the receiver gets a fresh email (`gift:<receiver>:<n>`)
- * that mentions only the receiver.
+ * "Подарок оставлен": the giver of `participantId` sets the place and an
+ * optional note, once. Works 25-31 December only; the phase is re-checked
+ * inside the transaction under a shared lock on the settings row. The mark is
+ * final (owner's call, 2 Nov: "leave it and forget it"): a second save is
+ * refused with `alreadyLeft`. The receiver gets one email
+ * (`gift:<receiver>:<n>`) that mentions only the receiver. There is no number
+ * or code field any more (the lockers and mailboxes have none); `code` is
+ * stored as null.
  */
 export async function markGift(input: unknown): Promise<GiftState> {
   const account = await requireVerifiedAccount();
   const parsed = markGiftSchema.safeParse(input);
   if (!parsed.success) return { error: "invalid" };
-  const { participantId, place, code, note } = parsed.data;
+  const { participantId, place, note } = parsed.data;
+  const code = null;
 
   if (!(await getOwnParticipant(account.id, participantId))) {
     return { error: "notFound" };
@@ -50,21 +55,34 @@ export async function markGift(input: unknown): Promise<GiftState> {
         .for("share");
       if (!gate) throw new Error("settings row missing");
       if (!canMarkGift(new Date(), gate)) throw new GateClosedError("closed");
+      const [current] = await tx
+        .select({ leftAt: assignments.giftLeftAt })
+        .from(assignments)
+        .where(eq(assignments.giverId, participantId))
+        .for("update");
+      if (!current) return undefined;
+      if (current.leftAt) throw new AlreadyLeftError("already left");
       const [row] = await tx
         .update(assignments)
         .set({
           giftPlace: place,
           giftCode: code,
           giftNote: note,
-          giftLeftAt: sql`coalesce(${assignments.giftLeftAt}, now())`,
+          giftLeftAt: sql`now()`,
           giftVersion: sql`${assignments.giftVersion} + 1`,
         })
-        .where(eq(assignments.giverId, participantId))
+        .where(
+          and(
+            eq(assignments.giverId, participantId),
+            isNull(assignments.giftLeftAt),
+          ),
+        )
         .returning();
       return row;
     });
   } catch (error) {
     if (error instanceof GateClosedError) return { error: "closed" };
+    if (error instanceof AlreadyLeftError) return { error: "alreadyLeft" };
     logger.error({ err: error }, "could not mark the gift");
     return { error: "failed" };
   }
@@ -116,7 +134,6 @@ export async function markGiftFormAction(
   };
   const values = {
     place: text("place"),
-    code: text("code"),
     note: text("note"),
   };
   const result = await markGift({

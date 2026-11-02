@@ -7,6 +7,7 @@ import {
   BeforeDraw,
   getRecipient,
   GiftForm,
+  GiftLeftView,
   NothingToGive,
   NotInDraw,
   participantIdSchema,
@@ -18,8 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
-// «Оставить подарок»: the giver marks or corrects the place. Outside
-// 25-31 December the form is not offered; the recipient card explains why.
+// «Оставить подарок»: the giver marks the place once. Once marked the page is
+// read-only (`GiftLeftView`), at any date. Outside 25-31 December the form is
+// not offered; the recipient card explains why.
 export default async function LeaveGiftPage({
   params,
 }: {
@@ -37,19 +39,16 @@ export default async function LeaveGiftPage({
   }
   if (result.state === "notInDraw") return <NotInDraw />;
   if (result.state === "none") return <NothingToGive personId={id.data} />;
-  if (!canMarkGift(new Date(), settings)) redirect(recipientPath(id.data));
-
   const { gift, recipient } = result;
-  return (
-    <GiftForm
-      participantId={id.data}
-      name={recipient.name}
-      marked={gift.leftAt !== null}
-      defaults={{
-        place: gift.place ?? "",
-        code: gift.code ?? "",
-        note: gift.note ?? "",
-      }}
-    />
-  );
+  if (gift.leftAt !== null) {
+    return (
+      <GiftLeftView
+        participantId={id.data}
+        place={gift.place}
+        note={gift.note}
+      />
+    );
+  }
+  if (!canMarkGift(new Date(), settings)) redirect(recipientPath(id.data));
+  return <GiftForm participantId={id.data} name={recipient.name} />;
 }

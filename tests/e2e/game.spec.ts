@@ -349,12 +349,22 @@ test.describe("the whole game", () => {
         await from.page
           .getByLabel("Where was the gift left?")
           .selectOption("locker");
-        await from.page.getByLabel("Number or code").fill("L-42");
+        await expect(from.page.getByLabel("Number or code")).toHaveCount(0);
         await from.page.getByLabel(/Anonymous note/).fill("Happy holidays");
         await from.page.getByRole("button", { name: "Gift left" }).click();
+        // Saving is final, so it asks first.
+        const confirm = from.page.getByRole("dialog", {
+          name: "Is everything right?",
+        });
+        await expect(confirm).toBeVisible();
+        await confirm.getByRole("button", { name: "Yes, save" }).click();
         await expect(
-          from.page.getByText("Saved, the email was sent to the recipient."),
+          from.page.getByRole("heading", { name: "The surprise is in place!" }),
         ).toBeVisible();
+        // Read-only from now on: no form fields to change.
+        await expect(
+          from.page.locator("form select, form textarea"),
+        ).toHaveCount(0);
         await waitForMail(to.who.email, SUBJECT.giftWaiting);
       });
 
@@ -364,7 +374,6 @@ test.describe("the whole game", () => {
         await expect(
           to.page.getByText("Your gift is waiting").first(),
         ).toBeVisible();
-        await expect(to.page.getByText("L-42")).toBeVisible();
         await expect(to.page.getByText("Locker").first()).toBeVisible();
         await expect(to.page.getByText("Happy holidays")).toBeVisible();
       });

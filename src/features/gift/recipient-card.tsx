@@ -1,6 +1,6 @@
 import { Lock, UserRound } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { LinkButton } from "@/components/form-ui";
+import { LinkButton, TextLink } from "@/components/form-ui";
 import { PhotoZoom } from "@/components/photo-zoom";
 import { PageText, PageTitle } from "@/features/account";
 import {
@@ -185,19 +185,26 @@ export async function RecipientCard({
         empty={t("empty")}
       />
 
-      <div className="bg-santa-mint flex flex-col gap-1 rounded-2xl p-4">
+      {/* Once the gift is left the budget hint has done its job: the same
+          mint box says the gift is in place instead. */}
+      <div
+        data-testid={giftLeft ? "gift-left-box" : "budget-box"}
+        className="bg-santa-mint flex flex-col gap-1 rounded-2xl p-4"
+      >
         <p className="text-santa-green text-base font-bold">
-          {t("budgetTitle")}
+          {giftLeft ? t("leftTitle") : t("budgetTitle")}
         </p>
         <p className="text-santa-muted text-sm leading-relaxed">
-          {t("budgetText", { start: window.start, end: window.end })}
+          {giftLeft
+            ? t("leftText")
+            : t("budgetText", { start: window.start, end: window.end })}
         </p>
       </div>
 
-      {canMark ? (
-        <LinkButton href={giftPath(personId)}>
-          {giftLeft ? t("editGift") : t("leaveGift")}
-        </LinkButton>
+      {giftLeft ? (
+        <TextLink href={giftPath(personId)}>{t("viewGift")}</TextLink>
+      ) : canMark ? (
+        <LinkButton href={giftPath(personId)}>{t("leaveGift")}</LinkButton>
       ) : (
         <>
           <DisabledButton>{t("leaveGift")}</DisabledButton>

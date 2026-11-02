@@ -1,57 +1,75 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { GiftForm } from "./gift-form";
 
 vi.mock("next-intl", () => ({
   useTranslations: (ns: string) => (key: string) => `${ns}.${key}`,
 }));
-// The real action is a server action; this one saves whatever was typed.
+// The real action is a server action; this one records what was sent.
 const submitted: FormData[] = [];
 vi.mock("./mark-gift-action", () => ({
   markGiftFormAction: async (_prev: unknown, data: FormData) => {
     submitted.push(data);
-    const text = (k: string) => String(data.get(k) ?? "");
-    return {
-      saved: true,
-      values: { place: text("place"), code: text("code"), note: text("note") },
-    };
+    return { saved: true };
   },
 }));
 
+// jsdom has no modal dialogs; model what showModal/close toggle.
+beforeAll(() => {
+  HTMLDialogElement.prototype.showModal = function () {
+    this.setAttribute("open", "");
+  };
+  HTMLDialogElement.prototype.close = function () {
+    this.removeAttribute("open");
+  };
+});
+beforeEach(() => {
+  submitted.length = 0;
+});
+
+async function fillAndSubmit() {
+  render(<GiftForm participantId="p1" name="Rob" />);
+  await userEvent.selectOptions(screen.getByRole("combobox"), "locker");
+  await userEvent.type(
+    screen.getByPlaceholderText("gift.form.notePlaceholder"),
+    "hello",
+  );
+  await userEvent.click(
+    screen.getByRole("button", { name: "gift.form.submit" }),
+  );
+  return document.querySelector("dialog")!;
+}
+
 describe("GiftForm", () => {
-  it("keeps the saved values, so a second save sends them, not the old ones", async () => {
-    render(
-      <GiftForm
-        participantId="p1"
-        name="Rob"
-        marked
-        defaults={{ place: "locker", code: "1", note: "old" }}
-      />,
-    );
-    const code = screen.getByPlaceholderText(
-      "gift.form.codePlaceholder",
-    ) as HTMLInputElement;
-    const note = screen.getByPlaceholderText(
-      "gift.form.notePlaceholder",
-    ) as HTMLTextAreaElement;
-    await userEvent.clear(code);
-    await userEvent.type(code, "77");
-    await userEvent.clear(note);
-    await userEvent.type(note, "new note");
-    await userEvent.click(
-      screen.getByRole("button", { name: "gift.form.saveChanges" }),
-    );
-    await waitFor(() => expect(submitted).toHaveLength(1));
-    await waitFor(() => expect(screen.getByRole("status")).toBeTruthy());
-    expect(code.value).toBe("77");
-    expect(note.value).toBe("new note");
+  it("has no number/code field: only the place and the note", () => {
+    render(<GiftForm participantId="p1" name="Rob" />);
+    expect(document.querySelector('[name="code"]')).toBeNull();
+    expect(document.querySelector('[name="place"]')).not.toBeNull();
+    expect(document.querySelector('[name="note"]')).not.toBeNull();
+  });
+
+  it("asks «Всё верно?» first and sends nothing until confirmed", async () => {
+    const dialog = await fillAndSubmit();
+    expect(dialog.open).toBe(true);
+    expect(within(dialog).getByText("gift.form.confirmText")).toBeTruthy();
+    expect(submitted).toHaveLength(0);
 
     await userEvent.click(
-      screen.getByRole("button", { name: "gift.form.saveChanges" }),
+      within(dialog).getByRole("button", { name: "gift.form.confirmYes" }),
     );
-    await waitFor(() => expect(submitted).toHaveLength(2));
-    expect(submitted[1]?.get("code")).toBe("77");
-    expect(submitted[1]?.get("note")).toBe("new note");
+    await waitFor(() => expect(submitted).toHaveLength(1));
+    expect(submitted[0]?.get("place")).toBe("locker");
+    expect(submitted[0]?.get("note")).toBe("hello");
+    expect(submitted[0]?.has("code")).toBe(false);
+  });
+
+  it("«check again» closes the question and keeps the form unsent", async () => {
+    const dialog = await fillAndSubmit();
+    await userEvent.click(
+      within(dialog).getByRole("button", { name: "gift.form.confirmBack" }),
+    );
+    expect(dialog.open).toBe(false);
+    expect(submitted).toHaveLength(0);
   });
 });

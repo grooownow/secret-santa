@@ -38,14 +38,17 @@ const recipient = {
   sourceLocale: "ru" as const,
 };
 
-async function render(photoUrl: string | null) {
+async function render(
+  photoUrl: string | null,
+  state: { giftLeft?: boolean; canMark?: boolean } = {},
+) {
   return html(
     await RecipientCard({
       personId: "p1",
       recipient: { ...recipient, photoUrl },
       reassigned: false,
-      giftLeft: false,
-      canMark: false,
+      giftLeft: state.giftLeft ?? false,
+      canMark: state.canMark ?? false,
       window: { start: "25 декабря", end: "31 декабря" },
     }),
   );
@@ -64,5 +67,21 @@ describe("RecipientCard", () => {
     expect(out).toContain("blob.example");
     // The thumbnail opens the photo full screen.
     expect(out).toContain('aria-label="gift.recipient.photoOpen"');
+  });
+
+  it("before leaving: the 10–15 € box and the «leave a gift» button", async () => {
+    const out = await render(null, { canMark: true });
+    expect(out).toContain('data-testid="budget-box"');
+    expect(out).toContain("gift.recipient.leaveGift");
+    expect(out).not.toContain("gift.recipient.leftTitle");
+  });
+
+  it("after leaving: «Подарок оставлен» instead of the budget, a read-only link", async () => {
+    const out = await render(null, { canMark: true, giftLeft: true });
+    expect(out).toContain('data-testid="gift-left-box"');
+    expect(out).toContain("gift.recipient.leftTitle");
+    expect(out).not.toContain("gift.recipient.budgetTitle");
+    expect(out).toContain("gift.recipient.viewGift");
+    expect(out).not.toContain("gift.recipient.leaveGift");
   });
 });
