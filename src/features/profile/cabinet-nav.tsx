@@ -5,8 +5,10 @@ import {
   House,
   MessageSquareHeart,
   Settings,
+  ShieldCheck,
   UserRound,
 } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -26,6 +28,11 @@ const ITEMS = [
   { key: "wall", href: CABINET_WALL, icon: MessageSquareHeart },
   { key: "settings", href: CABINET_SETTINGS, icon: Settings },
 ] as const;
+
+// Only the organizer sees it; the admin area itself shows this same bar, so
+// the way back to the cabinet is always one tap. A literal, not an import from
+// features/admin: features do not import each other.
+const ADMIN_ITEM = { key: "admin", href: "/admin" as Route, icon: ShieldCheck };
 
 function isActive(pathname: string, key: string, href: string): boolean {
   if (key === "home") {
@@ -48,19 +55,20 @@ function isActive(pathname: string, key: string, href: string): boolean {
 
 /**
  * Bottom navigation of the cabinet (component NMcOL): Главная · Анкета ·
- * Подарок · Стена · Настройки, always all five. Each item takes an equal
- * fifth, so the bar fits a 360px screen.
+ * Подарок · Стена · Настройки, plus «Админка» for the organizer. Items share
+ * the width equally, so the bar fits a 360px screen.
  */
-export function CabinetNav() {
+export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
   const t = useTranslations("profile.nav");
   const pathname = usePathname();
+  const items = organizer ? [...ITEMS, ADMIN_ITEM] : ITEMS;
 
   return (
     <nav
       aria-label={t("label")}
       className="bg-santa-white border-santa-line sticky bottom-0 flex items-stretch border-t px-1 pt-3 pb-4"
     >
-      {ITEMS.map(({ key, href, icon: Icon }) => {
+      {items.map(({ key, href, icon: Icon }) => {
         const active = isActive(pathname, key, href);
         return (
           <Link

@@ -207,6 +207,39 @@ test.describe("the whole game", () => {
         await addChild(alice.page, CHILD);
       });
 
+      await test.step("organiser: the bottom menu carries «Admin» and fits 360px with six items", async () => {
+        await organiser.setViewportSize({ width: 360, height: 740 });
+        await organiser.goto("/admin");
+        const menu = organiser.locator("nav").last();
+        await expect(menu.getByRole("link")).toHaveCount(6);
+        await expect(menu.getByRole("link", { name: "Admin" })).toHaveAttribute(
+          "aria-current",
+          "page",
+        );
+        for (const locale of ["uk", "ru", "de", "en"] as const) {
+          // oxlint-disable-next-line no-await-in-loop
+          await organiser
+            .context()
+            .addCookies([
+              { name: "locale", value: locale, url: organiser.url() },
+            ]);
+          // oxlint-disable-next-line no-await-in-loop
+          await organiser.goto("/admin");
+          // oxlint-disable-next-line no-await-in-loop
+          const fits = await organiser.evaluate(
+            () =>
+              document.documentElement.scrollWidth <= window.innerWidth &&
+              [...document.querySelectorAll("nav a")].every(
+                (a) => a.getBoundingClientRect().right <= window.innerWidth,
+              ),
+          );
+          expect(fits, `admin page fits 360px in ${locale}`).toBe(true);
+        }
+        await menu.getByRole("link", { name: "Home" }).click();
+        await expect(organiser).toHaveURL(/\/home$/);
+        await organiser.setViewportSize({ width: 1280, height: 800 });
+      });
+
       await test.step("organiser runs the draw for five participants", async () => {
         await organiser.goto("/admin");
         await organiser.getByRole("button", { name: "Run the draw" }).click();

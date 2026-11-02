@@ -5,7 +5,10 @@ import CabinetLayout from "./layout";
 vi.mock("next-intl/server", () => ({
   getTranslations: async (ns: string) => (key: string) => `${ns}.${key}`,
 }));
-vi.mock("@/features/auth", () => ({ requireAccount: vi.fn(async () => ({})) }));
+vi.mock("@/features/auth", () => ({
+  requireAccount: vi.fn(async () => ({})),
+  isOrganizer: vi.fn(() => false),
+}));
 vi.mock("@/features/game", () => ({
   SiteHeader: ({ action }: { action?: React.ReactNode }) => (
     <header>{action}</header>

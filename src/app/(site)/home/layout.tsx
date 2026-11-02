@@ -1,4 +1,4 @@
-import { requireAccount } from "@/features/auth";
+import { isOrganizer, requireAccount } from "@/features/auth";
 import { ShareGame, SiteHeader } from "@/features/game";
 import { CabinetNav } from "@/features/profile";
 
@@ -11,14 +11,14 @@ export default async function CabinetLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requireAccount();
+  const account = await requireAccount();
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader action={<ShareGame />} />
       <main className="flex flex-1 flex-col gap-5 px-[26px] py-8">
         {children}
       </main>
-      <CabinetNav />
+      <CabinetNav organizer={isOrganizer(account)} />
     </div>
   );
 }

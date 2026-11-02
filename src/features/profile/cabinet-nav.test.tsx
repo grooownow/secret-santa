@@ -46,6 +46,28 @@ describe("CabinetNav", () => {
   });
 });
 
+describe("CabinetNav for the organizer", () => {
+  it("adds «Админка» last, and only for the organizer", () => {
+    const { unmount } = render(<CabinetNav organizer />);
+    const links = screen.getAllByRole("link");
+    expect(links).toHaveLength(6);
+    expect(links.at(-1)?.textContent).toBe("admin");
+    expect(links.at(-1)?.getAttribute("href")).toBe("/admin");
+    unmount();
+    render(<CabinetNav />);
+    expect(screen.queryByRole("link", { name: "admin" })).toBeNull();
+  });
+
+  it("marks «Админка» inside the admin area", () => {
+    nav.pathname = "/admin/participants";
+    render(<CabinetNav organizer />);
+    const current = screen
+      .getAllByRole("link")
+      .filter((l) => l.getAttribute("aria-current") === "page");
+    expect(current.map((l) => l.textContent)).toEqual(["admin"]);
+  });
+});
+
 describe("CabinetNav labels", () => {
   it("a long single-word label (uk «Налаштування») wraps inside its fifth instead of widening the bar", () => {
     render(<CabinetNav />);

@@ -4,6 +4,7 @@ import { signOutAction } from "@/features/account";
 import { AdminNav } from "@/features/admin";
 import { requireOrganizer } from "@/features/auth";
 import { SiteHeader } from "@/features/game";
+import { CabinetNav } from "@/features/profile";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("admin");
@@ -43,6 +44,11 @@ export default async function AdminLayout({
         </div>
         {children}
       </main>
+      {/* The cabinet's bottom bar with «Админка» active: the way back to the
+          participant side. Not printed with the QR sheet. */}
+      <div className="sticky bottom-0 print:hidden">
+        <CabinetNav organizer />
+      </div>
     </div>
   );
 }
