@@ -65,7 +65,7 @@ describe("OverviewView per phase", () => {
     expect(out).toContain("run-draw");
   });
 
-  it("waiting: draw mail status with resend, links to participants and backup", async () => {
+  it("waiting: draw mail status with resend, no buttons duplicating the tabs", async () => {
     today("2026-12-10");
     const out = await html(
       await OverviewView({
@@ -76,8 +76,9 @@ describe("OverviewView per phase", () => {
     expect(out).toContain("admin.overview.drawnTitle");
     expect(out).toContain("admin.overview.sentOf");
     expect(out).toContain("resend:draw");
-    expect(out).toContain("/admin/participants");
-    expect(out).toContain("/admin/backup");
+    // «Участники» and «Нужен запасной Санта» are the tabs above; no copies.
+    expect(out).not.toContain("admin.overview.participantsLink");
+    expect(out).not.toContain("admin.overview.backupLink");
   });
 
   it("waiting: says how many are children and why there are fewer emails", async () => {

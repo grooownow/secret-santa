@@ -371,8 +371,6 @@
       "giftsMarked": "Gifts marked",
       "drawMail": "Draw email",
       "sentOf": "Sent {sent} of {total}",
-      "participantsLink": "Participants",
-      "backupLink": "Backup Santa needed",
       "collectUntil": "Until {date} · Madrid",
       "beforeTitle": "Before the draw",
       "beforeText": "Check the residents list and remove strangers. Only confirmed accounts with a filled-in profile take part.",
@@ -624,7 +622,8 @@
       "confirmText": "Check the place and note. After saving they cannot be changed, and the recipient gets an email straight away.",
       "confirmYes": "Yes, save",
       "confirmBack": "Check again",
-      "close": "Close"
+      "close": "Close",
+      "placeMissing": "Choose where the gift was left."
     },
     "mine": {
       "errors": {

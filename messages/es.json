@@ -371,8 +371,6 @@
       "giftsMarked": "Regalos marcados",
       "drawMail": "Correo del sorteo",
       "sentOf": "Enviados {sent} de {total}",
-      "participantsLink": "Participantes",
-      "backupLink": "Hace falta Santa de reserva",
       "collectUntil": "Hasta el {date} · Madrid",
       "beforeTitle": "Antes del sorteo",
       "beforeText": "Revisa la lista de vecinos y quita las inscripciones ajenas. Solo participan las cuentas confirmadas con la ficha completa.",
@@ -624,7 +622,8 @@
       "confirmText": "Revisa el lugar y la nota. Después de guardar no se podrán cambiar, y el destinatario recibirá un correo al momento.",
       "confirmYes": "Sí, guardar",
       "confirmBack": "Revisar otra vez",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "placeMissing": "Elige dónde dejaste el regalo."
     },
     "mine": {
       "errors": {

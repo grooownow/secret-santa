@@ -1,5 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import { LinkButton, TextLink } from "@/components/form-ui";
+import { TextLink } from "@/components/form-ui";
 import { RunDrawForm } from "@/features/draw";
 import type { GameSettings } from "@/features/game";
 import { addDays } from "@/lib/game-phase";
@@ -9,7 +9,7 @@ import type { Overview } from "./queries";
 import { ResendBroadcastForm } from "./resend-broadcast-form";
 import { canResend, showMailing } from "./resend-rules";
 import { RefreshWhileSending } from "./refresh-while-sending";
-import { ADMIN_BACKUP, ADMIN_PARTICIPANTS } from "./routes";
+import { ADMIN_PARTICIPANTS } from "./routes";
 
 function Stat({
   label,
@@ -195,10 +195,6 @@ export async function OverviewView({
           <Stat label={t("daysTo", { date: giftsOn })} value={days} />
         </div>
         {mailing("draw", t("drawMail"))}
-        <LinkButton href={ADMIN_PARTICIPANTS}>
-          {t("participantsLink")}
-        </LinkButton>
-        <LinkButton href={ADMIN_BACKUP}>{t("backupLink")}</LinkButton>
       </div>
     );
   }
@@ -229,10 +225,6 @@ export async function OverviewView({
         <Stat label={t("waitingBackup")} value={overview.backupNeeded} />
         {mailing("gifts-open", t("giftsOpenMail", { date: giftsOn }))}
         {mailing("reminder", t("reminderMail", { date: reminderOn }))}
-        <LinkButton href={ADMIN_BACKUP}>{t("backupLink")}</LinkButton>
-        <LinkButton href={ADMIN_PARTICIPANTS}>
-          {t("participantsLink")}
-        </LinkButton>
       </div>
     );
   }
@@ -251,7 +243,6 @@ export async function OverviewView({
       <p className="text-santa-muted text-sm leading-relaxed">
         {t("purgeNote", { date: formatGameDay(settings.closeOn, locale) })}
       </p>
-      <LinkButton href={ADMIN_BACKUP}>{t("backupLink")}</LinkButton>
     </div>
   );
 }

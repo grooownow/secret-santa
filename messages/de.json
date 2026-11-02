@@ -371,8 +371,6 @@
       "giftsMarked": "Geschenke markiert",
       "drawMail": "E-Mail zur Auslosung",
       "sentOf": "{sent} von {total} gesendet",
-      "participantsLink": "Teilnehmende",
-      "backupLink": "Ersatz-Santa gesucht",
       "collectUntil": "Bis {date} · Madrid",
       "beforeTitle": "Vor der Auslosung",
       "beforeText": "Prüfe die Liste der Bewohnenden und entferne fremde Anmeldungen. Es nehmen nur bestätigte Konten mit ausgefülltem Steckbrief teil.",
@@ -624,7 +622,8 @@
       "confirmText": "Prüfe Ort und Notiz. Nach dem Speichern lassen sie sich nicht mehr ändern, und die beschenkte Person bekommt sofort eine E-Mail.",
       "confirmYes": "Ja, speichern",
       "confirmBack": "Noch einmal prüfen",
-      "close": "Schließen"
+      "close": "Schließen",
+      "placeMissing": "Wähle, wo das Geschenk liegt."
     },
     "mine": {
       "errors": {
