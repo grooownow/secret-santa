@@ -27,6 +27,26 @@ auditConfig:
     # Lighthouse job instead of securing it. Dev-only path, no user input.
     # Remove when @lhci/cli's chain moves off minimatch@3.
     - GHSA-mh99-v99m-4gvg
+    # extract-zip symlink path traversal / arbitrary write. No fixed release
+    # exists (2.0.1 is the latest published; the advisory names 2.0.2). Only
+    # path: @lhci/cli > lighthouse > puppeteer-core > @puppeteer/browsers, which
+    # unzips a browser download; our Lighthouse job uses the runner's Chrome.
+    # Dev-only. Remove when extract-zip publishes the fix.
+    - GHSA-jmr9-qjv8-65gv
+    - GHSA-7pqw-9j4j-h8q3
+    # basic-ftp quadratic-time listing parser. Fixed only in 6.x; the single
+    # consumer, get-uri (latest too), requires ^5, so forcing 6.x would be a
+    # major upgrade in disguise. Reached only through @lhci/cli's proxy agent,
+    # which never opens an ftp:// URL here. Dev-only. Remove when get-uri moves
+    # to basic-ftp 6.
+    - GHSA-c475-qrg2-pj4r
+    # zod memory exhaustion on oversized constrained collections. Every zod 4
+    # in the tree is lifted to >=4.6.6 by the override below; what is left is
+    # zod@3 under @lhci/cli > lighthouse > puppeteer-core > chromium-bidi, and
+    # no 3.x release carries the fix. Dev-only, validates Chrome's own protocol
+    # messages. Remove when @lhci/cli ships a lighthouse on chromium-bidi with
+    # zod 4.
+    - GHSA-mrhx-c7xc-m3w5
 minimumReleaseAgeExclude:
   - uuid@11.1.1
   - fast-uri@3.1.5
@@ -68,3 +88,6 @@ overrides:
   fast-uri@>=3.0.0 <3.1.5: ^3.1.5
   hono@<4.12.34: ^4.12.34
   uuid@<11.1.1: ^11.1.1
+  # GHSA-mrhx-c7xc-m3w5: zod memory exhaustion. Runtime: @vercel/blob >
+  # @vercel/oidc > @vercel/cli-config pins zod 4.1.x. Stays inside major 4.
+  zod@>=4.0.0 <4.6.6: ^4.6.6
