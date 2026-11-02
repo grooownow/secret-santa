@@ -35,7 +35,7 @@ describe("getDb laziness", () => {
 });
 
 describe("remote (Neon) connection", () => {
-  it("opens postgres without prepared statements and with one connection", async () => {
+  it("opens postgres without prepared statements and with a small pool", async () => {
     vi.resetModules();
     const postgresMock = vi.fn(() => ({}) as never);
     vi.doMock("postgres", () => ({ default: postgresMock }));
@@ -49,9 +49,11 @@ describe("remote (Neon) connection", () => {
       GRIDFIN_DB: "remote",
       DATABASE_URL: "postgresql://u:p@host/db",
     } as never);
+    // max > 1: with one socket every query of every concurrent request on a
+    // Fluid instance queued behind the others (admin tabs took seconds).
     expect(postgresMock).toHaveBeenCalledWith("postgresql://u:p@host/db", {
       prepare: false,
-      max: 1,
+      max: 5,
     });
 
     vi.doUnmock("postgres");

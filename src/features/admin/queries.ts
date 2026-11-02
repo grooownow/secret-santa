@@ -3,7 +3,7 @@ import { getDb } from "@/db/client";
 import { assignments, participants, users } from "@/db/schema";
 import { requireOrganizer } from "@/features/auth";
 import { getPhase, getSettings, type Phase } from "@/features/game";
-import { broadcastStatus, type BroadcastEvent } from "@/features/mail";
+import { broadcastStatuses, type BroadcastEvent } from "@/features/mail";
 import { listBackupNeeded, listBackupOrganized } from "./backup";
 
 const EVENTS: BroadcastEvent[] = ["draw", "gifts-open", "reminder", "reveal"];
@@ -39,36 +39,42 @@ export interface ParticipantRow {
 export async function getOverview(): Promise<Overview> {
   await requireOrganizer();
   const db = getDb();
-  const settings = await getSettings();
 
-  const [eligible, excluded, chain, marked, status, needed, organized] =
-    await Promise.all([
-      db
-        .select({ n: count() })
-        .from(participants)
-        .innerJoin(users, eq(users.id, participants.userId))
-        .where(isNotNull(users.emailVerified)),
-      // Registered accounts that never confirmed their email (they cannot
-      // have a profile yet, so counting participants would always give 0).
-      db.select({ n: count() }).from(users).where(isNull(users.emailVerified)),
-      db.select({ n: count() }).from(assignments),
-      db
-        .select({ n: count() })
-        .from(assignments)
-        .where(isNotNull(assignments.giftLeftAt)),
-      Promise.all(EVENTS.map((event) => broadcastStatus(event))),
-      listBackupNeeded(),
-      listBackupOrganized(),
-    ]);
+  const [
+    settings,
+    eligible,
+    excluded,
+    chain,
+    marked,
+    status,
+    needed,
+    organized,
+  ] = await Promise.all([
+    getSettings(),
+    db
+      .select({ n: count() })
+      .from(participants)
+      .innerJoin(users, eq(users.id, participants.userId))
+      .where(isNotNull(users.emailVerified)),
+    // Registered accounts that never confirmed their email (they cannot
+    // have a profile yet, so counting participants would always give 0).
+    db.select({ n: count() }).from(users).where(isNull(users.emailVerified)),
+    db.select({ n: count() }).from(assignments),
+    db
+      .select({ n: count() })
+      .from(assignments)
+      .where(isNotNull(assignments.giftLeftAt)),
+    broadcastStatuses(EVENTS),
+    listBackupNeeded(),
+    listBackupOrganized(),
+  ]);
 
   return {
     phase: getPhase(new Date(), settings),
     participants: settings.drawnAt ? (chain[0]?.n ?? 0) : (eligible[0]?.n ?? 0),
     excluded: excluded[0]?.n ?? 0,
     giftsMarked: marked[0]?.n ?? 0,
-    broadcasts: Object.fromEntries(
-      EVENTS.map((event, i) => [event, status[i]]),
-    ) as Overview["broadcasts"],
+    broadcasts: status,
     backupNeeded: needed.length,
     backupOrganized: organized.length,
   };

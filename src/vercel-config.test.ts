@@ -7,6 +7,7 @@ describe("vercel.json", () => {
     readFileSync(path.join(process.cwd(), "vercel.json"), "utf8"),
   ) as {
     fluid?: boolean;
+    regions?: string[];
     crons?: { path: string; schedule: string }[];
     git?: { deploymentEnabled?: Record<string, boolean> };
   };
@@ -15,6 +16,13 @@ describe("vercel.json", () => {
   // Compute on the Hobby plan.
   it("pins Fluid Compute", () => {
     expect(config.fluid).toBe(true);
+  });
+
+  // The Neon database lives in eu-central-1 (Frankfurt). Functions in the
+  // default iad1 (US East) paid a transatlantic round trip per query, which
+  // made every cabinet/admin navigation take seconds.
+  it("runs functions next to the database (Frankfurt)", () => {
+    expect(config.regions).toEqual(["fra1"]);
   });
 
   it("keeps the daily cron", () => {

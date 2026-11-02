@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
@@ -15,15 +16,21 @@ export type Account = Omit<typeof users.$inferSelect, "passwordHash">;
  * is sent back to `/signin` instead of failing deeper in the app. An account
  * that has not given consent (first Google sign-in) is sent to `/welcome`.
  */
+/** The user row, read once per server request (React `cache`). */
+const loadUserRow = cache(async (id: string) => {
+  const [row] = await getDb()
+    .select()
+    .from(users)
+    .where(eq(users.id, id))
+    .limit(1);
+  return row;
+});
+
 export async function requireAccount(
   options: { allowWithoutConsent?: boolean } = {},
 ): Promise<Account> {
   const user = await requireUser();
-  const [row] = await getDb()
-    .select()
-    .from(users)
-    .where(eq(users.id, user.id))
-    .limit(1);
+  const row = await loadUserRow(user.id);
   if (!row) {
     redirect("/signin");
   }

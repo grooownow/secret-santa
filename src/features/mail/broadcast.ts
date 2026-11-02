@@ -26,33 +26,43 @@ type Recipient = {
 
 const keyFor = (event: BroadcastEvent, userId: string) => `${event}:${userId}`;
 
+/** The three tables every audience is computed from, read in parallel. */
+async function loadAudienceData() {
+  const db = getDb();
+  const [rows, pairs] = await Promise.all([
+    db
+      .select({
+        userId: users.id,
+        email: users.email,
+        locale: users.locale,
+        participantId: participants.id,
+        name: participants.name,
+        createdAt: participants.createdAt,
+      })
+      .from(participants)
+      .innerJoin(users, eq(users.id, participants.userId)),
+    db
+      .select({
+        receiverId: assignments.receiverId,
+        giverId: assignments.giverId,
+        giftLeftAt: assignments.giftLeftAt,
+      })
+      .from(assignments),
+  ]);
+  return { rows, pairs };
+}
+
+type AudienceData = Awaited<ReturnType<typeof loadAudienceData>>;
+
 /**
  * One recipient per account. draw / gifts-open / reveal: accounts with any
  * participant in the draw. reminder: accounts with a giver whose gift is not
  * marked as left yet.
  */
-async function audience(event: BroadcastEvent): Promise<Recipient[]> {
-  const db = getDb();
-  const rows = await db
-    .select({
-      userId: users.id,
-      email: users.email,
-      locale: users.locale,
-      participantId: participants.id,
-      name: participants.name,
-      createdAt: participants.createdAt,
-    })
-    .from(participants)
-    .innerJoin(users, eq(users.id, participants.userId));
-
-  const pairs = await db
-    .select({
-      receiverId: assignments.receiverId,
-      giverId: assignments.giverId,
-      giftLeftAt: assignments.giftLeftAt,
-    })
-    .from(assignments);
-
+function buildAudience(
+  event: BroadcastEvent,
+  { rows, pairs }: AudienceData,
+): Recipient[] {
   const included = new Set<string>();
   if (event === "reminder") {
     for (const a of pairs) {
@@ -82,6 +92,10 @@ async function audience(event: BroadcastEvent): Promise<Recipient[]> {
     }
   }
   return [...byUser.values()].sort((a, b) => a.email.localeCompare(b.email));
+}
+
+async function audience(event: BroadcastEvent): Promise<Recipient[]> {
+  return buildAudience(event, await loadAudienceData());
 }
 
 /**
@@ -124,21 +138,35 @@ export async function runBroadcast(
   return { total: recipients.length, sent, failed };
 }
 
-/** Progress for the admin screen: how many of the audience already got it. */
+/**
+ * Progress for the admin screen: how many of each event's audience already
+ * got it. Reads the tables once for all events (the overview shows four).
+ */
+export async function broadcastStatuses<E extends BroadcastEvent>(
+  events: readonly E[],
+): Promise<Record<E, { total: number; sent: number }>> {
+  const [data, sent] = await Promise.all([
+    loadAudienceData(),
+    getDb()
+      .select({ key: sentEmails.key })
+      .from(sentEmails)
+      .where(isNotNull(sentEmails.sentAt)),
+  ]);
+  const keys = new Set(sent.map((row) => row.key));
+  const result = {} as Record<E, { total: number; sent: number }>;
+  for (const event of events) {
+    const recipients = buildAudience(event, data);
+    result[event] = {
+      total: recipients.length,
+      sent: recipients.filter((r) => keys.has(keyFor(event, r.userId))).length,
+    };
+  }
+  return result;
+}
+
+/** One event's progress (see `broadcastStatuses`). */
 export async function broadcastStatus(
   event: BroadcastEvent,
 ): Promise<{ total: number; sent: number }> {
-  const recipients = await audience(event);
-  const keys = new Set(
-    (
-      await getDb()
-        .select({ key: sentEmails.key })
-        .from(sentEmails)
-        .where(isNotNull(sentEmails.sentAt))
-    ).map((row) => row.key),
-  );
-  return {
-    total: recipients.length,
-    sent: recipients.filter((r) => keys.has(keyFor(event, r.userId))).length,
-  };
+  return (await broadcastStatuses([event]))[event];
 }

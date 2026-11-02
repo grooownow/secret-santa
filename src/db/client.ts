@@ -8,11 +8,13 @@ import * as schema from "./schema";
 export function createDb(config: Env) {
   if (config.GRIDFIN_DB === "remote") {
     // Neon's pooled endpoint (PgBouncer, transaction mode) cannot keep
-    // prepared statements, and each serverless instance needs only one
-    // connection.
+    // prepared statements. A few connections, not one: on Fluid Compute one
+    // instance serves concurrent requests, and with `max: 1` every query of
+    // every request — including each Promise.all — queued on one socket.
+    // PgBouncer multiplexes these, so a handful per instance is cheap.
     const sql = postgres(config.DATABASE_URL as string, {
       prepare: false,
-      max: 1,
+      max: 5,
     });
     return drizzlePostgres(sql, { schema });
   }

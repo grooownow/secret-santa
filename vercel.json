@@ -1,6 +1,12 @@
 {
   "fluid": true,
-  "crons": [{ "path": "/api/cron/daily", "schedule": "0 8 * * *" }],
+  "regions": ["fra1"],
+  "crons": [
+    {
+      "path": "/api/cron/daily",
+      "schedule": "0 8 * * *"
+    }
+  ],
   "git": {
     "deploymentEnabled": {
       "main": true,

@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { cache } from "react";
 import { getDb } from "@/db/client";
 import { users } from "@/db/schema";
 import { auth } from "./auth";
@@ -17,21 +18,27 @@ export interface SessionUser {
  * verified, reset or taken over by Google is treated as signed out. A token
  * without a version (issued before this check existed) is stale too. A
  * missing user row is also "not signed in".
+ *
+ * Memoized per server request (React `cache`): the layout, the page and every
+ * query guard of one render ask this, and each ask used to be a database
+ * round trip.
  */
-export async function getSessionUser(): Promise<SessionUser | null> {
-  const session = await auth();
-  if (!session?.user?.id) return null;
+export const getSessionUser = cache(
+  async function getSessionUser(): Promise<SessionUser | null> {
+    const session = await auth();
+    if (!session?.user?.id) return null;
 
-  const [row] = await getDb()
-    .select({ sessionVersion: users.sessionVersion })
-    .from(users)
-    .where(eq(users.id, session.user.id))
-    .limit(1);
-  if (!row || session.sessionVersion !== row.sessionVersion) return null;
+    const [row] = await getDb()
+      .select({ sessionVersion: users.sessionVersion })
+      .from(users)
+      .where(eq(users.id, session.user.id))
+      .limit(1);
+    if (!row || session.sessionVersion !== row.sessionVersion) return null;
 
-  return {
-    id: session.user.id,
-    email: session.user.email ?? null,
-    name: session.user.name,
-  };
-}
+    return {
+      id: session.user.id,
+      email: session.user.email ?? null,
+      name: session.user.name,
+    };
+  },
+);
