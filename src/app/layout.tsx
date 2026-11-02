@@ -10,12 +10,15 @@ import { env } from "@/lib/env";
 
 // Both carry Cyrillic: ru and uk are the main locales, and fonts without it
 // (the earlier Outfit / Bricolage Grotesque) fell back to the system face.
+// `subsets` only picks what is preloaded; every other range (latin-ext …)
+// still loads on demand via unicode-range. Preloading latin-ext too pushed
+// the landing's LCP image behind six font files (Lighthouse < 0.9).
 const onest = Onest({
-  subsets: ["latin", "latin-ext", "cyrillic"],
+  subsets: ["latin", "cyrillic"],
   variable: "--font-onest",
 });
 const geologica = Geologica({
-  subsets: ["latin", "latin-ext", "cyrillic"],
+  subsets: ["latin", "cyrillic"],
   variable: "--font-geologica",
 });
 

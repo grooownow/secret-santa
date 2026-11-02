@@ -40,7 +40,10 @@ export function SantaIllustration({ priority }: { priority?: boolean }) {
       alt=""
       width={280}
       height={240}
-      priority={priority}
+      // Next 16 deprecated `priority`; it no longer sets fetchpriority, and
+      // this image is the landing's LCP element (Lighthouse budget).
+      preload={priority}
+      fetchPriority={priority ? "high" : undefined}
       sizes="280px"
       className="h-[240px] w-[280px] object-contain"
     />
