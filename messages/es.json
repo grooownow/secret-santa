@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Amigo Invisible"
+    "name": "Amigo Invisible",
+    "loading": "Cargando…"
   },
   "header": {
     "home": "Inicio",
@@ -345,12 +346,12 @@
     }
   },
   "admin": {
-    "title": "Organización",
+    "title": "Panel de administración",
     "signOut": "Salir",
     "nav": {
       "label": "Secciones de administración",
       "overview": "Resumen",
-      "participants": "Vecinos",
+      "participants": "Participantes",
       "backup": "Ayuda",
       "settings": "Fechas"
     },
@@ -408,7 +409,8 @@
       "retry": "Intentarlo de nuevo",
       "confirmReady": "Participantes listos: {count}",
       "confirmExcluded": "Sin confirmar y fuera del sorteo: {count}. Revisa la lista antes de empezar.",
-      "confirmMail": "Los participantes recibirán un correo solo con el enlace a su espacio. La organización no verá las parejas."
+      "confirmMail": "Los participantes recibirán un correo solo con el enlace a su espacio. La organización no verá las parejas.",
+      "close": "Cerrar"
     },
     "participants": {
       "title": "Nuestros participantes",

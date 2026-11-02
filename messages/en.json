@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Secret Santa"
+    "name": "Secret Santa",
+    "loading": "Loading…"
   },
   "header": {
     "home": "Home",
@@ -345,12 +346,12 @@
     }
   },
   "admin": {
-    "title": "Organiser",
+    "title": "Admin panel",
     "signOut": "Sign out",
     "nav": {
       "label": "Admin sections",
       "overview": "Overview",
-      "participants": "Residents",
+      "participants": "Participants",
       "backup": "Help",
       "settings": "Dates"
     },
@@ -408,7 +409,8 @@
       "retry": "Try again",
       "confirmReady": "Participants ready: {count}",
       "confirmExcluded": "Not confirmed and out of the draw: {count}. Check the list before you start.",
-      "confirmMail": "Participants get an email with only a link to their account. The organizer will not see the pairs."
+      "confirmMail": "Participants get an email with only a link to their account. The organizer will not see the pairs.",
+      "close": "Close"
     },
     "participants": {
       "title": "Our participants",

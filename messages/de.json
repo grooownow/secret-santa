@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Wichteln"
+    "name": "Wichteln",
+    "loading": "Wird geladen…"
   },
   "header": {
     "home": "Startseite",
@@ -345,12 +346,12 @@
     }
   },
   "admin": {
-    "title": "Organisation",
+    "title": "Adminbereich",
     "signOut": "Abmelden",
     "nav": {
       "label": "Bereiche der Verwaltung",
       "overview": "Übersicht",
-      "participants": "Bewohnende",
+      "participants": "Teilnehmende",
       "backup": "Hilfe",
       "settings": "Termine"
     },
@@ -408,7 +409,8 @@
       "retry": "Noch einmal versuchen",
       "confirmReady": "Bereite Teilnehmende: {count}",
       "confirmExcluded": "Unbestätigt und nicht in der Auslosung: {count}. Prüfe die Liste vor dem Start.",
-      "confirmMail": "Teilnehmende erhalten eine E-Mail nur mit dem Link zum Bereich. Die Organisation sieht die Paare nicht."
+      "confirmMail": "Teilnehmende erhalten eine E-Mail nur mit dem Link zum Bereich. Die Organisation sieht die Paare nicht.",
+      "close": "Schließen"
     },
     "participants": {
       "title": "Unsere Teilnehmenden",
