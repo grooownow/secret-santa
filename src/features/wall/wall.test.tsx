@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderServerToHtml as html } from "../../../test/render-server";
 import { DeletePostButton } from "./delete-post-button";
 import { WallClosed } from "./wall-closed";
+import { WallFeed } from "./wall-feed";
 
 vi.mock("next-intl/server", () => ({
   getTranslations: async (ns: string) => (key: string) => `${ns}.${key}`,
@@ -24,6 +25,34 @@ vi.mock("@/features/game", () => ({
 }));
 const remove = vi.hoisted(() => vi.fn());
 vi.mock("./delete-post-action", () => ({ deletePost: remove }));
+vi.mock("@/features/translation", () => ({
+  getLocalized: async () => new Map(),
+  postKey: (id: string) => `post:${id}`,
+  LocalizedText: ({ text }: { text: string }) => <p>{text}</p>,
+}));
+
+describe("wall photos", () => {
+  it("a post photo is a button that opens it full screen", async () => {
+    const out = await html(
+      await WallFeed({
+        posts: [
+          {
+            id: "w1",
+            authorName: "Вася",
+            authorLocale: "ru",
+            text: "Спасибо!",
+            photoUrl: "https://x.public.blob.vercel-storage.com/w1.jpg",
+            createdAt: new Date("2026-12-26T10:00:00Z"),
+            canDelete: false,
+          },
+        ],
+      }),
+    );
+    expect(out).toMatch(/<button[^>]*aria-label="wall.feed.photoOpen"/);
+    expect(out).toContain('aria-haspopup="dialog"');
+    expect(out).toContain("w1.jpg");
+  });
+});
 
 describe("wall placeholder", () => {
   it("shows the opening placeholder before the wall opens", async () => {

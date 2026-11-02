@@ -1,5 +1,5 @@
 import { Heart } from "lucide-react";
-import Image from "next/image";
+import { PhotoZoom } from "@/components/photo-zoom";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalized, LocalizedText, postKey } from "@/features/translation";
 import { isLocale } from "@/i18n/locale";
@@ -61,13 +61,16 @@ export async function WallFeed({ posts }: { posts: WallPost[] }) {
             />
           </p>
           {post.photoUrl ? (
-            // Photos are already compressed and stored by us.
-            <Image
+            // Photos are already compressed and stored by us. Tap to open
+            // the photo full screen.
+            <PhotoZoom
               src={post.photoUrl}
               alt={t("photoAlt", { name: post.authorName })}
+              openLabel={t("photoOpen", { name: post.authorName })}
+              closeLabel={t("photoClose")}
               width={600}
               height={450}
-              unoptimized
+              buttonClassName="block w-full rounded-xl"
               className="h-[210px] w-full rounded-xl object-cover"
             />
           ) : null}

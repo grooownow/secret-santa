@@ -276,7 +276,11 @@
       "toProfile": "Steckbriefe öffnen",
       "activeHint": "Spielt gerade: {name}. Die Tabs „Start“ und „Geschenk“ zeigen Wichtelkind und Geschenk dieser Person.",
       "playingNow": "Spielt gerade",
-      "playAs": "Spielen als {name}"
+      "playAs": "Spielen als {name}",
+      "genderShort": {
+        "boy": "Junge",
+        "girl": "Mädchen"
+      }
     },
     "unverified": {
       "title": "Noch ein Schritt",
@@ -322,7 +326,11 @@
       "consentTeen": "Ich bestätige, dass die jugendliche Person selbst der Teilnahme und der Verarbeitung ihrer Daten zustimmt.",
       "create": "Steckbrief des Kindes speichern",
       "save": "Steckbrief des Kindes speichern",
-      "pending": "Wird gespeichert…"
+      "pending": "Wird gespeichert…",
+      "gender": "Geschlecht, optional",
+      "gender_boy": "Junge",
+      "gender_girl": "Mädchen",
+      "gender_none": "Keine Angabe"
     },
     "photo": {
       "title": "Foto, wenn du magst",
@@ -591,7 +599,11 @@
       "photoClose": "Foto schließen",
       "leftTitle": "Geschenk hinterlegt",
       "leftText": "Die beschenkte Person hat eine E-Mail mit Ort und Notiz bekommen. Danke, dass du Wichtel bist!",
-      "viewGift": "Wo das Geschenk liegt"
+      "viewGift": "Wo das Geschenk liegt",
+      "genderShort": {
+        "boy": "Junge",
+        "girl": "Mädchen"
+      }
     },
     "form": {
       "title": "Wo wartet die Überraschung?",
@@ -764,7 +776,9 @@
     "feed": {
       "emptyTitle": "Die Wand ist noch leer",
       "emptyText": "Starte die Wand: Erzähl, wie das Geschenk war.",
-      "photoAlt": "Foto von {name}"
+      "photoAlt": "Foto von {name}",
+      "photoOpen": "Foto öffnen: {name}",
+      "photoClose": "Foto schließen"
     },
     "delete": {
       "action": "Löschen",

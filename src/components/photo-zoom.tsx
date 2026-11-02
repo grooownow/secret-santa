@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 /**
  * A round photo thumbnail that opens the same photo full screen. Closes with
@@ -16,15 +17,23 @@ export function PhotoZoom({
   openLabel,
   closeLabel,
   size = 80,
+  width,
+  height,
   className,
+  buttonClassName = "shrink-0 rounded-full",
 }: {
   src: string;
   alt: string;
   /** e.g. «Открыть фото: Вася». */
   openLabel: string;
   closeLabel: string;
+  /** Square thumbnail edge; `width`/`height` override it for other shapes. */
   size?: number;
+  width?: number;
+  height?: number;
   className?: string;
+  /** Shape of the clickable thumbnail (round by default). */
+  buttonClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -43,13 +52,16 @@ export function PhotoZoom({
         onClick={() => setOpen(true)}
         aria-label={openLabel}
         aria-haspopup="dialog"
-        className="focus-visible:ring-santa-green shrink-0 cursor-zoom-in rounded-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+        className={cn(
+          "focus-visible:ring-santa-green cursor-zoom-in focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+          buttonClassName,
+        )}
       >
         <Image
           src={src}
           alt={alt}
-          width={size}
-          height={size}
+          width={width ?? size}
+          height={height ?? size}
           unoptimized
           className={className}
         />

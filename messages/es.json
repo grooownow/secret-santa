@@ -276,7 +276,11 @@
       "toProfile": "Abrir las fichas",
       "activeHint": "Jugando ahora: {name}. Las pestañas Inicio y Regalo muestran el destinatario y el regalo de esta persona.",
       "playingNow": "Jugando ahora",
-      "playAs": "Jugar como {name}"
+      "playAs": "Jugar como {name}",
+      "genderShort": {
+        "boy": "niño",
+        "girl": "niña"
+      }
     },
     "unverified": {
       "title": "Solo falta un paso",
@@ -322,7 +326,11 @@
       "consentTeen": "Confirmo que la persona adolescente acepta participar y el tratamiento de sus datos.",
       "create": "Guardar ficha del menor",
       "save": "Guardar ficha del menor",
-      "pending": "Guardando…"
+      "pending": "Guardando…",
+      "gender": "Sexo, opcional",
+      "gender_boy": "Niño",
+      "gender_girl": "Niña",
+      "gender_none": "Prefiero no decirlo"
     },
     "photo": {
       "title": "Foto opcional",
@@ -591,7 +599,11 @@
       "photoClose": "Cerrar foto",
       "leftTitle": "Regalo dejado",
       "leftText": "La persona recibió un correo con el lugar y la nota. ¡Gracias por ser Santa!",
-      "viewGift": "Dónde quedó el regalo"
+      "viewGift": "Dónde quedó el regalo",
+      "genderShort": {
+        "boy": "niño",
+        "girl": "niña"
+      }
     },
     "form": {
       "title": "¿Dónde espera la sorpresa?",
@@ -764,7 +776,9 @@
     "feed": {
       "emptyTitle": "El muro está vacío por ahora",
       "emptyText": "Abre el muro: cuenta cómo fue el regalo.",
-      "photoAlt": "Foto de {name}"
+      "photoAlt": "Foto de {name}",
+      "photoOpen": "Abrir foto: {name}",
+      "photoClose": "Cerrar foto"
     },
     "delete": {
       "action": "Eliminar",

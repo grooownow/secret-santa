@@ -276,7 +276,11 @@
       "toProfile": "Open the profiles",
       "activeHint": "Playing now: {name}. The Home and Gift tabs show this participant's recipient and gift.",
       "playingNow": "Playing now",
-      "playAs": "Play as {name}"
+      "playAs": "Play as {name}",
+      "genderShort": {
+        "boy": "boy",
+        "girl": "girl"
+      }
     },
     "unverified": {
       "title": "One step left",
@@ -322,7 +326,11 @@
       "consentTeen": "I confirm that the teenager agrees to take part and to the processing of their data.",
       "create": "Save child profile",
       "save": "Save child profile",
-      "pending": "Saving…"
+      "pending": "Saving…",
+      "gender": "Gender, optional",
+      "gender_boy": "Boy",
+      "gender_girl": "Girl",
+      "gender_none": "Prefer not to say"
     },
     "photo": {
       "title": "Photo, if you like",
@@ -591,7 +599,11 @@
       "photoClose": "Close photo",
       "leftTitle": "Gift left",
       "leftText": "The recipient got an email with the place and note. Thank you for being a Santa!",
-      "viewGift": "Where the gift was left"
+      "viewGift": "Where the gift was left",
+      "genderShort": {
+        "boy": "boy",
+        "girl": "girl"
+      }
     },
     "form": {
       "title": "Where is the surprise waiting?",
@@ -764,7 +776,9 @@
     "feed": {
       "emptyTitle": "The wall is empty for now",
       "emptyText": "Start the wall: tell us how the gift went.",
-      "photoAlt": "Photo from {name}"
+      "photoAlt": "Photo from {name}",
+      "photoOpen": "Open photo: {name}",
+      "photoClose": "Close photo"
     },
     "delete": {
       "action": "Delete",
