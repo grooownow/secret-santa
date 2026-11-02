@@ -1,7 +1,7 @@
 import { Lock, UserRound } from "lucide-react";
-import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { LinkButton } from "@/components/form-ui";
+import { PhotoZoom } from "@/components/photo-zoom";
 import { PageText, PageTitle } from "@/features/account";
 import {
   LocalizedText,
@@ -127,13 +127,12 @@ export async function RecipientCard({
         }
       >
         {recipient.photoUrl ? (
-          <Image
+          <PhotoZoom
             src={recipient.photoUrl}
             alt={t("photoAlt", { name: recipient.name })}
-            width={80}
-            height={80}
-            unoptimized
-            className="size-20 shrink-0 rounded-full object-cover"
+            openLabel={t("photoOpen", { name: recipient.name })}
+            closeLabel={t("photoClose")}
+            className="size-20 rounded-full object-cover"
           />
         ) : (
           <span

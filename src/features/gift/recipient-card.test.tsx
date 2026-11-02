@@ -6,6 +6,13 @@ vi.mock("next-intl/server", () => ({
   getTranslations: async (ns: string) => (key: string) => `${ns}.${key}`,
   getLocale: async () => "ru",
 }));
+// Client component (hooks); the server-render helper calls components as
+// plain functions, so stand it in with its props.
+vi.mock("@/components/photo-zoom", () => ({
+  PhotoZoom: ({ src, openLabel }: { src: string; openLabel: string }) => (
+    <button aria-label={openLabel} data-src={src} />
+  ),
+}));
 vi.mock("@/features/account", () => ({
   PageTitle: ({ children }: { children: React.ReactNode }) => (
     <h1>{children}</h1>
@@ -55,5 +62,7 @@ describe("RecipientCard", () => {
     const out = await render("https://blob.example/p.jpg");
     expect(out).not.toContain('data-testid="photo-placeholder"');
     expect(out).toContain("blob.example");
+    // The thumbnail opens the photo full screen.
+    expect(out).toContain('aria-label="gift.recipient.photoOpen"');
   });
 });
