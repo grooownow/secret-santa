@@ -10,6 +10,8 @@ export interface RecipientInfo {
   name: string;
   kind: "adult" | "child";
   age: number | null;
+  /** Children only, optional: helps the Santa choose. */
+  gender: "boy" | "girl" | null;
   building: string | null;
   apartment: string | null;
   photoUrl: string | null;
@@ -97,6 +99,7 @@ export async function getRecipient(
       name: recipient.name,
       kind: recipient.kind,
       age: recipient.age,
+      gender: recipient.gender,
       building: row.building,
       apartment: row.apartment,
       photoUrl: recipient.photoUrl,

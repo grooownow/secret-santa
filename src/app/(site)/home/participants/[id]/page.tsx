@@ -67,6 +67,7 @@ export default async function EditParticipant({
           id: person.id,
           name: person.name,
           age: String(person.age ?? ""),
+          gender: person.gender ?? "",
           wishes: person.wishes,
           avoid: person.avoid,
         }}

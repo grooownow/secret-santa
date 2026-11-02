@@ -70,6 +70,10 @@ export const accounts = pgTable(
 );
 
 export const participantKind = pgEnum("participant_kind", ["adult", "child"]);
+
+// Optional for children (owner, 2 Nov): helps the Santa pick a gift. Not
+// asked for adults; null means "not said".
+export const childGender = pgEnum("child_gender", ["boy", "girl"]);
 export const giftPlace = pgEnum("gift_place", ["locker", "mailbox"]);
 export const tokenPurpose = pgEnum("token_purpose", ["verify", "reset"]);
 
@@ -85,6 +89,7 @@ export const participants = pgTable(
     kind: participantKind("kind").notNull(),
     name: text("name").notNull(),
     age: integer("age"),
+    gender: childGender("gender"),
     photoUrl: text("photo_url"),
     wishes: text("wishes").notNull().default(""),
     avoid: text("avoid").notNull().default(""),

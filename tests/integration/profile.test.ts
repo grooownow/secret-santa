@@ -222,6 +222,28 @@ describe("owner profile", () => {
     }
   });
 
+  it("child gender is optional: boy/girl stored, empty is null, anything else refused", async () => {
+    await signedInUser();
+    await redirectTarget(() => saveAdult());
+    await redirectTarget(() =>
+      saveChild({ ...childFields, name: "Vasya", gender: "boy" }),
+    );
+    await redirectTarget(() =>
+      saveChild({ ...childFields, name: "Masha", gender: "" }),
+    );
+    expect(
+      (await saveChild({ ...childFields, name: "X", gender: "robot" })).error,
+    ).toBe("invalid");
+    const kids = await db
+      .select()
+      .from(participants)
+      .where(eq(participants.kind, "child"));
+    const byName = new Map(kids.map((k) => [k.name, k.gender]));
+    expect(byName.get("Vasya")).toBe("boy");
+    expect(byName.get("Masha")).toBeNull();
+    expect(byName.has("X")).toBe(false);
+  });
+
   it("keeps the typed text when the save fails", async () => {
     await signedInUser();
     const state = await saveAdult({ ...adultFields, building: "X" });

@@ -71,6 +71,13 @@
       "when": 1793476792367,
       "tag": "0009_zippy_trauma",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793630206413,
+      "tag": "0010_fresh_vargas",
+      "breakpoints": true
     }
   ]
 }

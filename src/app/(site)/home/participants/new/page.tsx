@@ -55,7 +55,7 @@ export default async function NewParticipant() {
         mode="create"
         building={account.building ?? ""}
         apartment={account.apartment ?? ""}
-        defaults={{ name: "", age: "", wishes: "", avoid: "" }}
+        defaults={{ name: "", age: "", gender: "", wishes: "", avoid: "" }}
       />
     </>
   );

@@ -36,6 +36,7 @@ export async function saveChildAction(
   const values: ProfileValues = {
     name: text(formData, "name"),
     age: text(formData, "age"),
+    gender: text(formData, "gender"),
     wishes: text(formData, "wishes"),
     avoid: text(formData, "avoid"),
   };
@@ -91,6 +92,7 @@ export async function saveChildAction(
           .set({
             name: data.name,
             age: data.age,
+            gender: data.gender,
             childConsentAt: new Date(),
             wishes: data.wishes,
             avoid: data.avoid,
@@ -105,6 +107,7 @@ export async function saveChildAction(
           kind: "child",
           name: data.name,
           age: data.age,
+          gender: data.gender,
           childConsentAt: new Date(),
           wishes: data.wishes,
           avoid: data.avoid,

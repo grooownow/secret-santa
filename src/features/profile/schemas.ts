@@ -27,6 +27,11 @@ export const childSchema = z.object({
     .regex(/^\d{1,2}$/)
     .transform(Number)
     .pipe(z.number().int().min(0).max(17)),
+  // Optional: "" (not said) becomes null.
+  gender: z
+    .enum(["boy", "girl", ""])
+    .optional()
+    .transform((value) => value || null),
   wishes: text,
   avoid: text,
   guardian: z.literal("on"),

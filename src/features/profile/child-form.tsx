@@ -17,6 +17,8 @@ export interface ChildDefaults {
   id?: string;
   name: string;
   age: string;
+  /** "boy" | "girl" | "" (not said). */
+  gender: string;
   wishes: string;
   avoid: string;
 }
@@ -41,6 +43,7 @@ export function ChildForm({
   const v = state.values;
   const [age, setAge] = useState(v?.age ?? defaults.age);
   const teen = Number(age) >= 14;
+  const gender = v?.gender ?? defaults.gender;
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -70,6 +73,30 @@ export function ChildForm({
           onChange={(event) => setAge(event.target.value)}
         />
       </Field>
+      {/* Optional: three pills, "not said" by default. Radios, so the
+          keyboard and screen readers treat it as one choice. */}
+      <fieldset className="flex flex-col gap-2">
+        <legend className="text-santa-green mb-2 text-xs font-semibold">
+          {t("gender")}
+        </legend>
+        <div className="flex flex-wrap gap-2">
+          {(["boy", "girl", ""] as const).map((value) => (
+            <label
+              key={value || "none"}
+              className="border-santa-line text-santa-ink has-checked:border-santa-green has-checked:bg-santa-mint has-checked:text-santa-green has-focus-visible:outline-santa-green flex h-10 cursor-pointer items-center rounded-full border px-4 text-sm font-semibold has-focus-visible:outline-2 has-focus-visible:outline-offset-2"
+            >
+              <input
+                type="radio"
+                name="gender"
+                value={value}
+                defaultChecked={gender === value}
+                className="sr-only"
+              />
+              {t(value ? `gender_${value}` : "gender_none")}
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <div className="bg-santa-mint flex flex-col gap-1 rounded-2xl p-4">
         <p className="text-santa-green text-sm font-bold">
           {t("address", { building, apartment })}

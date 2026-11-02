@@ -162,6 +162,9 @@ export async function RecipientCard({
             {recipient.kind === "child"
               ? ` · ${t("childAge", { age: recipient.age ?? 0 })}`
               : ""}
+            {recipient.kind === "child" && recipient.gender
+              ? ` · ${t(`genderShort.${recipient.gender}`)}`
+              : ""}
           </p>
         </div>
       </div>

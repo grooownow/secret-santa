@@ -103,7 +103,15 @@ export async function ParticipantCards({
                 >
                   {adult
                     ? t("owner")
-                    : `${t("child")} · ${t("childAge", { age: person.age ?? 0 })}`}
+                    : [
+                        t("child"),
+                        t("childAge", { age: person.age ?? 0 }),
+                        person.gender
+                          ? t(`genderShort.${person.gender}`)
+                          : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
                 </span>
                 <p className="text-santa-muted text-sm">
                   {t("address", {

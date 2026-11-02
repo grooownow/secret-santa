@@ -14,6 +14,7 @@ export interface ProfileValues {
   building?: string;
   apartment?: string;
   age?: string;
+  gender?: string;
   wishes?: string;
   avoid?: string;
 }

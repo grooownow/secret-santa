@@ -134,3 +134,19 @@ describe("ParticipantCards after the draw (who plays now)", () => {
     expect(out).not.toContain('name="participantId"');
   });
 });
+
+describe("ParticipantCards: child gender", () => {
+  it("shows the gender on the child chip only when it was given", async () => {
+    const boy = person({
+      id: CHILD,
+      kind: "child",
+      name: "Kid",
+      age: 6,
+      gender: "boy",
+    });
+    const withGender = card(await render([adult, boy]), "child");
+    expect(withGender).toContain("profile.home.genderShort.boy");
+    const without = card(await render([adult, child]), "child");
+    expect(without).not.toContain("genderShort");
+  });
+});

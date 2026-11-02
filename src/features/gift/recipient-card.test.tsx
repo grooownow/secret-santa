@@ -30,6 +30,7 @@ const recipient = {
   name: "Мария",
   kind: "adult" as const,
   age: null,
+  gender: null,
   building: "B",
   apartment: "17",
   photoUrl: null,
