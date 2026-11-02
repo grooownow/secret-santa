@@ -30,7 +30,10 @@ beforeEach(() => {
 
 async function fillAndSubmit() {
   render(<GiftForm participantId="p1" name="Rob" />);
-  await userEvent.selectOptions(screen.getByRole("combobox"), "locker");
+  await userEvent.click(screen.getByRole("combobox"));
+  await userEvent.click(
+    screen.getByRole("option", { name: "gift.form.locker" }),
+  );
   await userEvent.type(
     screen.getByPlaceholderText("gift.form.notePlaceholder"),
     "hello",
@@ -47,6 +50,22 @@ describe("GiftForm", () => {
     expect(document.querySelector('[name="code"]')).toBeNull();
     expect(document.querySelector('[name="place"]')).not.toBeNull();
     expect(document.querySelector('[name="note"]')).not.toBeNull();
+  });
+
+  it("without a place: shows the field error and does not ask or send", async () => {
+    render(<GiftForm participantId="p1" name="Rob" />);
+    await userEvent.click(
+      screen.getByRole("button", { name: "gift.form.submit" }),
+    );
+    expect(screen.getByText("gift.form.placeMissing")).toBeTruthy();
+    expect(document.querySelector("dialog")!.open).toBe(false);
+    expect(submitted).toHaveLength(0);
+  });
+
+  it("the place picker is our listbox (opens below, own style), not a native select", () => {
+    render(<GiftForm participantId="p1" name="Rob" />);
+    expect(document.querySelector("select")).toBeNull();
+    expect(screen.getByRole("combobox")).toBeTruthy();
   });
 
   it("asks «Всё верно?» first and sends nothing until confirmed", async () => {

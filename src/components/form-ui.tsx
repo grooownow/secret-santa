@@ -142,10 +142,13 @@ export function SubmitButton({
   children,
   pendingLabel,
   disabled,
+  icon,
 }: {
   children: React.ReactNode;
   pendingLabel?: string;
   disabled?: boolean;
+  /** Replaces the default ↗ arrow when the action is not "go somewhere". */
+  icon?: React.ReactNode;
 }) {
   const { pending } = useFormStatus();
   return (
@@ -160,7 +163,7 @@ export function SubmitButton({
       {pending ? (
         <Spinner />
       ) : (
-        <ArrowUpRight className="size-[18px]" aria-hidden />
+        (icon ?? <ArrowUpRight className="size-[18px]" aria-hidden />)
       )}
     </button>
   );

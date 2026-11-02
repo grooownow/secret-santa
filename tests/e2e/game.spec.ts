@@ -347,8 +347,9 @@ test.describe("the whole game", () => {
       await test.step("the giver marks the gift and the receiver is emailed", async () => {
         await from.page.getByRole("link", { name: "Gift left" }).click();
         await from.page
-          .getByLabel("Where was the gift left?")
-          .selectOption("locker");
+          .getByRole("combobox", { name: "Where was the gift left?" })
+          .click();
+        await from.page.getByRole("option", { name: "Locker" }).click();
         await expect(from.page.getByLabel("Number or code")).toHaveCount(0);
         await from.page.getByLabel(/Anonymous note/).fill("Happy holidays");
         await from.page.getByRole("button", { name: "Gift left" }).click();

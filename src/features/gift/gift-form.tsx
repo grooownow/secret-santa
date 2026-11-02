@@ -2,14 +2,15 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState, useRef, useState } from "react";
+import { Gift } from "lucide-react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   Field,
   FormAlert,
-  SelectInput,
   SubmitButton,
   TextAreaInput,
 } from "@/components/form-ui";
+import { ListboxSelect } from "@/components/listbox-select";
 import { markGiftFormAction } from "./mark-gift-action";
 import { NOTE_MAX } from "./schemas";
 import type { GiftState } from "./state";
@@ -34,20 +35,28 @@ export function GiftForm({
   const values = state.values ?? { place: "", note: "" };
   const formRef = useRef<HTMLFormElement>(null);
   const confirmed = useRef(false);
+  const placeRef = useRef<HTMLButtonElement>(null);
+  const [place, setPlace] = useState(values.place ?? "");
+  const [placeMissing, setPlaceMissing] = useState(false);
   const [asking, setAsking] = useState(false);
 
   return (
     <form
       ref={formRef}
       action={formAction}
-      // The submit event fires only after the browser's own validation
-      // passed (place chosen), so the question comes for a complete form.
+      // The place is our own listbox (no native `required`), so it is checked
+      // here; only a complete form gets the «Всё верно?» question.
       onSubmit={(event) => {
         if (confirmed.current) {
           confirmed.current = false;
           return;
         }
         event.preventDefault();
+        if (!place) {
+          setPlaceMissing(true);
+          placeRef.current?.focus();
+          return;
+        }
         setAsking(true);
       }}
       className="flex flex-col gap-5"
@@ -60,14 +69,24 @@ export function GiftForm({
         {t("intro", { name })}
       </p>
 
-      <Field label={t("place")}>
-        <SelectInput name="place" required defaultValue={values.place ?? ""}>
-          <option value="" disabled>
-            {t("placePlaceholder")}
-          </option>
-          <option value="locker">{t("locker")}</option>
-          <option value="mailbox">{t("mailbox")}</option>
-        </SelectInput>
+      <Field
+        label={t("place")}
+        error={placeMissing ? t("placeMissing") : undefined}
+      >
+        <ListboxSelect
+          ref={placeRef}
+          name="place"
+          placeholder={t("placePlaceholder")}
+          defaultValue={place}
+          onValueChange={(next) => {
+            setPlace(next);
+            setPlaceMissing(false);
+          }}
+          options={[
+            { value: "locker", label: t("locker") },
+            { value: "mailbox", label: t("mailbox") },
+          ]}
+        />
       </Field>
       <Field label={t("note")} hint={t("noteHint", { max: NOTE_MAX })}>
         <TextAreaInput
@@ -87,7 +106,12 @@ export function GiftForm({
 
       {state.error ? <FormAlert>{t(`errors.${state.error}`)}</FormAlert> : null}
 
-      <SubmitButton pendingLabel={t("pending")}>{t("submit")}</SubmitButton>
+      <SubmitButton
+        pendingLabel={t("pending")}
+        icon={<Gift className="size-[18px]" aria-hidden />}
+      >
+        {t("submit")}
+      </SubmitButton>
       <p className="text-santa-muted text-xs leading-relaxed">{t("hint")}</p>
 
       <ConfirmDialog

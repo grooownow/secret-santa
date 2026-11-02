@@ -2,12 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { LOCALES, LOCALE_NAMES } from "@/i18n/locale";
-import {
-  CheckboxRow,
-  Field,
-  SelectInput,
-  TextLink,
-} from "@/components/form-ui";
+import { CheckboxRow, Field, TextLink } from "@/components/form-ui";
+import { ListboxSelect } from "@/components/listbox-select";
 
 /**
  * Consent and 14+ checkboxes, shared by register and /welcome. Register also
@@ -26,13 +22,19 @@ export function ConsentFields({
     <>
       {defaultLocale ? (
         <Field label={t("language")}>
-          <SelectInput name="locale" defaultValue={defaultLocale}>
-            {LOCALES.map((locale) => (
-              <option key={locale} value={locale}>
-                {LOCALE_NAMES[locale]}
-              </option>
-            ))}
-          </SelectInput>
+          {/* Our listbox, like every picker on the site: styled, opens
+              downward (a native select popup misplaced itself in Chrome). */}
+          <ListboxSelect
+            name="locale"
+            placeholder={
+              LOCALE_NAMES[defaultLocale as keyof typeof LOCALE_NAMES] ?? ""
+            }
+            defaultValue={defaultLocale}
+            options={LOCALES.map((locale) => ({
+              value: locale,
+              label: LOCALE_NAMES[locale],
+            }))}
+          />
         </Field>
       ) : null}
       <div className="flex flex-col gap-4">
