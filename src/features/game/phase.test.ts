@@ -66,9 +66,11 @@ describe("canMarkGift and canGuess", () => {
     expect(canGuess(at("2026-12-26"), defaults())).toBe(false);
   });
 
-  test("guess is open from the draw through giftsEndOn inclusive", () => {
+  test("guess opens with the gifts: giftsStartOn through giftsEndOn inclusive", () => {
     const s = drawn();
-    expect(canGuess(at("2026-12-10"), s)).toBe(true);
+    expect(canGuess(at("2026-12-10"), s)).toBe(false);
+    expect(canGuess(at("2026-12-24"), s)).toBe(false);
+    expect(canGuess(at("2026-12-25"), s)).toBe(true);
     expect(canGuess(at("2026-12-31"), s)).toBe(true);
     expect(canGuess(at("2027-01-01"), s)).toBe(false);
   });

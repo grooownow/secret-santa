@@ -32,6 +32,8 @@ export interface HomeViewProps {
   daysToGifts: number;
   canMark: boolean;
   canGuess: boolean;
+  /** Whom this participant guessed so far (shown with «изменить»). */
+  guessedName?: string | null;
   /** Already formatted dates, e.g. "25 декабря". */
   dates: { giftsStart: string; giftsEnd: string };
 }
@@ -192,17 +194,23 @@ export async function HomeView(props: HomeViewProps) {
         <Block
           title={t("guessTitle")}
           text={
-            phase === "waiting"
-              ? t("guessText", { date: dates.giftsEnd })
-              : undefined
+            props.guessedName
+              ? t("guessSaved", { name: props.guessedName })
+              : t("guessText", { date: dates.giftsEnd })
           }
         >
           <TextLink href={guessPath(id)}>
-            {phase === "waiting"
-              ? t("guessLink")
+            {props.guessedName
+              ? t("guessChange")
               : t("guessLinkUntil", { date: dates.giftsEnd })}
           </TextLink>
         </Block>
+      ) : phase === "waiting" ? (
+        // Guessing opens with the gifts; say when instead of hiding it.
+        <Block
+          title={t("guessTitle")}
+          text={t("guessLater", { date: dates.giftsStart })}
+        />
       ) : null}
     </div>
   );

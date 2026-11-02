@@ -59,9 +59,18 @@ export function canMarkGift(now: Date, s: GameSettings): boolean {
 }
 
 /** A guess can be changed from the draw through giftsEndOn inclusive. */
+/**
+ * Guessing your Santa opens together with the gifts (owner's call, 2 Nov):
+ * from giftsStartOn through giftsEndOn, the same window as marking a gift.
+ */
 export function canGuess(now: Date, s: GameSettings): boolean {
   const today = todayInMadrid(now);
-  return !!s.drawnAt && today <= s.giftsEndOn && today < s.closeOn;
+  return (
+    !!s.drawnAt &&
+    today >= s.giftsStartOn &&
+    today <= s.giftsEndOn &&
+    today < s.closeOn
+  );
 }
 
 /** Dropping out goes through the organizer and only while waiting. */
