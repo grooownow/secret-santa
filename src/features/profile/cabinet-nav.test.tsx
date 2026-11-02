@@ -41,6 +41,13 @@ describe("CabinetNav", () => {
         .getAllByRole("link")
         .filter((l) => l.getAttribute("aria-current") === "page");
       expect(current.map((l) => l.textContent)).toEqual([active]);
+      // Clearly visible: a filled green pill, the others stay plain.
+      expect(current[0]).toHaveClass("bg-santa-green", "text-santa-white");
+      for (const other of screen
+        .getAllByRole("link")
+        .filter((l) => l !== current[0])) {
+        expect(other).not.toHaveClass("bg-santa-green");
+      }
       unmount();
     }
   });

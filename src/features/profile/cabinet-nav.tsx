@@ -66,7 +66,7 @@ export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
   return (
     <nav
       aria-label={t("label")}
-      className="bg-santa-white border-santa-line sticky bottom-0 flex items-stretch border-t px-1 pt-3 pb-4"
+      className="bg-santa-white border-santa-line sticky bottom-0 flex items-stretch gap-0.5 border-t px-1 pt-2 pb-3"
     >
       {items.map(({ key, href, icon: Icon }) => {
         const active = isActive(pathname, key, href);
@@ -76,9 +76,11 @@ export function CabinetNav({ organizer = false }: { organizer?: boolean }) {
             href={href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[11px] leading-tight",
+              "flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-0.5 py-1.5 text-center text-[11px] leading-tight",
+              // The active tab is a filled green pill: colour alone (green
+              // vs grey text) was too weak to see which tab is open.
               active
-                ? "text-santa-green font-semibold"
+                ? "bg-santa-green text-santa-white font-semibold"
                 : "text-santa-muted font-normal",
             )}
           >
