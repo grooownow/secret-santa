@@ -40,13 +40,15 @@ const render = (overrides: Partial<HomeViewProps>) =>
   html(<HomeView {...base} {...overrides} />);
 
 describe("HomeView per phase", () => {
-  it("waiting: recipient, days to gifts, guess; no gift button, no wall", async () => {
-    const out = await render({});
+  it("waiting: recipient, days to gifts, guess not yet open; no gift button, no wall", async () => {
+    const out = await render({ canGuess: false });
     expect(out).toContain("cabinet.home.daysTitle");
     expect(out).toContain("cabinet.home.recipient");
     expect(out).toContain(`/home/recipient/${ID}`);
     expect(out).toContain('aria-disabled="true"');
-    expect(out).toContain(`/home/guess/${ID}`);
+    // Guessing opens with the gifts: the block says when, with no link.
+    expect(out).toContain("cabinet.home.guessLater");
+    expect(out).not.toContain(`/home/guess/${ID}`);
     expect(out).not.toContain("/home/wall");
     expect(out).not.toContain(`/home/gift/${ID}`);
     expect(out).not.toContain(`/home/my-gift/${ID}`);
@@ -60,6 +62,17 @@ describe("HomeView per phase", () => {
     expect(out).toContain("/home/wall");
     expect(out).toContain("cabinet.home.guessLinkUntil");
     expect(out).not.toContain("cabinet.home.daysTitle");
+  });
+
+  it("gifts with a saved guess: shows whom and offers to change it", async () => {
+    const out = await render({
+      phase: "gifts",
+      canMark: true,
+      guessedName: "Boris",
+    });
+    expect(out).toContain("cabinet.home.guessSaved");
+    expect(out).toContain("cabinet.home.guessChange");
+    expect(out).toContain(`/home/guess/${ID}`);
   });
 
   it("gifts after marking: left status and the edit button", async () => {
@@ -99,22 +112,36 @@ describe("HomeView per phase", () => {
 });
 
 describe("ParticipantSwitcher", () => {
-  it("lists every participant with their own link", async () => {
-    const other = "22222222-2222-4222-8222-222222222222";
+  const other = "22222222-2222-4222-8222-222222222222";
+  const people = [
+    { id: ID, name: "Anna", kind: "adult" as const, age: null },
+    { id: other, name: "Misha", kind: "child" as const, age: 8 },
+  ];
+  const action = async () => {};
+
+  it("highlights the active participant and offers a button for the other", async () => {
     const out = await html(
       <ParticipantSwitcher
-        people={[
-          { id: ID, name: "Anna", kind: "adult", age: null },
-          { id: other, name: "Misha", kind: "child", age: 8 },
-        ]}
+        people={people}
+        currentId={ID}
         building="K"
         apartment="24"
-        hrefFor={(id) => `/home?p=${id}` as never}
+        action={action}
+        to="gift"
       />,
     );
     expect(out).toContain("Anna");
     expect(out).toContain("Misha");
-    expect(out).toContain(`/home?p=${ID}`);
-    expect(out).toContain(`/home?p=${other}`);
+    // Exactly one card is marked active, and it is Anna's.
+    expect(out.match(/aria-current="true"/g)).toHaveLength(1);
+    expect(out.indexOf('aria-current="true"')).toBeLessThan(
+      out.indexOf("Misha"),
+    );
+    expect(out).toContain("cabinet.switcher.current");
+    // The choice is a POST (no link a prefetch could follow), only for Misha.
+    expect(out).not.toContain("/home/switch/");
+    expect(out.match(/name="participantId"/g)).toHaveLength(1);
+    expect(out).toContain(`value="${other}"`);
+    expect(out).toContain('name="to" value="gift"');
   });
 });

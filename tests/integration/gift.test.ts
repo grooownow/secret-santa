@@ -487,19 +487,21 @@ describe("current participant", () => {
     expect(jar.has("participant")).toBe(false);
 
     signInAs(owner.user);
-    const route =
-      await import("../../src/app/(site)/home/switch/[participantId]/route");
-    const request = { nextUrl: new URL("http://x/home/switch/a?to=gift") };
-    await expect(
-      route.GET(request as never, {
-        params: Promise.resolve({ participantId: other.p.id }),
-      }),
-    ).rejects.toThrow("NEXT_NOT_FOUND");
-    await expect(
-      route.GET(request as never, {
-        params: Promise.resolve({ participantId: owner.p.id }),
-      }),
-    ).rejects.toThrow("NEXT_REDIRECT:/home/gift");
+    const { switchParticipantAction } =
+      await import("../../src/features/profile/switch-action");
+    const form = (id: string) => {
+      const data = new FormData();
+      data.set("participantId", id);
+      data.set("to", "gift");
+      return data;
+    };
+    await expect(switchParticipantAction(form(other.p.id))).rejects.toThrow(
+      "NEXT_NOT_FOUND",
+    );
+    expect(jar.has("participant")).toBe(false);
+    await expect(switchParticipantAction(form(owner.p.id))).rejects.toThrow(
+      "NEXT_REDIRECT:/home/gift",
+    );
     expect(jar.get("participant")).toBe(owner.p.id);
   });
 });

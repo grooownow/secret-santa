@@ -15,11 +15,16 @@ export async function ProfileOverview({
   building,
   apartment,
   registrationOpen,
+  active,
 }: {
   people: Participant[];
   building: string | null;
   apartment: string | null;
   registrationOpen: boolean;
+  active?: {
+    currentId: string;
+    action: (formData: FormData) => Promise<void>;
+  };
 }) {
   const [t, nav] = await Promise.all([
     getTranslations("profile.home"),
@@ -47,6 +52,7 @@ export async function ProfileOverview({
         building={building}
         apartment={apartment}
         editable={registrationOpen}
+        active={active}
       />
     </div>
   );

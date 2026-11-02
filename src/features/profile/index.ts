@@ -17,6 +17,7 @@ export {
   getCurrentParticipant,
   rememberParticipant,
 } from "./current-participant";
+export { switchParticipantAction } from "./switch-action";
 export { PhotoInput } from "./photo-input";
 export { readPhoto } from "./photo-field";
 export type { PhotoInput as PhotoInputResult } from "./photo-field";

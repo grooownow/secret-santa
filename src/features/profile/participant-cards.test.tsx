@@ -99,3 +99,38 @@ describe("ParticipantCards", () => {
     expect(closed).not.toContain("/home/participants/");
   });
 });
+
+describe("ParticipantCards after the draw (who plays now)", () => {
+  const action = async () => {};
+  const renderActive = (currentId: string) =>
+    html(
+      <ParticipantCards
+        people={[adult, child]}
+        building="K"
+        apartment="12"
+        editable={false}
+        active={{ currentId, action }}
+      />,
+    );
+
+  it("frames the active card, says who plays and offers «play as» for the other", async () => {
+    const out = await renderActive(CHILD);
+    expect(out).toContain("profile.home.activeHint(Kid)");
+    const kid = card(out, "child");
+    expect(kid).toContain('aria-current="true"');
+    expect(kid).toContain("border-santa-green");
+    expect(kid).toContain("profile.home.playingNow");
+    expect(kid).not.toContain('name="participantId"');
+    const alice = card(out, "adult");
+    expect(alice).not.toContain("aria-current");
+    expect(alice).toContain("profile.home.playAs(Alice)");
+    expect(alice).toContain(`value="${ADULT}"`);
+    expect(alice).toContain('name="to" value="profile"');
+  });
+
+  it("before the draw: no switching on the cards", async () => {
+    const out = await render([adult, child], false);
+    expect(out).not.toContain("profile.home.playingNow");
+    expect(out).not.toContain('name="participantId"');
+  });
+});

@@ -3,8 +3,10 @@ import { getTranslations } from "next-intl/server";
 import { requireAccount } from "@/features/auth";
 import { getSettings, registrationOpen } from "@/features/game";
 import {
+  getCurrentParticipant,
   listParticipants,
   ProfileOverview,
+  switchParticipantAction,
   UnverifiedNotice,
 } from "@/features/profile";
 
@@ -24,12 +26,23 @@ export default async function ProfilePage() {
     getSettings(),
     listParticipants(account.id),
   ]);
+  // After the draw each participant has their own recipient: show who plays
+  // now and let the family switch right here.
+  const current =
+    settings.drawnAt && people.length > 1
+      ? await getCurrentParticipant(account.id, people)
+      : null;
   return (
     <ProfileOverview
       people={people}
       building={account.building}
       apartment={account.apartment}
       registrationOpen={registrationOpen(new Date(), settings)}
+      active={
+        current
+          ? { currentId: current.id, action: switchParticipantAction }
+          : undefined
+      }
     />
   );
 }

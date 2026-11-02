@@ -2,15 +2,19 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { requireVerifiedAccount } from "@/features/auth";
 import { ParticipantSwitcher } from "@/features/game";
-import { listParticipants } from "@/features/profile";
-import { switchToPath } from "@/lib/cabinet-routes";
+import {
+  getCurrentParticipant,
+  listParticipants,
+  switchParticipantAction,
+} from "@/features/profile";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("cabinet.switcher");
   return { title: t("title") };
 }
 
-// Frame eIsHY: pick whose cabinet to open. `?to=gift` leads to the gift tab.
+// Frame eIsHY: pick whose cabinet to open. `?to=gift` / `?to=profile` return
+// to that tab after the choice.
 export default async function SwitchPage({
   searchParams,
 }: {
@@ -21,13 +25,17 @@ export default async function SwitchPage({
     listParticipants(account.id),
     searchParams,
   ]);
-  const to = query.to === "gift" ? "gift" : "home";
+  const current = await getCurrentParticipant(account.id, people);
+  const to =
+    query.to === "gift" ? "gift" : query.to === "profile" ? "profile" : "home";
   return (
     <ParticipantSwitcher
       people={people}
+      currentId={current?.id ?? null}
       building={account.building}
       apartment={account.apartment}
-      hrefFor={(id) => switchToPath(id, to)}
+      action={switchParticipantAction}
+      to={to}
     />
   );
 }

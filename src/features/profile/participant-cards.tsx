@@ -1,4 +1,4 @@
-import { Pencil, Plus, UserRound } from "lucide-react";
+import { Check, Pencil, Plus, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -12,18 +12,27 @@ import { NEW_PARTICIPANT, participantPath } from "./routes";
  * «это ты», a child card is mint with «ребёнок · N лет». Each card shows the
  * saved photo (children have none, spec §3) or a placeholder, and while
  * registration is open a pencil button to edit it and «Добавить ребёнка».
+ * After the draw, with several participants (`active`), the card of the one
+ * playing now gets a green frame and «Сейчас играет», the others a button to
+ * play as them.
  */
 export async function ParticipantCards({
   people,
   building,
   apartment,
   editable,
+  active,
 }: {
   people: Participant[];
   building: string | null;
   apartment: string | null;
   /** Registration is open: cards can be edited and children added. */
   editable: boolean;
+  /** After the draw: who plays now and how to switch (posts participantId). */
+  active?: {
+    currentId: string;
+    action: (formData: FormData) => Promise<void>;
+  };
 }) {
   const t = await getTranslations("profile.home");
   const hasChild = people.some((p) => p.kind === "child");
@@ -32,18 +41,31 @@ export async function ParticipantCards({
   return (
     <section className="flex flex-col gap-3" aria-label={title}>
       <h2 className="text-santa-ink text-base font-bold">{title}</h2>
+      {active ? (
+        <p className="text-santa-muted text-sm leading-relaxed">
+          {t("activeHint", {
+            name:
+              people.find((p) => p.id === active.currentId)?.name ??
+              people[0]?.name ??
+              "",
+          })}
+        </p>
+      ) : null}
       <ul className="flex flex-col gap-3">
         {people.map((person) => {
           const adult = person.kind === "adult";
+          const current = active?.currentId === person.id;
           return (
             <li
               key={person.id}
               data-kind={person.kind}
+              aria-current={current ? "true" : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-2xl border p-4",
-                adult
-                  ? "border-santa-line bg-santa-white"
-                  : "bg-santa-mint border-transparent",
+                "flex flex-wrap items-center gap-3 rounded-2xl p-4",
+                current ? "border-santa-green border-2" : "border",
+                adult ? "bg-santa-white" : "bg-santa-mint",
+                !current &&
+                  (adult ? "border-santa-line" : "border-transparent"),
               )}
             >
               {person.photoUrl ? (
@@ -101,6 +123,29 @@ export async function ParticipantCards({
                 >
                   <Pencil className="size-5" aria-hidden />
                 </Link>
+              ) : null}
+              {active ? (
+                current ? (
+                  <p className="bg-santa-green text-santa-white flex basis-full items-center justify-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold">
+                    <Check className="size-4" aria-hidden />
+                    {t("playingNow")}
+                  </p>
+                ) : (
+                  <form action={active.action} className="basis-full">
+                    <input
+                      type="hidden"
+                      name="participantId"
+                      value={person.id}
+                    />
+                    <input type="hidden" name="to" value="profile" />
+                    <button
+                      type="submit"
+                      className="border-santa-green text-santa-green bg-santa-white h-10 w-full rounded-full border px-4 text-sm font-semibold"
+                    >
+                      {t("playAs", { name: person.name })}
+                    </button>
+                  </form>
+                )
               ) : null}
             </li>
           );

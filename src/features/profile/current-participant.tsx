@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
-import { TextLink } from "@/components/form-ui";
+import { UsersRound } from "lucide-react";
+import Link from "next/link";
 import { switchPath } from "@/lib/cabinet-routes";
 import {
   getOwnParticipant,
@@ -40,7 +41,11 @@ export async function rememberParticipant(
   return true;
 }
 
-/** «Сменить участника (сейчас: …)»: only for accounts with several participants. */
+/**
+ * «Сейчас играет: Катя · Сменить»: a mint bar above the tab content, only for
+ * accounts with several participants, so it is always clear whose recipient
+ * and gift are shown.
+ */
 export async function CurrentSwitch({
   userId,
   personId,
@@ -48,15 +53,26 @@ export async function CurrentSwitch({
 }: {
   userId: string;
   personId: string;
-  to: "home" | "gift";
+  to: "home" | "gift" | "profile";
 }) {
   const people = await listParticipants(userId);
   const current = people.find((person) => person.id === personId);
   if (people.length < 2 || !current) return null;
   const t = await getTranslations("cabinet.home");
   return (
-    <TextLink href={switchPath(to)}>
-      {t("switch", { name: current.name })}
-    </TextLink>
+    <div className="bg-santa-mint border-santa-green flex items-center gap-3 rounded-2xl border-2 px-4 py-3">
+      <UsersRound className="text-santa-green size-5 shrink-0" aria-hidden />
+      <p className="text-santa-ink min-w-0 flex-1 text-sm">
+        {t("playingNow")}{" "}
+        <strong className="text-base font-bold">{current.name}</strong>
+      </p>
+      <Link
+        href={switchPath(to)}
+        aria-label={t("switch", { name: current.name })}
+        className="bg-santa-green text-santa-white shrink-0 rounded-full px-4 py-2 text-sm font-semibold"
+      >
+        {t("switchShort")}
+      </Link>
+    </div>
   );
 }
