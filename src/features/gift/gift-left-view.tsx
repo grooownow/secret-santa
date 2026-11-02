@@ -1,6 +1,7 @@
-import { CircleCheck } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { TextLink } from "@/components/form-ui";
 import { recipientPath } from "@/lib/cabinet-routes";
 
 /**
@@ -19,9 +20,22 @@ export async function GiftLeftView({
   const t = await getTranslations("gift.form");
   return (
     <div className="flex flex-col gap-5">
-      <div className="bg-santa-mint text-santa-green flex size-14 items-center justify-center rounded-full">
-        <CircleCheck className="size-6" aria-hidden />
-      </div>
+      {/* Back to the recipient's page, top left like any sub-page. */}
+      <Link
+        href={recipientPath(participantId)}
+        aria-label={t("back")}
+        className="text-santa-green bg-santa-mint -ml-1 flex size-10 items-center justify-center rounded-full"
+      >
+        <ChevronLeft className="size-6" aria-hidden />
+      </Link>
+      {/* The landing's Santa, waving: the gift is done. */}
+      <Image
+        src="/email/santa.png"
+        alt=""
+        width={140}
+        height={140}
+        className="size-[140px] self-center object-contain"
+      />
       <h1 className="text-santa-ink text-[26px] leading-tight font-bold">
         {t("titleDone")}
       </h1>
@@ -44,7 +58,6 @@ export async function GiftLeftView({
           </dd>
         </div>
       </dl>
-      <TextLink href={recipientPath(participantId)}>{t("back")}</TextLink>
     </div>
   );
 }
